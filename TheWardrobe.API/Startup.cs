@@ -14,9 +14,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using TheWardrobe.API.Authorization;
 using TheWardrobe.API.Helpers;
-using TheWardrobe.API.Services;
+using TheWardrobe.API.Middleware;
+using TheWardrobe.API.Repositories;
 
 namespace TheWardrobe.API
 {
@@ -33,6 +33,7 @@ namespace TheWardrobe.API
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllers();
+      Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
       var tokenKey = Configuration.GetSection("AppSettings").GetValue<string>("Secret");
@@ -46,6 +47,13 @@ namespace TheWardrobe.API
         {
           x.RequireHttpsMetadata = false;
           x.SaveToken = true;
+          x.Events = new JwtBearerEvents()
+          {
+            OnTokenValidated = ctx =>
+              {
+                return Task.CompletedTask;
+              }
+          };
           x.TokenValidationParameters = new TokenValidationParameters
           {
             ValidateIssuerSigningKey = true,
@@ -76,8 +84,7 @@ namespace TheWardrobe.API
 
 
       // configure DI for application services
-      services.AddScoped<IJwtUtils, JwtUtils>();
-      services.AddScoped<IUserService, UserService>();
+      services.AddScoped<IAccountService, AccountService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,6 +102,8 @@ namespace TheWardrobe.API
 
       app.UseCors("allow-localhost-origins");
 
+      // global error handler
+      app.UseMiddleware<ErrorHandlerMiddleware>();
       // custom jwt auth middleware
       // app.UseMiddleware<JwtMiddleware>();
 

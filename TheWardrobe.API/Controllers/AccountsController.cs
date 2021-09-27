@@ -1,0 +1,90 @@
+using System;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using TheWardrobe.API.Entities;
+using TheWardrobe.API.Helpers;
+using TheWardrobe.API.Models.Accounts;
+using TheWardrobe.API.Repositories;
+
+namespace TheWardrobe.API.Controllers
+{
+
+  [ApiController]
+  [Route("[controller]")]
+  public class AccountsController : BaseController
+  {
+    private readonly IMapper _mapper;
+    private readonly IAccountService _accountService;
+
+    public AccountsController(
+            IMapper mapper,
+            IAccountService accountService)
+    {
+      _mapper = mapper;
+      _accountService = accountService;
+    }
+
+    [HttpPost("authenticate")]
+    public ActionResult<AuthenticateResponse> Authenticate(AuthenticateRequest model)
+    {
+      var response = _accountService.Authenticate(model);
+      SetTokenCookie(response.RefreshToken);
+      return Ok(response);
+    }
+
+    [HttpPost("refresh-token")]
+    public ActionResult<AuthenticateResponse> RefreshToken()
+    {
+      var refreshToken = Request.Cookies["refreshToken"];
+      var response = _accountService.RefreshToken(refreshToken);
+      SetTokenCookie(response.RefreshToken);
+      return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPost("revoke-token")]
+    public IActionResult RevokeToken(RevokeTokenRequest model)
+    {
+      // accept token from request body or cookie
+      var token = model.Token ?? Request.Cookies["refreshToken"];
+
+      if (string.IsNullOrEmpty(token))
+        return BadRequest(new { message = "Token is required" });
+
+      // users can revoke their own tokens and admins can revoke any tokens
+      if (!Account.OwnsToken(token) && Account.Role != Role.Admin)
+        return Unauthorized(new { message = "Unauthorized" });
+
+      _accountService.RevokeToken(token);
+      return Ok(new { message = "Token revoked" });
+    }
+
+    [HttpPost("register")]
+    public IActionResult Register(RegisterRequest model)
+    {
+      _accountService.Register(model);
+      return Ok(new { message = "Registration successful, please check your email for verification instructions" });
+    }
+
+    [Authorize]
+    [HttpGet("test")]
+    public IActionResult Test()
+    {
+      return Ok(new { message = "Working!" });
+    }
+
+    // helper methods
+    private void SetTokenCookie(string token)
+    {
+      var cookieOptions = new CookieOptions
+      {
+        HttpOnly = true,
+        Expires = DateTime.UtcNow.AddDays(7)
+      };
+      Response.Cookies.Append("refreshToken", token, cookieOptions);
+    }
+  }
+}
