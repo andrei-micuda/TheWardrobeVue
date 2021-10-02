@@ -69,6 +69,27 @@ namespace TheWardrobe.API.Controllers
       return Ok(new { message = "Registration successful, please check your email for verification instructions" });
     }
 
+    [HttpPost("forgot-password")]
+    public IActionResult ForgotPassword(ForgotPasswordRequest model)
+    {
+      _accountService.ForgotPassword(model);
+      return Ok(new { message = "Please check your email for password reset instructions" });
+    }
+
+    [HttpPost("validate-reset-token")]
+    public IActionResult ValidateResetToken(ValidateResetTokenRequest model)
+    {
+      _accountService.ValidateResetToken(model);
+      return Ok(new { message = "Token is valid" });
+    }
+
+    [HttpPost("reset-password")]
+    public IActionResult ResetPassword(ResetPasswordRequest model)
+    {
+      _accountService.ResetPassword(model);
+      return Ok(new { message = "Password reset successful, you can now login" });
+    }
+
     [Authorize]
     [HttpGet("test")]
     public IActionResult Test()

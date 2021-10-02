@@ -26,9 +26,9 @@ namespace TheWardrobe.API.Repositories
     void RevokeToken(string token);
     void Register(RegisterRequest model);
     // void VerifyEmail(string token);
-    // void ForgotPassword(ForgotPasswordRequest model, string origin);
-    // void ValidateResetToken(ValidateResetTokenRequest model);
-    // void ResetPassword(ResetPasswordRequest model);
+    void ForgotPassword(ForgotPasswordRequest model);
+    void ValidateResetToken(ValidateResetTokenRequest model);
+    void ResetPassword(ResetPasswordRequest model);
     // IEnumerable<AccountResponse> GetAll();
     // AccountResponse GetById(int id);
     // AccountResponse Create(CreateRequest model);
@@ -52,11 +52,7 @@ namespace TheWardrobe.API.Repositories
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
     {
       using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
-      var account = connection.QuerySingleOrDefault<Account>(@"
-        SELECT *
-        FROM accounts
-        WHERE email = @email",
-        new { email = model.Email });
+      var account = GetAccountByEmail(model.Email);
 
       account.RefreshTokens = connection.Query<RefreshToken>(@"
         SELECT *
@@ -155,6 +151,87 @@ namespace TheWardrobe.API.Repositories
 
       // send email
       // sendVerificationEmail(account, origin);
+    }
+
+    public void ForgotPassword(ForgotPasswordRequest model)
+    {
+      var account = GetAccountByEmail(model.Email);
+
+      // always return ok response to prevent email enumeration
+      if (account == null) return;
+
+      // create reset token that expires after 1 day
+      account.ResetToken = RandomTokenString();
+      account.WhenResetTokenExpires = DateTime.UtcNow.AddDays(1);
+
+      // update account fields
+      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      connection.Execute(@"
+      UPDATE accounts
+      SET
+        reset_token = @ResetToken,
+        when_reset_token_expires = @WhenResetTokenExpires
+      WHERE id = @Id", account);
+
+      // send email
+      // sendPasswordResetEmail(account, origin);
+    }
+
+    public void ValidateResetToken(ValidateResetTokenRequest model)
+    {
+      // var account = _context.Accounts.SingleOrDefault(x =>
+      //     x.ResetToken == model.Token &&
+      //     x.ResetTokenExpires > DateTime.UtcNow);
+      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      var account = connection.QuerySingleOrDefault<Account>(@"
+        SELECT *
+        FROM accounts
+        WHERE
+          reset_token = @Token AND
+          when_reset_token_expires > @UtcNow", new { Token = model.Token, UtcNow = DateTime.UtcNow });
+
+      if (account == null)
+        throw new AppException("Invalid token");
+    }
+
+    public void ResetPassword(ResetPasswordRequest model)
+    {
+      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      var account = connection.QuerySingleOrDefault<Account>(@"
+        SELECT *
+        FROM accounts
+        WHERE
+          reset_token = @Token AND
+          when_reset_token_expires > @UtcNow", new { Token = model.Token, UtcNow = DateTime.UtcNow });
+
+      if (account == null)
+        throw new AppException("Invalid token");
+
+      // update password and remove reset token
+      account.PasswordHash = BCryptNet.HashPassword(model.Password);
+      account.WhenPasswordReset = DateTime.UtcNow;
+      account.ResetToken = null;
+      account.WhenResetTokenExpires = null;
+
+      connection.Execute(@"
+      UPDATE accounts
+      SET
+        password_hash = @PasswordHash,
+        when_password_reset = @UtcNow,
+        reset_token = @ResetToken,
+        when_reset_token_expires = @WhenResetTokenExpires
+      WHERE id = @Id", new { account.PasswordHash, DateTime.UtcNow, account.ResetToken, account.WhenResetTokenExpires, account.Id });
+    }
+
+    private Account GetAccountByEmail(string email)
+    {
+      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      var account = connection.QuerySingleOrDefault<Account>(@"
+        SELECT *
+        FROM accounts
+        WHERE email = @email",
+        new { email });
+      return account;
     }
 
     private string GenerateJwtToken(Account account)
