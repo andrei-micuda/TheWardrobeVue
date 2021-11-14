@@ -4,7 +4,7 @@ import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 import SignIn from '../views/SignIn.vue'
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
@@ -22,10 +22,10 @@ const routes = [
     name: 'Register',
     component: Register
   }
-]
+];
 
 const router = new VueRouter({
   routes
-})
+});
 
-export default router
+export default router;

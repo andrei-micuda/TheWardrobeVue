@@ -18,13 +18,7 @@
           <Icon :icon="icons.profile" class="h-6 w-6" />
       </button>
 
-      <div id="profileMenu" class="hidden z-10 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
-      <div class="py-1" role="none">
-          <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-          <router-link to="/signin" class="text-gray-700 block px-4 py-2 text-sm">Sign in</router-link>
-          <router-link to="/register" class="text-gray-700 block px-4 py-2 text-sm">Register</router-link>
-        </div>
-      </div>
+      <TheNavbarProfileMenu />
     </div>
   </div>
 </template>
@@ -32,6 +26,8 @@
 <script>
   import $ from "cash-dom";
   import { Icon } from '@iconify/vue2';
+  import TheNavbarProfileMenu from "./TheNavbarProfileMenu.vue";
+
   export default {
     data() {
       return {
@@ -55,6 +51,7 @@
     },
     components: {
       Icon,
+      TheNavbarProfileMenu
     },
   }
 </script>
