@@ -24,7 +24,7 @@
             :validationErrors="errors"
             class="text-md" />
         </ValidationProvider>
-        <VButton text="Sign in" type="submit"/>
+        <VButton type="submit">Sign in</VButton>
       </form>
     </ValidationObserver>
   </div>
