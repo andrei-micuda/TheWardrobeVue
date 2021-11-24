@@ -9,13 +9,25 @@ const store = new Vuex.Store({
   // will subscribe to
   
   state: {     
-    isSignedIn: false,
-    user: null
+    user: null,
+    jwt: null
   },
   mutations: {
-    signInUser(state, user) {
-      state.user = user;
-      state.isSignedIn = true;
+    initStore(state) {
+      let jwt = localStorage.getItem('jwt');
+      let user = localStorage.getItem('user');
+      if (jwt && user)
+      {
+        state.jwt = jwt;
+        state.user = user;
+      }
+    },
+    signInUser(state, { email, jwt }) {
+      state.user = email;
+      state.jwt = jwt;
+
+      localStorage.setItem('jwt', jwt);
+      localStorage.setItem('user', email);
     }
   }
 });

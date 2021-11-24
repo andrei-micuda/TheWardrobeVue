@@ -66,7 +66,7 @@ namespace TheWardrobe.API.Repositories
 
       // authentication successful, generate auth token and refresh token
       var response = _mapper.Map<AuthenticateResponse>(account);
-      response.JwtToken = GenerateJwtToken(account);
+      response.Jwt = GenerateJwtToken(account);
       var refreshToken = GenerateRefreshToken();
       refreshToken.AccountId = account.Id;
 
@@ -101,7 +101,7 @@ namespace TheWardrobe.API.Repositories
       var jwtToken = GenerateJwtToken(account);
 
       var response = _mapper.Map<AuthenticateResponse>(account);
-      response.JwtToken = jwtToken;
+      response.Jwt = jwtToken;
       response.RefreshToken = newRefreshToken.Token;
       return response;
     }

@@ -13,7 +13,7 @@ namespace TheWardrobe.API.Models.Accounts
     public DateTime WhenCreated { get; set; }
     public DateTime? WhenUpdated { get; set; }
     public bool IsVerified { get; set; }
-    public string JwtToken { get; set; }
+    public string Jwt { get; set; }
 
     [JsonIgnore] // refresh token is returned in http only cookie
     public string RefreshToken { get; set; }

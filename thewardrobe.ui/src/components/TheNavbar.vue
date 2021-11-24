@@ -4,12 +4,12 @@
         <!-- navbar -->
       <nav class="flex justify-between bg-gray-700 text-white w-screen">
         <div class="px-5 xl:px-12 py-6 flex w-full items-center">
-          <a class="text-3xl font-bold font-heading" href="#">
+          <a class="text-3xl font-bold font-heading" href="/">
             <img class="h-12" src="@/assets/logo.svg" alt="logo">
           </a>
           <!-- Nav Links -->
           <ul class="hidden md:flex px-4 mx-auto font-semibold font-heading space-x-12">
-            <li><a class="hover:text-gray-200" href="#">Home</a></li>
+            <li><a class="hover:text-gray-200" href="/">Home</a></li>
             <li><a class="hover:text-gray-200" href="#">Catagory</a></li>
             <li><a class="hover:text-gray-200" href="#">Collections</a></li>
             <li><a class="hover:text-gray-200" href="#">Contact Us</a></li>

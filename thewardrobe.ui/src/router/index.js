@@ -13,8 +13,8 @@ const routes = [
     component: Home
   },
   {
-    path: '/signin',
-    name: 'signin',
+    path: '/signIn',
+    name: 'SignIn',
     component: SignIn
   },
   {
@@ -27,5 +27,20 @@ const routes = [
 const router = new VueRouter({
   routes
 });
+
+router.beforeEach((to, from, next) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ['/signIn', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem('jwt');
+
+  console.log(loggedIn)
+
+  if (authRequired && !loggedIn) {
+    return next('/signIn');
+  }
+
+  next();
+})
 
 export default router;
