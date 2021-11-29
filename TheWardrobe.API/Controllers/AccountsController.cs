@@ -17,14 +17,20 @@ namespace TheWardrobe.API.Controllers
   public class AccountsController : BaseController
   {
     private readonly IMapper _mapper;
-    private readonly IAccountService _accountService;
+    private readonly IAccountRepository _accountService;
 
     public AccountsController(
             IMapper mapper,
-            IAccountService accountService)
+            IAccountRepository accountService)
     {
       _mapper = mapper;
       _accountService = accountService;
+    }
+
+    [HttpGet("hello")]
+    public IActionResult Hello()
+    {
+      return Ok("Hello world!");
     }
 
     [HttpPost("authenticate")]

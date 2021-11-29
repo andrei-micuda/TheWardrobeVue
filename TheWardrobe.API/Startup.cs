@@ -82,9 +82,10 @@ namespace TheWardrobe.API
       // configure strongly typed settings objects
       services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
+      services.AddScoped<IDapperContext, DapperContext>();
 
       // configure DI for application services
-      services.AddScoped<IAccountService, AccountService>();
+      services.AddScoped<IAccountRepository, AccountRepository>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

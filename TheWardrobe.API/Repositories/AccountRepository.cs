@@ -16,10 +16,9 @@ using System;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 
-
 namespace TheWardrobe.API.Repositories
 {
-  public interface IAccountService
+  public interface IAccountRepository
   {
     AuthenticateResponse Authenticate(AuthenticateRequest model);
     AuthenticateResponse RefreshToken(string token);
@@ -36,27 +35,27 @@ namespace TheWardrobe.API.Repositories
     // void Delete(int id);
   }
 
-  public class AccountService : IAccountService
+  public class AccountRepository : IAccountRepository
   {
     private readonly IMapper _mapper;
-    private readonly IConfiguration _configuration;
     private readonly AppSettings _appSettings;
+    private readonly IDapperContext _dapperContext;
 
-    public AccountService(IMapper mapper, IConfiguration configuration, IOptions<AppSettings> appSettings)
+    public AccountRepository(IMapper mapper, IDapperContext dapperContext, IOptions<AppSettings> appSettings)
     {
       _mapper = mapper;
-      _configuration = configuration;
+      _dapperContext = dapperContext;
       _appSettings = appSettings.Value;
     }
 
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
     {
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection();
       var account = GetAccountByEmail(model.Email);
 
       account.RefreshTokens = connection.Query<RefreshToken>(@"
         SELECT *
-        FROM refresh_tokens
+        FROM refresh_token
         WHERE account_id = @account_id",
         new { account_id = account.Id }).ToList();
 
@@ -79,7 +78,7 @@ namespace TheWardrobe.API.Repositories
 
     public AuthenticateResponse RefreshToken(string token)
     {
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection(); ;
       var (refreshToken, account) = GetRefreshToken(token);
 
       // replace old refresh token with a new one and save
@@ -108,7 +107,7 @@ namespace TheWardrobe.API.Repositories
 
     public void RevokeToken(string token)
     {
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection(); ;
 
       var (refreshToken, account) = GetRefreshToken(token);
 
@@ -137,19 +136,17 @@ namespace TheWardrobe.API.Repositories
       var account = _mapper.Map<Account>(model);
 
       account.WhenCreated = DateTime.UtcNow;
+      account.WhenUpdated = DateTime.UtcNow;
       account.VerificationToken = RandomTokenString();
 
       // hash password
       account.PasswordHash = BCryptNet.HashPassword(model.Password);
 
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection();
 
-      connection.Execute(@"
-        INSERT INTO accounts (first_name, last_name, email, password_hash, role, verification_token, when_verified, reset_token, when_password_reset, when_reset_token_expires, when_created, when_updated)
-        VALUES (@FirstName, @LastName, @Email, @PasswordHash, @Role, @VerificationToken, @WhenVerified, @ResetToken, @WhenPasswordReset, @WhenResetTokenExpires, @WhenCreated, @WhenUpdated)",
-        account);
+      connection.Insert<Guid, Account>(account);
 
-      // send email
+      // TODO: send email
       // sendVerificationEmail(account, origin);
     }
 
@@ -165,7 +162,7 @@ namespace TheWardrobe.API.Repositories
       account.WhenResetTokenExpires = DateTime.UtcNow.AddDays(1);
 
       // update account fields
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection(); ;
       connection.Execute(@"
       UPDATE accounts
       SET
@@ -182,7 +179,7 @@ namespace TheWardrobe.API.Repositories
       // var account = _context.Accounts.SingleOrDefault(x =>
       //     x.ResetToken == model.Token &&
       //     x.ResetTokenExpires > DateTime.UtcNow);
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection(); ;
       var account = connection.QuerySingleOrDefault<Account>(@"
         SELECT *
         FROM accounts
@@ -196,7 +193,7 @@ namespace TheWardrobe.API.Repositories
 
     public void ResetPassword(ResetPasswordRequest model)
     {
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection(); ;
       var account = connection.QuerySingleOrDefault<Account>(@"
         SELECT *
         FROM accounts
@@ -225,12 +222,13 @@ namespace TheWardrobe.API.Repositories
 
     private Account GetAccountByEmail(string email)
     {
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection();
       var account = connection.QuerySingleOrDefault<Account>(@"
         SELECT *
-        FROM accounts
+        FROM account
         WHERE email = @email",
         new { email });
+
       return account;
     }
 
@@ -251,7 +249,7 @@ namespace TheWardrobe.API.Repositories
 
     private (RefreshToken, Account) GetRefreshToken(string token)
     {
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection();
       var refreshToken = connection.QuerySingleOrDefault<RefreshToken>(@"
         SELECT * FROM refresh_tokens
         WHERE token = @Token", new { Token = token });
@@ -279,17 +277,15 @@ namespace TheWardrobe.API.Repositories
 
     private void AddNewRefreshToken(RefreshToken refreshToken)
     {
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection();
 
       // insert new refresh token into database
-      connection.Execute(@"
-        INSERT INTO refresh_tokens (account_id, token, when_expires, when_created, created_by_ip, when_revoked, revoked_by_ip, replaced_by_token)
-        VALUES (@AccountId, @Token, @WhenExpires, @WhenCreated, @CreatedByIp, @WhenRevoked, @RevokedByIp, @ReplacedByToken)", refreshToken);
+      connection.Insert<Guid, RefreshToken>(refreshToken);
     }
 
     private void RemoveOldRefreshTokens(Account account)
     {
-      using var connection = new NpgsqlConnection(_configuration["ConnectionString"]);
+      using var connection = _dapperContext.GetConnection();
 
       var refreshTokensToDelete = account.RefreshTokens
           .Where(token =>

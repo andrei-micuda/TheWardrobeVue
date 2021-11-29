@@ -6,12 +6,6 @@ namespace TheWardrobe.API.Models.Accounts
   public class RegisterRequest
   {
     [Required]
-    public string FirstName { get; set; }
-
-    [Required]
-    public string LastName { get; set; }
-
-    [Required]
     [EmailAddress]
     public string Email { get; set; }
 
@@ -22,7 +16,5 @@ namespace TheWardrobe.API.Models.Accounts
     [Required]
     [Compare("Password")]
     public string ConfirmPassword { get; set; }
-
-    public string Role { get; set; } = Entities.Role.User.ToString();
   }
 }
