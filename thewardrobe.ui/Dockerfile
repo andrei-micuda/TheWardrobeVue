@@ -20,7 +20,7 @@ COPY ./thewardrobe.ui .
 RUN npm run build
 
 # Expose a port
-EXPOSE 5000
+EXPOSE 3000
 
 # Executables
 CMD [ "serve", "-s", "dist" ]
