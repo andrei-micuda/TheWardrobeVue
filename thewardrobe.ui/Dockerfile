@@ -8,13 +8,13 @@ RUN npm i -g serve
 WORKDIR /app
 
 # Copy the package.json and package-lock.json
-COPY package*.json ./
+COPY ./thewardrobe.ui/package*.json ./
 
 # install project dependencies
 RUN npm install
 
 # Copy the project files
-COPY . .
+COPY ./thewardrobe.ui .
 
 # Build the project
 RUN npm run build
