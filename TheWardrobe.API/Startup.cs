@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,13 @@ namespace TheWardrobe.API
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllers();
+
+      services.Configure<ForwardedHeadersOptions>(options =>
+        {
+          options.ForwardedHeaders =
+              ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        });
+
       Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -92,6 +100,7 @@ namespace TheWardrobe.API
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+      app.UseForwardedHeaders();
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
