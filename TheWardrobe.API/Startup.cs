@@ -35,12 +35,6 @@ namespace TheWardrobe.API
     {
       services.AddControllers();
 
-      services.Configure<ForwardedHeadersOptions>(options =>
-        {
-          options.ForwardedHeaders =
-              ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-        });
-
       Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
       services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -100,7 +94,11 @@ namespace TheWardrobe.API
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-      app.UseForwardedHeaders();
+      app.UseForwardedHeaders(new ForwardedHeadersOptions
+      {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+      });
+
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
