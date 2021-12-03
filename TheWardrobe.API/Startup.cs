@@ -71,6 +71,7 @@ namespace TheWardrobe.API
                               builder =>
                               {
                                 builder.WithOrigins("https://localhost:8080");
+                                builder.WithOrigins("http://172.17.0.5:3000");
                               });
       });
 
