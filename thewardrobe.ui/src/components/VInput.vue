@@ -2,14 +2,14 @@
   <div>
     <div class="w-full flex justify-center mb-4">
       <div class="space-y-2 w-full">
-        <label class="block text-left uppercase font-bold mb-2">{{label}}</label>
+        <label class="block text-left uppercase font-bold lg:mb-2">{{label}}</label>
         <input
           :value="value"
           v-on:input="$emit('input', $event.target.value)"
           :type="type"
           :placeholder="placeholder"
         class="
-          border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 bg-white rounded text-sm shadow
+          border-0 px-3 py-3 placeholder-blueGray-300 text-gray-600 bg-white rounded text-xs lg:text-sm shadow
           focus:outline-none focus:ring focus:ring-green-400 w-full ease-linear transition-all duration-150">
           <ValidationError v-if="validationErrors">{{validationErrors[0]}}</ValidationError>
       </div>

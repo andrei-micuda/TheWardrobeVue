@@ -1,8 +1,8 @@
 <template>
   <div class="text-white">
-    <h1 class="text-2xl font-bold uppercase text-left mb-12">Sign in</h1>
+    <h1 class="text-lg lg:text-2xl font-bold uppercase text-left mb-6 lg:mb-12">Sign in</h1>
     <ValidationObserver v-slot="{ handleSubmit }">
-    <form @submit.prevent="handleSubmit(onSubmit)" class="space-y-8">
+    <form @submit.prevent="handleSubmit(onSubmit)" class="space-y-4 lg:space-y-8">
       <ValidationProvider
         rules="required|email"
         v-slot="{ errors }">
@@ -11,7 +11,7 @@
           label="Email"
           placeholder="test@example.com"
           :validationErrors="errors"
-          class="text-md"  />
+          class="text-sm lg:text-md"  />
       </ValidationProvider>
       <ValidationProvider
         rules="required"
@@ -22,9 +22,9 @@
           placeholder="Your Password"
           type="password"
           :validationErrors="errors"
-          class="text-md" />
+          class="text-sm lg:text-md" />
       </ValidationProvider>
-      <VButton type="submit" class="h-14 w-40" :disabled="isAuthenticating">
+      <VButton type="submit" class="lg:h-14 w-40" :disabled="isAuthenticating">
         <Icon v-if="isAuthenticating" icon="gg:spinner-two-alt" class="animate-spin h-6 w-6 mx-auto" />
         <span v-else>Sign in</span>
       </VButton>
