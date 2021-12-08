@@ -10,7 +10,6 @@ using TheWardrobe.EmailSvc.Models;
 namespace TheWardrobe.EmailSvc.Controllers
 {
   [ApiController]
-  [Route("[controller]")]
   public class EmailSvcController : ControllerBase
   {
     private readonly IConfiguration _configuration;
