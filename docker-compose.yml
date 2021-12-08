@@ -5,16 +5,22 @@ services:
     build:
       context: .
       dockerfile: ./TheWardrobe.API/Dockerfile
+    expose:
+      - "80"
   thewardrobe-ui:
     container_name: thewardrobe-ui
     build:
       context: .
       dockerfile: ./thewardrobe.ui/Dockerfile
+    expose:
+      - "3000"
   thewardrobe-email-svc:
     container_name: thewardrobe-email-svc
     build:
       context: .
       dockerfile: ./TheWardrobe.EmailSvc/Dockerfile
+    expose:
+      - "80"
 networks:
   default:
     external: true
