@@ -11,4 +11,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0
 EXPOSE 80
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "TheWardrobe.API.dll"]
+ENTRYPOINT ["dotnet", "TheWardrobe.EmailSvc.dll"]
