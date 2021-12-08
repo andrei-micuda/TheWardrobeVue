@@ -51,7 +51,7 @@ namespace TheWardrobe.API
               // Add Postgres support to FluentMigrator
               .AddPostgres()
               // Set the connection string
-              .WithGlobalConnectionString("User ID=micu;Password=p@ssw0rd;Host=172.17.0.3;Port=5432;Database=the_wardrobe;")
+              .WithGlobalConnectionString("User ID=micu;Password=p@ssw0rd;Host=postgres;Port=5432;Database=the_wardrobe;")
               // Define the assembly containing the migrations
               .ScanIn(typeof(Initial).Assembly).For.Migrations())
           // Enable logging to console in the FluentMigrator way
