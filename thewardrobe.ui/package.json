@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@tailwindcss/postcss7-compat": "^2.0.2",
+    "ant-design-vue": "^1.7.8",
     "autoprefixer": "^9",
     "axios": "^0.24.0",
     "cash-dom": "^8.1.0",
