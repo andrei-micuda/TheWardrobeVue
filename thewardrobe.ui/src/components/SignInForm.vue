@@ -63,7 +63,7 @@
         console.log("Authenticating...");
         this.isAuthenticating = true;
 
-        axios.post('/accounts/authenticate', {
+        axios.post('/api/accounts/authenticate', {
             "email": this.email,
             "password": this.password,
         }).then(res => {

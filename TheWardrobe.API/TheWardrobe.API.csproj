@@ -13,6 +13,8 @@
     <PackageReference Include="FluentMigrator" Version="3.3.1" />
     <PackageReference Include="FluentMigrator.Runner" Version="3.3.1" />
     <PackageReference Include="FluentMigrator.Runner.Postgres" Version="3.3.1" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.0" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Npgsql" Version="5.0.10" />
@@ -23,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TheWardrobe.API.Migrations\TheWardrobe.API.Migrations.csproj" />
+    <ProjectReference Include="..\TheWardrobe.CrossCutting\TheWardrobe.CrossCutting.csproj" />
   </ItemGroup>
 
 </Project>

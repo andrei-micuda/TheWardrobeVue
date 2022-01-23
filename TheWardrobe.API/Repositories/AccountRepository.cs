@@ -15,6 +15,9 @@ using System.Security.Claims;
 using System;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
+using MassTransit;
+using TheWardrobe.API.Publishers;
+using System.Threading.Tasks;
 
 namespace TheWardrobe.API.Repositories
 {
@@ -23,7 +26,7 @@ namespace TheWardrobe.API.Repositories
     AuthenticateResponse Authenticate(AuthenticateRequest model);
     AuthenticateResponse RefreshToken(string token);
     void RevokeToken(string token);
-    void Register(RegisterRequest model);
+    Task Register(RegisterRequest model);
     // void VerifyEmail(string token);
     void ForgotPassword(ForgotPasswordRequest model);
     void ValidateResetToken(ValidateResetTokenRequest model);
@@ -39,13 +42,15 @@ namespace TheWardrobe.API.Repositories
   {
     private readonly IMapper _mapper;
     private readonly AppSettings _appSettings;
+    private readonly ISendEmailPublisher _sendEmailPublisher;
     private readonly IDapperContext _dapperContext;
 
-    public AccountRepository(IMapper mapper, IDapperContext dapperContext, IOptions<AppSettings> appSettings)
+    public AccountRepository(IMapper mapper, IDapperContext dapperContext, IOptions<AppSettings> appSettings, ISendEmailPublisher sendEmailPublisher)
     {
       _mapper = mapper;
       _dapperContext = dapperContext;
       _appSettings = appSettings.Value;
+      _sendEmailPublisher = sendEmailPublisher;
     }
 
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -122,7 +127,7 @@ namespace TheWardrobe.API.Repositories
         ", refreshToken);
     }
 
-    public void Register(RegisterRequest model)
+    public async Task Register(RegisterRequest model)
     {
       // validate
       // if (_context.Accounts.Any(x => x.Email == model.Email))
@@ -147,6 +152,7 @@ namespace TheWardrobe.API.Repositories
       connection.Insert<Guid, Account>(account);
 
       // TODO: send email
+      await _sendEmailPublisher.SendVerificationEmail("TOKEN_URL_AICI");
       // sendVerificationEmail(account, origin);
     }
 

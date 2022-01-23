@@ -10,7 +10,8 @@ const store = new Vuex.Store({
   
   state: {     
     user: null,
-    jwt: null
+    jwt: null,
+    sidebarShow: false
   },
   mutations: {
     initStore(state) {
@@ -28,6 +29,12 @@ const store = new Vuex.Store({
 
       localStorage.setItem('jwt', jwt);
       localStorage.setItem('user', email);
+    },
+    toggleSidebar(state) {
+      state.sidebarShow = !state.sidebarShow;
+    },
+    closeSidebar(state) {
+      state.sidebarShow = false;
     }
   }
 });

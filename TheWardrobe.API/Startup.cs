@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TheWardrobe.API.Helpers;
 using TheWardrobe.API.Middleware;
+using TheWardrobe.API.Publishers;
 using TheWardrobe.API.Repositories;
 
 namespace TheWardrobe.API
@@ -89,6 +90,7 @@ namespace TheWardrobe.API
 
       // configure DI for application services
       services.AddScoped<IAccountRepository, AccountRepository>();
+      services.AddScoped<ISendEmailPublisher, SendEmailPublisher>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

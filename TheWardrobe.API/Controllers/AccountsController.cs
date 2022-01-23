@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using AutoMapper;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,23 +11,28 @@ using TheWardrobe.API.Entities;
 using TheWardrobe.API.Helpers;
 using TheWardrobe.API.Models.Accounts;
 using TheWardrobe.API.Repositories;
+using TheWardrobe.CrossCutting;
+using TheWardrobe.CrossCutting.Messages;
 
 namespace TheWardrobe.API.Controllers
 {
 
   [ApiController]
-  [Route("[controller]")]
+  [Route("api/[controller]")]
   public class AccountsController : BaseController
   {
     private readonly IMapper _mapper;
     private readonly IAccountRepository _accountService;
+    private readonly IBus _bus;
 
     public AccountsController(
             IMapper mapper,
-            IAccountRepository accountService)
+            IAccountRepository accountService,
+            IBus bus)
     {
       _mapper = mapper;
       _accountService = accountService;
+      _bus = bus;
     }
 
     [HttpGet("hello")]
@@ -70,9 +77,9 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpPost("register")]
-    public IActionResult Register(RegisterRequest model)
+    public async Task<IActionResult> Register(RegisterRequest model)
     {
-      _accountService.Register(model);
+      await _accountService.Register(model);
       return Ok(new { message = "Registration successful, please check your email for verification instructions" });
     }
 
@@ -97,10 +104,18 @@ namespace TheWardrobe.API.Controllers
       return Ok(new { message = "Password reset successful, you can now login" });
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpGet("test")]
-    public IActionResult Test()
+    public async Task<IActionResult> Test()
     {
+      await _bus.Send(new SendEmail
+      {
+        From = "gicu@yahoo.com",
+        To = "test@yahoo.com",
+        Subject = "Test Email",
+        HtmlBody = "Working with rabbitmq"
+      });
+      // _bus.Publish(new EmailMessage { Message = "Testing the bus" });
       return Ok(new { message = "Working!" });
     }
 

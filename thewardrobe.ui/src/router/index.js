@@ -4,6 +4,8 @@ import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 import SignIn from '../views/SignIn.vue'
 
+import store from "../store";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -29,6 +31,9 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  // close sidebar if it was previously open
+  store.commit("closeSidebar");
+
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ['/signIn', '/register'];
   const authRequired = !publicPages.includes(to.path);

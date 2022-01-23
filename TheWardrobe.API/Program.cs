@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using FluentMigrator.Runner;
+using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using TheWardrobe.API.Helpers;
 using TheWardrobe.API.Migrations;
+using TheWardrobe.CrossCutting.Messages;
 
 namespace TheWardrobe.API
 {
@@ -51,7 +53,7 @@ namespace TheWardrobe.API
               // Add Postgres support to FluentMigrator
               .AddPostgres()
               // Set the connection string
-              .WithGlobalConnectionString("User ID=micu;Password=p@ssw0rd;Host=postgres;Port=5432;Database=the_wardrobe;")
+              .WithGlobalConnectionString("User ID=postgres;Password=p@ssw0rd;Host=localhost;Port=5432;Database=the_wardrobe;")
               // Define the assembly containing the migrations
               .ScanIn(typeof(Initial).Assembly).For.Migrations())
           // Enable logging to console in the FluentMigrator way
@@ -75,6 +77,21 @@ namespace TheWardrobe.API
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
+            .ConfigureServices((hostContext, services) =>
+              {
+                EndpointConvention.Map<SendEmail>(new Uri("queue:send-email"));
+                services.AddMassTransit(x =>
+                {
+                  // x.AddConsumer<MessageConsumer>();
+
+                  x.UsingRabbitMq((context, cfg) =>
+                  {
+                    cfg.ConfigureEndpoints(context);
+                  });
+                });
+
+                services.AddMassTransitHostedService();
+              })
             .ConfigureWebHostDefaults(webBuilder =>
             {
               webBuilder.UseStartup<Startup>();
