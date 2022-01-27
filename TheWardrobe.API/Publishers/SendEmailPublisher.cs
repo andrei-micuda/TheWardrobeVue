@@ -7,7 +7,7 @@ namespace TheWardrobe.API.Publishers
 {
   public interface ISendEmailPublisher
   {
-    Task SendVerificationEmail(string verificationToken);
+    Task SendVerificationEmail(string accountEmail, string verificationToken);
   }
   public class SendEmailPublisher : ISendEmailPublisher
   {
@@ -19,14 +19,14 @@ namespace TheWardrobe.API.Publishers
       _config = config;
     }
 
-    public async Task SendVerificationEmail(string verificationToken)
+    public async Task SendVerificationEmail(string accountEmail, string verificationToken)
     {
       var emailVerificationTemplate = _config.GetSection("EmailTemplates:EmailVerificationTemplate");
 
       await _bus.Send(new SendEmail
       {
         From = "gicu@yahoo.com",
-        To = "test@yahoo.com",
+        To = accountEmail,
         Subject = emailVerificationTemplate["Subject"],
         HtmlBody = emailVerificationTemplate["HtmlBody"]
       });

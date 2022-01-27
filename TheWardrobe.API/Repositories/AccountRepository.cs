@@ -152,7 +152,7 @@ namespace TheWardrobe.API.Repositories
       connection.Insert<Guid, Account>(account);
 
       // TODO: send email
-      await _sendEmailPublisher.SendVerificationEmail("TOKEN_URL_AICI");
+      await _sendEmailPublisher.SendVerificationEmail(account.Email, "TOKEN_URL_AICI");
       // sendVerificationEmail(account, origin);
     }
 
