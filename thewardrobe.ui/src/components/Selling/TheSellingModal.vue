@@ -14,8 +14,8 @@
         </a-step>
       </a-steps>
       <div class="steps-content">
-        <TheUploadImagesForm v-if='current == 0' />
-        <p v-if='current == 1'>Second Content</p>
+        <TheImageUploadStep v-if='current == 0' :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
+        <TheImageClassificationStep v-if='current == 1' :uploadedImages="uploadedImages" />
         <p v-if='current == 2'>Last Content</p>
         <!-- {{ steps[current].content }} -->
       </div>
@@ -40,7 +40,8 @@
 
 <script>
   import VButton from '../VButton.vue';
-  import TheUploadImagesForm from './TheUploadImagesForm.vue';
+  import TheImageUploadStep from './TheImageUploadStep.vue';
+  import TheImageClassificationStep from './TheImageClassificationStep.vue';
   import { Icon } from '@iconify/vue2';
 
   export default {
@@ -62,6 +63,7 @@
             icon: 'jam:write-f'
           },
         ],
+        uploadedImages: []
      }
    },
    methods: {
@@ -74,11 +76,15 @@
       prev() {
         this.current--;
       },
+      handleUpload(images) {
+        this.uploadedImages = images;
+      }
    },
    components: {
      VButton,
      Icon,
-     TheUploadImagesForm
+     TheImageUploadStep,
+     TheImageClassificationStep
    },
   }
 </script>
@@ -115,11 +121,12 @@
 
     /* Done Steps */
     & .ant-steps-item-finish .ant-steps-icon {
+      /* @apply text-gray-800; */
       @apply text-green-400;
     }
 
     & .ant-steps-item-finish .ant-steps-item-title::after {
-      @apply bg-green-400;
+      @apply bg-white;
     }
   }
 
@@ -127,20 +134,12 @@
   & .ant-modal-close-icon {
     @apply text-white;
   }
+
+  /* Modal content */
+  & .steps-content {
+    @apply my-4;
+  }
 }
 
-.steps-content {
-  margin-top: 16px;
-  border: 1px dashed #e9e9e9;
-  border-radius: 6px;
-  background-color: #fafafa;
-  min-height: 200px;
-  text-align: center;
-  padding-top: 80px;
-}
-
-.steps-action {
-  margin-top: 24px;
-}
 
 </style>
