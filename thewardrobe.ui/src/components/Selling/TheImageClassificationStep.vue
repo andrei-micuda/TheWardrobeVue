@@ -20,24 +20,29 @@
   export default {
     data() {
       return {
-        defaultOptions: {animationData: animationData},
-        predictedCategory: null
+        defaultOptions: {animationData: animationData}
       }
     },
     props: {
       uploadedImages: {
         type: Array
       },
+      predictedCategory: {
+        type: String
+      },
+      setPredictedCategory: {
+        type: Function
+      }
     },
     methods: {
       async initializeClassification() {
-        let category = "Pants";
+        let category = "Sweater";
         await new Promise((resolve) => setTimeout(resolve, 2000));
         return category;
       }
     },
     mounted() {
-      this.initializeClassification().then((val) => this.predictedCategory = val);
+      this.initializeClassification().then((val) => this.setPredictedCategory(val));
     },
     components: {
       Lottie,

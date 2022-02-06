@@ -15,8 +15,8 @@
       </a-steps>
       <div class="steps-content">
         <TheImageUploadStep v-if='current == 0' :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
-        <TheImageClassificationStep v-if='current == 1' :uploadedImages="uploadedImages" />
-        <p v-if='current == 2'>Last Content</p>
+        <TheImageClassificationStep v-if='current == 1' :uploadedImages="uploadedImages" :predictedCategory="predictedCategory" :setPredictedCategory="setPredictedCategory" />
+        <TheAddDetailsStep v-if='current == 2' :predictedCategory="predictedCategory" />
         <!-- {{ steps[current].content }} -->
       </div>
       <div class="steps-action">
@@ -42,6 +42,7 @@
   import VButton from '../VButton.vue';
   import TheImageUploadStep from './TheImageUploadStep.vue';
   import TheImageClassificationStep from './TheImageClassificationStep.vue';
+  import TheAddDetailsStep from './TheAddDetailsStep.vue';
   import { Icon } from '@iconify/vue2';
 
   export default {
@@ -63,7 +64,8 @@
             icon: 'jam:write-f'
           },
         ],
-        uploadedImages: []
+        uploadedImages: [],
+        predictedCategory: null
      }
    },
    methods: {
@@ -78,13 +80,17 @@
       },
       handleUpload(images) {
         this.uploadedImages = images;
+      },
+      setPredictedCategory(cat) {
+        this.predictedCategory = cat;
       }
    },
    components: {
      VButton,
      Icon,
      TheImageUploadStep,
-     TheImageClassificationStep
+     TheImageClassificationStep,
+     TheAddDetailsStep,
    },
   }
 </script>
