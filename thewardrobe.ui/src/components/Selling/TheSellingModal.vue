@@ -16,7 +16,7 @@
       <div class="steps-content">
         <TheImageUploadStep v-if='current == 0' :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
         <TheImageClassificationStep v-if='current == 1' :uploadedImages="uploadedImages" :predictedCategory="predictedCategory" :setPredictedCategory="setPredictedCategory" />
-        <TheAddDetailsStep v-if='current == 2' :predictedCategory="predictedCategory" />
+        <TheAddDetailsStep v-if='current == 2' :predictedCategory="predictedCategory" :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
         <!-- {{ steps[current].content }} -->
       </div>
       <div class="steps-action">
@@ -26,7 +26,7 @@
         <a-button
           v-if="current == steps.length - 1"
           type="primary"
-          @click="$message.success('Processing complete!')"
+          @click="handleDone"
         >
           Done
         </a-button>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+  import $ from "cash-dom";
   import VButton from '../VButton.vue';
   import TheImageUploadStep from './TheImageUploadStep.vue';
   import TheImageClassificationStep from './TheImageClassificationStep.vue';
@@ -65,7 +66,7 @@
           },
         ],
         uploadedImages: [],
-        predictedCategory: null
+        predictedCategory: null,
      }
    },
    methods: {
@@ -83,6 +84,10 @@
       },
       setPredictedCategory(cat) {
         this.predictedCategory = cat;
+      },
+      handleDone() {
+        $("#AddItemBtn").trigger("click");
+        this.$message.success('Processing complete!');
       }
    },
    components: {

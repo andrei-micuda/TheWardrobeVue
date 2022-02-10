@@ -1,6 +1,7 @@
 <template>
   <div>
     <a-upload
+      :class="size"
       accept="image/*"
       :before-upload="() => false"
       list-type="picture-card"
@@ -10,7 +11,7 @@
     >
       <div v-if="fileList.length < 8">
         <a-icon type="plus" />
-        <div class="ant-upload-text">
+        <div v-if="size !== 'small'" class="ant-upload-text">
           Upload
         </div>
       </div>
@@ -36,6 +37,10 @@ export default {
     },
     uploadedImages: {
       type: Array
+    },
+    size: {
+      type: String,
+      default: "default"
     }
   },
   data() {
@@ -78,6 +83,20 @@ export default {
   & .ant-upload-text {
     @apply text-white;
     margin-top: 8px;
+  }
+}
+
+.small {
+  & .ant-upload-select-picture-card {
+    @apply w-10 h-10;
+    & i {
+      font-size: 24px !important;
+    }
+  }
+
+  & .ant-upload-list-item,
+  & .ant-upload-list-picture-card-container {
+    @apply w-10 h-10 p-0;
   }
 }
 
