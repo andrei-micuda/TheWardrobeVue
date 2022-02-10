@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-form :form="form" v-bind="formItemLayout" @submit="handleSubmit">
-      <TheImageUploadStep size="small" :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
+      <TheInlineImageUpload size="small" :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
       <a-form-item label="Product Name">
         <a-input
           v-decorator="[
@@ -109,7 +109,7 @@
 </template>
 
 <script>
-  import TheImageUploadStep from './TheImageUploadStep.vue';
+  import TheInlineImageUpload from './TheInlineImageUpload.vue';
 
   const categories = {
     clothing: ["Anorak", "Blazer", "Blouse", "Bomber", "Button-Down", "Cardigan", "Flannel", "Halter", "Henley", "Hoodie", "Jacket", "Jersey", "Parka", "Peacoat", "Poncho", "Sweater", "Tank", "Tee", "Top", "Turtleneck", "Capris", "Chinos", "Culottes", "Cutoffs", "Gauchos", "Jeans", "Jeggings", "Jodhpurs", "Joggers", "Leggings", "Sarong", "Shorts", "Skirt", "Sweatpants", "Sweatshorts", "Trunks", "Caftan", "Cape", "Coat", "Coverup", "Dress", "Jumpsuit", "Kaftan", "Kimono", "Nightdress", "Onesie", "Robe", "Romper", "Shirtdress", "Sundress"]
@@ -210,7 +210,7 @@
       this.selectedCategory = this.predictedCategory;
     },
     components: {
-      TheImageUploadStep,
+      TheInlineImageUpload,
     },
   }
 </script>
