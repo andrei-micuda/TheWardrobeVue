@@ -67,7 +67,7 @@ export default {
     handleChange({ fileList }) {
       this.fileList = fileList;
       this.handleUpload(fileList);
-    },
+    }
   },
 };
 </script>

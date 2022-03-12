@@ -15,6 +15,7 @@
 
 <script>
   import Lottie from 'vue-lottie';
+  import axios from 'axios';
   import animationData from '../../assets/image-scan.json'
 
   export default {
@@ -37,7 +38,13 @@
     methods: {
       async initializeClassification() {
         let category = "Sweater";
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        let formData = new FormData();
+        this.uploadedImages.forEach(file => {
+          formData.append("files", file.originFileObj);
+        });
+        let res = await axios.post("/api/clothesClassification", formData);
+        console.log(res);
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
         return category;
       }
     },

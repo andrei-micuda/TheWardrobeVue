@@ -77,6 +77,7 @@ namespace TheWardrobe.API
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
+            .UseSerilog()
             .ConfigureServices((hostContext, services) =>
               {
                 EndpointConvention.Map<SendEmail>(new Uri("queue:send-email"));
