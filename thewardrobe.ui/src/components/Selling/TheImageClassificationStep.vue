@@ -14,9 +14,30 @@
 </template>
 
 <script>
+  // AWS imports
+  import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
+  import {
+      fromCognitoIdentityPool,
+  } from "@aws-sdk/credential-provider-cognito-identity";
+  import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+
+
   import Lottie from 'vue-lottie';
   import axios from 'axios';
   import animationData from '../../assets/image-scan.json'
+
+  const initAwsS3 = () => {
+    const bucketRegion = "eu-central-1";
+    const IdentityPoolId = "eu-central-1:2e1573bc-3d06-484c-aa38-214c25d961e7";
+
+    return new S3Client({
+      region: bucketRegion,
+    credentials: fromCognitoIdentityPool({
+      client: new CognitoIdentityClient({ region: bucketRegion }),
+        identityPoolId: IdentityPoolId
+      })
+    });
+  }
 
   export default {
     data() {
@@ -46,9 +67,30 @@
         console.log(res);
         // await new Promise((resolve) => setTimeout(resolve, 2000));
         return category;
+      },
+      async uploadToBucket(s3Client) {
+        const bucketName = "thewardrobe-media";
+
+        const uploadParams = {
+          Bucket: bucketName,
+          // Add the required 'Key' parameter using the 'path' module.
+          Key: "test.png",
+          // Add the required 'Body' parameter
+          Body: this.uploadedImages[0].originFileObj,
+        };
+
+        try {
+          const data = await s3Client.send(new PutObjectCommand(uploadParams));
+          console.log("Success", data);
+          return data; // For unit tests.
+        } catch (err) {
+          console.log("Error", err);
+        }
       }
     },
     mounted() {
+      const s3Client = initAwsS3();
+      this.uploadToBucket(s3Client);
       this.initializeClassification().then((val) => this.setPredictedCategory(val));
     },
     components: {
