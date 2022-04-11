@@ -1,0 +1,5 @@
+requests
+Pillow
+Flask
+tensorflow
+tensorflow_hub

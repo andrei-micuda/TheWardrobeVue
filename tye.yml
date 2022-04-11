@@ -1,0 +1,26 @@
+# tye application configuration file
+# read all about it at https://github.com/dotnet/tye
+#
+# when you've given us a try, we'd love to know what you think:
+#    https://aka.ms/AA7q20u
+#
+name: thewardrobe
+services:
+  - name: thewardrobe-api
+    project: TheWardrobe.API/TheWardrobe.API.csproj
+    bindings:
+    - port: 5050
+  - name: thewardrobe-item-catalog
+    project: TheWardrobe.API.ItemCatalog/TheWardrobe.API.ItemCatalog.csproj
+    bindings:
+    - port: 5051
+  - name: thewardrobe-clothes-classification
+    image: clothes_classification_api
+    bindings:
+    - port: 5052
+      containerPort: 5000
+      protocol: http
+  - name: thewardrobe-email-svc
+    project: TheWardrobe.EmailSvc/TheWardrobe.EmailSvc.csproj
+    bindings:
+    - port: 5053

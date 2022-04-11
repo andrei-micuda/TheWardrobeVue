@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
-namespace TheWardrobe.API.Helpers
+namespace TheWardrobe.Helpers
 {
   public interface IDapperContext
   {

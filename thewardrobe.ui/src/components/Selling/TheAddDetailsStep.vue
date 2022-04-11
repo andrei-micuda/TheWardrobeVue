@@ -75,12 +75,37 @@
           style="width: 100%"
           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
           :tree-data="categoryData"
+          show-search
+          allow-clear
           placeholder="Please select a category"
         >
         </a-tree-select>
       </a-form-item>
+      <a-form-item label="Brand">
+        <a-select
+          v-decorator="[
+          'brand',
+          {
+            rules: [
+              {
+                required: true,
+                message: 'Please select a brand.',
+              }
+            ]
+          }
+          ]"
+          @change="val => {selectedBrand = val;}"
+          style="width: 100%"
+          :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+          :options="brandData"
+          placeholder="Please select a brand"
+          show-search
+          allow-clear
+        >
+        </a-select>
+      </a-form-item>
       <a-form-item label="Size">
-        <a-tree-select
+        <a-select
           v-decorator="[
           'size',
           {
@@ -95,11 +120,12 @@
           @change="val => {selectedSize = val;}"
           style="width: 100%"
           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-          :tree-data="sizeData"
+          :options="sizeData"
           placeholder="Please select a size"
-          tree-default-expand-all
+          show-search
+          allow-clear
         >
-        </a-tree-select>
+        </a-select>
       </a-form-item>
       <a-button id="AddItemBtn" class="hidden" type="primary" html-type="submit">
         Submit
@@ -109,6 +135,10 @@
 </template>
 
 <script>
+  import api from "../../api";
+  import notifier from "../../notifier";
+  import store from '../../store';
+
   import TheInlineImageUpload from './TheInlineImageUpload.vue';
 
   const categories = {
@@ -150,6 +180,10 @@
     ],
   }
 
+  const brandData = [...['Nike', 'Adidas', 'Zara', 'H&M', 'C&A', 'Pull&Bear', 'Collin\'s', 'Stradivarius', 'U.S. Polo Assn.', 'Tommy Hilfiger', 'Champion', 'The North Face', 'Hugo Boss', 'Superdry', 'Lacoste', 'New Balance'].map(brand => {
+    return {title: brand, value: brand}
+  })];
+
   export default {
     props: {
       predictedCategory: {
@@ -160,14 +194,19 @@
       },
       uploadedImages: {
         type: Array
+      },
+      toggleNewItemModal: {
+        type: Function
       }
     },
     data() {
       return {
         categoryData,
+        brandData,
         selectedCategory: null,
         selectedSize: null,
         selectedGender: "unisex",
+        selectedBrand: null,
         formItemLayout: {
           labelCol: { span: 6 },
           wrapperCol: { span: 18 },
@@ -175,11 +214,29 @@
       }
     },
     methods: {
-      handleSubmit(e) {
+      async handleSubmit(e) {
         e.preventDefault();
-        this.form.validateFields((err, values) => {
+        this.form.validateFields(async (err, values) => {
           if (!err) {
-            console.log('Received values of form: ', values);
+            var uploadedImagesUrls = this.uploadedImages.map(img => img.resourceUrl);
+
+            var that = this;
+            await api.post("/api/itemCatalog", {
+              ...values,
+              images: uploadedImagesUrls,
+              sellerId: store.state.id})
+              .then(function(res) {
+                var item = res.data;
+                item.images = that.uploadedImages;
+                console.log(item)
+                notifier.success("Successfully listed product.");
+                that.$emit("toggleModal");
+                that.$emit("refreshGrid");
+              })
+              .catch(error => {
+                console.error(error);
+                error.handleGlobally && error.handleGlobally();
+              });
           }
         });
       }

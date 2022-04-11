@@ -48,4 +48,12 @@ export default {
 .ant-btn-primary {
   @apply bg-gray-500 border-green-400 text-green-400 hover:bg-green-400 hover:text-gray-100 !important;
 }
+
+.ant-message {
+  @apply mt-14 !important;
+
+  & .anticon {
+    top: -2px !important;
+  }
+}
 </style>

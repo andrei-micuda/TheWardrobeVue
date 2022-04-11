@@ -16,8 +16,12 @@
       <div class="steps-content">
         <TheImageUploadStep v-if='current == 0' :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
         <TheImageClassificationStep v-if='current == 1' :uploadedImages="uploadedImages" :predictedCategory="predictedCategory" :setPredictedCategory="setPredictedCategory" />
-        <TheAddDetailsStep v-if='current == 2' :predictedCategory="predictedCategory" :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
-        <!-- {{ steps[current].content }} -->
+        <TheAddDetailsStep v-if='current == 2'
+          :predictedCategory="predictedCategory"
+          :handleUpload="handleUpload"
+          :uploadedImages="uploadedImages"
+          @refreshGrid="() => $emit('refreshGrid')"
+          @toggleModal="toggleNewItemModal()" />
       </div>
       <div class="steps-action">
         <a-button v-if="current < steps.length - 1" type="primary" @click="next">
@@ -71,7 +75,7 @@
    },
    methods: {
       toggleNewItemModal() {
-        this.showModal = true;
+        this.showModal = !this.showModal;
       },
       next() {
         this.current++;
@@ -87,7 +91,6 @@
       },
       handleDone() {
         $("#AddItemBtn").trigger("click");
-        this.$message.success('Processing complete!');
       }
    },
    components: {

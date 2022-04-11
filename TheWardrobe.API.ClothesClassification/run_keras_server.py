@@ -1,5 +1,6 @@
 # import the necessary packages
-import io
+from io import BytesIO
+import requests
 import tensorflow as tf
 from PIL import Image
 import numpy as np
@@ -8,6 +9,17 @@ import cc_model
 
 # initialize our Flask application and the Keras model
 app = Flask(__name__)
+
+# load image from url to NumPy array
+
+
+def load_image(url):
+    res = requests.get(url)
+    if res.status_code == 200:
+        img_arr = Image.open(BytesIO(res.content))
+        return img_arr
+    else:
+        return None
 
 
 @app.route("/predict", methods=["POST"])
@@ -19,12 +31,12 @@ def predict():
 
     # ensure an image was properly uploaded to our endpoint
     if request.method == "POST":
-        if request.files.get("image"):
-            # read the image in PIL format
-            image = request.files["image"].read()
-            image = Image.open(io.BytesIO(image))
-            min_score = float(request.args.get('min_score')) * 100
+        req_body = request.json
+        resource_url = req_body["resourceUrl"]
+        min_score = req_body["minScore"]
 
+        image = load_image(resource_url)
+        if image is not None:
             predictions = cc_model.predict(image)
             curr_score = 0
             data["predictions"] = []
@@ -39,7 +51,7 @@ def predict():
             # indicate that the request was a success
             data["success"] = True
 
-    # return the data dictionary as a JSON response
+        # return the data dictionary as a JSON response
     return jsonify(data)
 
 
@@ -49,4 +61,4 @@ if __name__ == "__main__":
     print(("* Loading Keras model and Flask starting server..."
            "please wait until server has fully started"))
     cc_model.load()
-    app.run()
+    app.run(host='0.0.0.0')

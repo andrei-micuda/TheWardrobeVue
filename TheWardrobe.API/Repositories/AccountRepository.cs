@@ -5,7 +5,6 @@ using TheWardrobe.API.Entities;
 using TheWardrobe.API.Helpers;
 using TheWardrobe.API.Models.Accounts;
 using Microsoft.Extensions.Configuration;
-using Npgsql;
 using Dapper;
 using AutoMapper;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,6 +17,8 @@ using System.Security.Cryptography;
 using MassTransit;
 using TheWardrobe.API.Publishers;
 using System.Threading.Tasks;
+using TheWardrobe.Helpers;
+using TheWardrobe.CrossCutting.Helpers;
 
 namespace TheWardrobe.API.Repositories
 {
@@ -58,15 +59,14 @@ namespace TheWardrobe.API.Repositories
       using var connection = _dapperContext.GetConnection();
       var account = GetAccountByEmail(model.Email);
 
+      if (account == null || !account.IsVerified || !BCryptNet.Verify(model.Password, account.PasswordHash))
+        throw new AppException("Email or password is incorrect");
+
       account.RefreshTokens = connection.Query<RefreshToken>(@"
         SELECT *
         FROM refresh_token
         WHERE account_id = @account_id",
         new { account_id = account.Id }).ToList();
-
-      if (account == null || !account.IsVerified || !BCryptNet.Verify(model.Password, account.PasswordHash))
-        throw new AppException("Email or password is incorrect");
-
 
       // authentication successful, generate auth token and refresh token
       var response = _mapper.Map<AuthenticateResponse>(account);
@@ -129,13 +129,18 @@ namespace TheWardrobe.API.Repositories
 
     public async Task Register(RegisterRequest model)
     {
-      // validate
-      // if (_context.Accounts.Any(x => x.Email == model.Email))
-      // {
-      //   // send already registered error in email to prevent account enumeration
-      //   sendAlreadyRegisteredEmail(model.Email, origin);
-      //   return;
-      // }
+      using var connection = _dapperContext.GetConnection();
+      var duplicateEmail = connection.ExecuteScalar<string>("SELECT email FROM account WHERE email = @email LIMIT 1", new
+      {
+        email = model.Email
+      });
+
+      if (!string.IsNullOrEmpty(duplicateEmail))
+      {
+        // send already registered error in email to prevent account enumeration
+        // sendAlreadyRegisteredEmail(model.Email, origin);
+        return;
+      }
 
       // map model to new account object
       var account = _mapper.Map<Account>(model);
@@ -147,13 +152,9 @@ namespace TheWardrobe.API.Repositories
       // hash password
       account.PasswordHash = BCryptNet.HashPassword(model.Password);
 
-      using var connection = _dapperContext.GetConnection();
-
       connection.Insert<Guid, Account>(account);
 
-      // TODO: send email
       await _sendEmailPublisher.SendVerificationEmail(account.Email, "TOKEN_URL_AICI");
-      // sendVerificationEmail(account, origin);
     }
 
     public void ForgotPassword(ForgotPasswordRequest model)
@@ -240,7 +241,7 @@ namespace TheWardrobe.API.Repositories
 
     private string GenerateJwtToken(Account account)
     {
-      // generate token that is valid for 7 days
+      // generate token that is valid for 15 minutes
       var tokenHandler = new JwtSecurityTokenHandler();
       var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
       var tokenDescriptor = new SecurityTokenDescriptor

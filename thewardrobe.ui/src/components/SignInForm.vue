@@ -35,9 +35,9 @@
 
 <script>
   import { ValidationObserver, ValidationProvider } from 'vee-validate';
-  import axios from 'axios';
   import { Icon } from '@iconify/vue2';
 
+  import api from '../api';
   import store from '../store';
   import router from '../router';
 
@@ -63,17 +63,20 @@
         console.log("Authenticating...");
         this.isAuthenticating = true;
 
-        axios.post('/api/accounts/authenticate', {
+        api.post('/api/accounts/authenticate', {
             "email": this.email,
             "password": this.password,
         }).then(res => {
-          store.commit('signInUser', {email: res.data.email, jwt: res.data.jwt});
+          store.commit('signInUser', {id: res.data.id, email: res.data.email, jwt: res.data.jwt});
 
-          this.isAuthenticating = false;
           this.isAuthenticated = true;
 
           router.push('/');
-          });
+        }).catch(error => {
+          error.handleGlobally && error.handleGlobally();
+        }).finally(() => {
+          this.isAuthenticating = false;
+        });
       }
     },
     data() {

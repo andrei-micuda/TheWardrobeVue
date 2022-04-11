@@ -104,7 +104,7 @@ namespace TheWardrobe.API.Controllers
       return Ok(new { message = "Password reset successful, you can now login" });
     }
 
-    // [Authorize]
+    [Authorize]
     [HttpGet("test")]
     public async Task<IActionResult> Test()
     {

@@ -15,18 +15,22 @@ const store = new Vuex.Store({
   },
   mutations: {
     initStore(state) {
+      let id = localStorage.getItem('id');
       let jwt = localStorage.getItem('jwt');
       let user = localStorage.getItem('user');
-      if (jwt && user)
+      if (id && jwt && user)
       {
+        state.id = id;
         state.jwt = jwt;
         state.user = user;
       }
     },
-    signInUser(state, { email, jwt }) {
+    signInUser(state, { id, email, jwt }) {
+      state.id = id;
       state.user = email;
       state.jwt = jwt;
 
+      localStorage.setItem('id', id);
       localStorage.setItem('jwt', jwt);
       localStorage.setItem('user', email);
     },

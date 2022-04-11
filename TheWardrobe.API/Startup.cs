@@ -19,6 +19,7 @@ using TheWardrobe.API.Helpers;
 using TheWardrobe.API.Middleware;
 using TheWardrobe.API.Publishers;
 using TheWardrobe.API.Repositories;
+using TheWardrobe.Helpers;
 
 namespace TheWardrobe.API
 {
@@ -34,6 +35,11 @@ namespace TheWardrobe.API
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+      // Add the reverse proxy to capability to the server
+      var proxyBuilder = services.AddReverseProxy();
+      // Initialize the reverse proxy from the "ReverseProxy" section of configuration
+      proxyBuilder.LoadFromConfig(Configuration.GetSection("ReverseProxy"));
+
       services.AddControllers();
 
       Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -125,6 +131,7 @@ namespace TheWardrobe.API
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapControllers();
+        endpoints.MapReverseProxy();
       });
     }
   }

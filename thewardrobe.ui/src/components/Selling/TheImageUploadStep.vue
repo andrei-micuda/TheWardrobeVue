@@ -22,6 +22,8 @@
   </div>
 </template>
 <script>
+import { v4 as uuidv4 } from 'uuid';
+
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -65,7 +67,13 @@ export default {
       this.previewVisible = true;
     },
     handleChange({ fileList }) {
-      this.fileList = fileList;
+      this.fileList = fileList.map(file => {
+        const uuid = uuidv4();
+        const fileExtention = file.name.split('.').pop();
+        file.uploadName = `${uuid}.${fileExtention}`;
+        return file;
+      })
+      
       this.handleUpload(fileList);
     }
   },

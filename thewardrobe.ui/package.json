@@ -19,6 +19,7 @@
     "core-js": "^3.6.5",
     "postcss": "^7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
+    "uuid": "^8.3.2",
     "vee-validate": "^3.4.14",
     "vue": "^2.6.11",
     "vue-lottie": "^0.2.1",
