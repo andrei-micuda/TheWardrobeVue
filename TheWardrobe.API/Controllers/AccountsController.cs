@@ -35,6 +35,7 @@ namespace TheWardrobe.API.Controllers
       _bus = bus;
     }
 
+    [Authorize]
     [HttpGet("hello")]
     public IActionResult Hello()
     {
@@ -102,21 +103,6 @@ namespace TheWardrobe.API.Controllers
     {
       _accountService.ResetPassword(model);
       return Ok(new { message = "Password reset successful, you can now login" });
-    }
-
-    [Authorize]
-    [HttpGet("test")]
-    public async Task<IActionResult> Test()
-    {
-      await _bus.Send(new SendEmail
-      {
-        From = "gicu@yahoo.com",
-        To = "test@yahoo.com",
-        Subject = "Test Email",
-        HtmlBody = "Working with rabbitmq"
-      });
-      // _bus.Publish(new EmailMessage { Message = "Testing the bus" });
-      return Ok(new { message = "Working!" });
     }
 
     // helper methods

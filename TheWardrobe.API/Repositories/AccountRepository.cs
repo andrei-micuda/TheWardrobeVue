@@ -88,11 +88,13 @@ namespace TheWardrobe.API.Repositories
 
       // replace old refresh token with a new one and save
       var newRefreshToken = GenerateRefreshToken();
+      newRefreshToken.AccountId = account.Id;
+
       refreshToken.WhenRevoked = DateTime.UtcNow;
       refreshToken.ReplacedByToken = newRefreshToken.Token;
 
       connection.Execute(@"
-        UPDATE refresh_tokens
+        UPDATE refresh_token
         SET
           when_revoked = @WhenRevoked,
           replaced_by_token = @Token
@@ -120,7 +122,7 @@ namespace TheWardrobe.API.Repositories
       refreshToken.WhenRevoked = DateTime.UtcNow;
 
       connection.Execute(@"
-        UPDATE refresh_tokens
+        UPDATE refresh_token
         SET
           when_revoked = @WhenRevoked
         WHERE id = @Id
@@ -171,7 +173,7 @@ namespace TheWardrobe.API.Repositories
       // update account fields
       using var connection = _dapperContext.GetConnection(); ;
       connection.Execute(@"
-      UPDATE accounts
+      UPDATE account
       SET
         reset_token = @ResetToken,
         when_reset_token_expires = @WhenResetTokenExpires
@@ -189,7 +191,7 @@ namespace TheWardrobe.API.Repositories
       using var connection = _dapperContext.GetConnection(); ;
       var account = connection.QuerySingleOrDefault<Account>(@"
         SELECT *
-        FROM accounts
+        FROM account
         WHERE
           reset_token = @Token AND
           when_reset_token_expires > @UtcNow", new { Token = model.Token, UtcNow = DateTime.UtcNow });
@@ -203,7 +205,7 @@ namespace TheWardrobe.API.Repositories
       using var connection = _dapperContext.GetConnection(); ;
       var account = connection.QuerySingleOrDefault<Account>(@"
         SELECT *
-        FROM accounts
+        FROM account
         WHERE
           reset_token = @Token AND
           when_reset_token_expires > @UtcNow", new { Token = model.Token, UtcNow = DateTime.UtcNow });
@@ -218,7 +220,7 @@ namespace TheWardrobe.API.Repositories
       account.WhenResetTokenExpires = null;
 
       connection.Execute(@"
-      UPDATE accounts
+      UPDATE account
       SET
         password_hash = @PasswordHash,
         when_password_reset = @UtcNow,
@@ -247,7 +249,7 @@ namespace TheWardrobe.API.Repositories
       var tokenDescriptor = new SecurityTokenDescriptor
       {
         Subject = new ClaimsIdentity(new[] { new Claim("id", account.Id.ToString()) }),
-        Expires = DateTime.UtcNow.AddMinutes(15),
+        Expires = DateTime.UtcNow.AddMinutes(_appSettings.RefreshTokenTTL),
         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
       };
       var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -258,16 +260,21 @@ namespace TheWardrobe.API.Repositories
     {
       using var connection = _dapperContext.GetConnection();
       var refreshToken = connection.QuerySingleOrDefault<RefreshToken>(@"
-        SELECT * FROM refresh_tokens
+        SELECT * FROM refresh_token
         WHERE token = @Token", new { Token = token });
 
       if (refreshToken == null || !refreshToken.IsActive) throw new AppException("Invalid token");
 
       var account = connection.QuerySingleOrDefault<Account>(@"
         SELECT *
-        FROM accounts
+        FROM account
         WHERE id = @AccountId",
-        new { AccountId = refreshToken.AccountId });
+        new { refreshToken.AccountId });
+
+      account.RefreshTokens = connection.Query<RefreshToken>(@"
+        SELECT *
+        FROM refresh_token
+        WHERE account_id = @AccountId", new { refreshToken.AccountId }).ToList();
 
       return (refreshToken, account);
     }
@@ -297,13 +304,13 @@ namespace TheWardrobe.API.Repositories
       var refreshTokensToDelete = account.RefreshTokens
           .Where(token =>
             !token.IsActive &&
-            token.WhenCreated.AddDays(_appSettings.RefreshTokenTTL) <= DateTime.UtcNow)
+            token.WhenCreated.AddMinutes(_appSettings.RefreshTokenTTL) <= DateTime.UtcNow)
           .Select(x => new { TokenId = x.Id })
           .ToArray();
 
       // save changes to Database
       connection.Execute(@"
-        DELETE FROM refresh_tokens
+        DELETE FROM refresh_token
         WHERE id = @TokenId;",
         refreshTokensToDelete);
     }

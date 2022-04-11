@@ -1,6 +1,7 @@
 <template>
   <div>
     <TheSellingModal @refreshGrid="fetchItems" />
+    {{test}}
     <TheSellingGrid :items="items" />
   </div>
 </template>
@@ -19,7 +20,8 @@
    },
    data() {
      return {
-       items: []
+       items: [],
+       test: null
      }
    },
    methods: {
@@ -32,6 +34,7 @@
    },
    mounted () {
      this.fetchItems();
+     api.get("/api/accounts/hello").then((res) => this.test = res.data);
    },
   }
 </script>

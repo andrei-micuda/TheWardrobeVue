@@ -34,6 +34,12 @@ const store = new Vuex.Store({
       localStorage.setItem('jwt', jwt);
       localStorage.setItem('user', email);
     },
+    refreshToken(state, jwt) {
+      console.log("Refreshed JWT: ", jwt)
+      state.jwt = jwt;
+
+      localStorage.setItem("jwt", jwt);
+    },
     toggleSidebar(state) {
       state.sidebarShow = !state.sidebarShow;
     },
