@@ -34,6 +34,16 @@ const store = new Vuex.Store({
       localStorage.setItem('jwt', jwt);
       localStorage.setItem('user', email);
     },
+    signOut(state) {
+      console.log("Signing out...");
+      state.id = null;
+      state.user = null;
+      state.jwt = null;
+
+      localStorage.removeItem('id');
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('user');
+    },
     refreshToken(state, jwt) {
       console.log("Refreshed JWT: ", jwt)
       state.jwt = jwt;

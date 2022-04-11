@@ -1,7 +1,7 @@
 <template>
   <div>
     <TheSellingModal @refreshGrid="fetchItems" />
-    {{test}}
+    <!-- {{test}} -->
     <TheSellingGrid :items="items" />
   </div>
 </template>
@@ -20,13 +20,13 @@
    },
    data() {
      return {
-       items: [],
+       items: null,
        test: null
      }
    },
    methods: {
      fetchItems() {
-       api.get("/api/itemCatalog/" + store.state.id)
+       api.get(`/api/${store.state.id}/itemCatalog`)
         .then(res => {
           this.items = res.data;
         });

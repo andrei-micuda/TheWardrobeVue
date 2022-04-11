@@ -56,4 +56,20 @@ export default {
     top: -2px !important;
   }
 }
+
+.ant-spin-dot-item {
+  @apply bg-green-400 !important;
+}
+
+.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  @apply bg-green-400 border-green-400 !important;
+
+  &::before {
+    @apply bg-green-400 !important;
+  }
+}
+
+a {
+  @apply hover:text-green-500 !important;
+}
 </style>

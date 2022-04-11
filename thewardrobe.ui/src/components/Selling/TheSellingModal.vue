@@ -4,7 +4,7 @@
     <a-modal
       id="TheSellingModal"
       v-model="showModal"
-      title="Basic Modal"
+      title="Add An Item"
       :footer="null"
       @ok="$emit('ok')"
       @cancel="$emit('cancel')">

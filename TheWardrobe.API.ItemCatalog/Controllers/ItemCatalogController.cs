@@ -30,8 +30,8 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     }
 
     [HttpGet]
-    [Route("/api/[controller]/{sellerId}")]
-    public IActionResult Get(Guid sellerId)
+    [Route("/api/{sellerId}/[controller]")]
+    public IActionResult GetItemsBySeller(Guid sellerId)
     {
       return Ok(_itemCatalogRepository.GetItems(sellerId));
     }

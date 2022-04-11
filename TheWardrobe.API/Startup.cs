@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -17,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using TheWardrobe.API.Helpers;
 using TheWardrobe.API.Middleware;
+using TheWardrobe.API.Policies;
 using TheWardrobe.API.Publishers;
 using TheWardrobe.API.Repositories;
 using TheWardrobe.Helpers;
@@ -73,6 +75,19 @@ namespace TheWardrobe.API
             ClockSkew = TimeSpan.Zero
           };
         });
+
+      services.AddAuthorization(options =>
+      {
+        options.AddPolicy("AllowEdit", policy =>
+        {
+          policy.RequireAuthenticatedUser();
+          policy.AddRequirements(new AllowEditRequirement());
+        });
+      });
+
+      services.AddScoped<IAuthorizationHandler, AllowEditHandler>();
+
+      services.AddHttpContextAccessor();
 
       services.AddCors(options =>
       {
