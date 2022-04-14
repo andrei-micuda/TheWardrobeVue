@@ -33,27 +33,29 @@
 
 <script>
   // AWS imports
-  import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
-  import {
-      fromCognitoIdentityPool,
-  } from "@aws-sdk/credential-provider-cognito-identity";
-  import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+  // import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
+  // import {
+  //     fromCognitoIdentityPool,
+  // } from "@aws-sdk/credential-provider-cognito-identity";
+  // import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
-  import { BUCKET_NAME, BUCKET_REGION, IDENTITY_POOL_ID, RESOURCE_URL_TEMPLATE } from "../../config/aws.config.js";
+  // import { BUCKET_NAME, BUCKET_REGION, IDENTITY_POOL_ID, RESOURCE_URL_TEMPLATE } from "../../config/aws.config.js";
 
   import Lottie from 'vue-lottie';
   import axios from 'axios';
   import animationData from '../../assets/image-scan.json'
 
-  const initAwsS3 = () => {
-    return new S3Client({
-      region: BUCKET_REGION,
-      credentials: fromCognitoIdentityPool({
-        client: new CognitoIdentityClient({ region: BUCKET_REGION }),
-        identityPoolId: IDENTITY_POOL_ID
-      })
-    });
-  }
+  import getS3Client from "../../aws";
+
+  // const initAwsS3 = () => {
+  //   return new S3Client({
+  //     region: BUCKET_REGION,
+  //     credentials: fromCognitoIdentityPool({
+  //       client: new CognitoIdentityClient({ region: BUCKET_REGION }),
+  //       identityPoolId: IDENTITY_POOL_ID
+  //     })
+  //   });
+  // }
 
   export default {
     data() {
@@ -98,32 +100,32 @@
         this.isPredicting = false;
         this.setPredictedCategory(this.predictions[0][0]);
       },
-      async uploadToBucket(s3Client, file) {
+      // async uploadToBucket(s3Client, file) {
         
-        const uploadParams = {
-          Bucket: BUCKET_NAME,
-          // Add the required 'Key' parameter using the 'path' module.
-          Key: file.uploadName,
-          // Add the required 'Body' parameter
-          Body: file.originFileObj,
-          ContentType: "image/png"
-        };
+      //   const uploadParams = {
+      //     Bucket: BUCKET_NAME,
+      //     // Add the required 'Key' parameter using the 'path' module.
+      //     Key: file.uploadName,
+      //     // Add the required 'Body' parameter
+      //     Body: file.originFileObj,
+      //     ContentType: "image/png"
+      //   };
 
-        let resourceUrl = null;
-        try {
-          const data = await s3Client.send(new PutObjectCommand(uploadParams));
+      //   let resourceUrl = null;
+      //   try {
+      //     const data = await s3Client.send(new PutObjectCommand(uploadParams));
 
-          console.log("Success", data)
-          resourceUrl = RESOURCE_URL_TEMPLATE(uploadParams.Key);
-        } catch (err) {
-          console.log("Error", err);
-        }
-        return resourceUrl;
-      },
+      //     console.log("Success", data)
+      //     resourceUrl = RESOURCE_URL_TEMPLATE(uploadParams.Key);
+      //   } catch (err) {
+      //     console.log("Error", err);
+      //   }
+      //   return resourceUrl;
+      // },
       async uploadFilesToAws() {
-        const s3Client = initAwsS3();
+        const s3Client = getS3Client();
         await Promise.all(this.uploadedImages.map(async file => {
-          const resourceUrl = await this.uploadToBucket(s3Client, file);
+          const resourceUrl = await s3Client.uploadFileToBucket(file);
           if(resourceUrl !== null) {
             file.resourceUrl = resourceUrl;
           }

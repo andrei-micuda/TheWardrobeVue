@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-center">
     <VButton @click="toggleNewItemModal()">New Item</VButton>
     <a-modal
       id="TheSellingModal"

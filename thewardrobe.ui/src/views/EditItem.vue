@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <a-form :form="form" v-bind="formItemLayout" @submit="handleSubmit">
-      <TheInlineImageUpload size="small" :handleUpload="handleUpload" :uploadedImages="uploadedImages" />
+  <a-form :form="form" v-bind="formItemLayout" @submit="handleSubmit" >
+  <VPageHeader @back="$router.back()" title="Edit Item" />
+    <div class="w-8/12 mx-auto bg-gray-800 px-10 py-8">
       <a-form-item label="Product Name">
         <a-input
           v-decorator="[
@@ -17,7 +17,7 @@
           ]"
         />
       </a-form-item>
-      <a-form-item label="Price">
+      <a-form-item label="Price" name="price">
         <a-input
           suffix="RON"
           v-decorator="[
@@ -34,7 +34,7 @@
         />
       </a-form-item>
       <a-form-item label="Gender">
-        <a-radio-group v-decorator="[
+        <a-radio-group class="flex" v-decorator="[
           'gender',
           {
             initialValue: 'unisex',
@@ -62,7 +62,7 @@
           v-decorator="[
           'category',
           {
-            initialValue: predictedCategory,
+            initialValue: 'Tee',
             rules: [
               {
                 required: true,
@@ -127,20 +127,35 @@
         >
         </a-select>
       </a-form-item>
-      <a-button id="AddItemBtn" class="hidden" type="primary" html-type="submit">
+      <a-form-item label="Images" name="images" class="mb-0">
+        <a-upload
+            list-type="picture"
+            :file-list="images"
+            :before-upload="() => false"
+            :remove="handleRemove"
+            @change="handleChange"
+          >
+            <a-button> <a-icon type="upload" />Upload</a-button>
+          </a-upload>
+      </a-form-item>
+      <!-- <a-button id="UpdateItemBtn" class="hidden" type="primary" html-type="submit">
         Submit
-      </a-button>
-    </a-form>
-  </div>
+      </a-button> -->
+    </div>
+  </a-form>
 </template>
 
 <script>
-  import api from "../../api";
-  import notifier from "../../notifier";
-  import store from '../../store';
-  import constData from '../../const';
+  // import $ from "cash-dom";
+  import { v4 as uuidv4 } from 'uuid';
 
-  import TheInlineImageUpload from './TheInlineImageUpload.vue';
+  import VPageHeader from "../components/VPageHeader.vue"
+  
+  import constData from '../const';
+  import api from "../api";
+  import getS3Client from "../aws";
+  // import notifier from "../notifier";
+  // import store from '../store';
 
   const categories = {
     clothing: constData.clothingCategories
@@ -186,27 +201,13 @@
   })];
 
   export default {
-    props: {
-      predictedCategory: {
-        type: String,
-      },
-      handleUpload: {
-        type: Function
-      },
-      uploadedImages: {
-        type: Array
-      },
-      toggleNewItemModal: {
-        type: Function
-      }
-    },
     data() {
       return {
+        images: null,
         categoryData,
         brandData,
         selectedCategory: null,
         selectedSize: null,
-        selectedGender: "unisex",
         selectedBrand: null,
         formItemLayout: {
           labelCol: { span: 6 },
@@ -214,25 +215,70 @@
         },
       }
     },
+    beforeCreate() {
+      this.form = this.$form.createForm(this, { name: 'updateItem' });
+    },
+    mounted() {
+      api.get(`/api/itemCatalog/${this.$route.params.itemId}`)
+      .then(res => {
+        var { productName, price, gender, category, size, brand, images } = res.data;
+
+        this.form.setFieldsValue({ productName, price, gender, category, size, brand });
+        this.images = images.map((url, i) => {
+          return {
+            uid: i,
+            name: `Image ${i + 1}`,
+            url,
+            thumbUrl: url}
+        });
+      });
+    },
     methods: {
+      handleChange({ fileList }) {
+        console.log(fileList)
+        this.images = fileList.map((file, i) => {
+          file.initialName = file.name;
+          file.name = `Image ${i+1}`;
+          return file;
+        });
+        // this.handleUpload(images);
+      },
+      handleRemove(file) {
+        console.log(file)
+      },
       async handleSubmit(e) {
         e.preventDefault();
+
+        // Uploading new Images
+        var s3Client = getS3Client();
+
+        await Promise.all(this.images.map(async image => {
+          if(image.url === undefined) {
+            const uuid = uuidv4();
+            const fileExtention = image.initialName.split('.').pop();
+            image.uploadName = `${uuid}.${fileExtention}`;
+            image.url = await s3Client.uploadFileToBucket(image);
+          }
+        }));
+
+        console.log('Submitting...')
         this.form.validateFields(async (err, values) => {
           if (!err) {
-            var uploadedImagesUrls = this.uploadedImages.map(img => img.resourceUrl);
+            var imagesUrls = this.images.map(img => img.url);
+            // console.log(imagesUrls)
 
-            var that = this;
-            await api.post("/api/itemCatalog", {
+            // var that = this;
+            await api.put(`/api/itemCatalog/${this.$route.params.itemId}`, {
               ...values,
-              images: uploadedImagesUrls,
-              sellerId: store.state.id})
+              images: imagesUrls})
               .then(function(res) {
-                var item = res.data;
-                item.images = that.uploadedImages;
-                console.log(item)
-                notifier.success("Successfully listed product.");
-                that.$emit("toggleModal");
-                that.$emit("refreshGrid");
+                console.log(res.data)
+                // var item = res.data;
+                // item.images = that.uploadedImages;
+                // console.log(item)
+                // notifier.success("Successfully listed product.");
+                // that.$emit("toggleModal");
+                // that.$emit("refreshGrid");
               })
               .catch(error => {
                 console.error(error);
@@ -261,14 +307,8 @@
         }
       }
     },
-    beforeCreate() {
-      this.form = this.$form.createForm(this, { name: 'addItem' });
-    },
-    mounted() {
-      this.selectedCategory = this.predictedCategory;
-    },
     components: {
-      TheInlineImageUpload,
+      VPageHeader,
     },
   }
 </script>

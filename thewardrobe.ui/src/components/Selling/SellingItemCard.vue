@@ -25,7 +25,7 @@
           <p class="text-gray-200">Brand: {{item.brand}}</p>
         </a-col>
         <a-col :span="8">
-          <VButton>Edit</VButton>
+          <router-link :to="{name: 'editItem', params: {itemId: item.id}}"><VButton>Edit</VButton></router-link>
         </a-col>
       </a-row>
     </div>

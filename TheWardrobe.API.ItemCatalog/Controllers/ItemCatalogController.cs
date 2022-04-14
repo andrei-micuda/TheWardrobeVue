@@ -35,5 +35,21 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     {
       return Ok(_itemCatalogRepository.GetItems(sellerId));
     }
+
+    [HttpGet]
+    [Route("/api/[controller]/{itemId}")]
+    public IActionResult GetItemById(Guid itemId)
+    {
+      return Ok(_itemCatalogRepository.GetItem(itemId));
+    }
+
+    [HttpPut]
+    [Route("/api/[controller]/{itemId}")]
+    public IActionResult UpdateItemById(Guid itemId, ItemRequestResponse model)
+    {
+      model.Id = itemId;
+      _itemCatalogRepository.UpdateItem(model);
+      return Ok();
+    }
   }
 }

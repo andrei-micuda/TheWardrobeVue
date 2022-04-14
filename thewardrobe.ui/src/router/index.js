@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 import SignIn from '../views/SignIn.vue'
+import EditItem from '../views/EditItem.vue'
 
 import store from "../store";
 
@@ -11,6 +12,7 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
+    alias: ['/buy', "/sell"],
     name: 'Home',
     component: Home
   },
@@ -23,6 +25,11 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: Register
+  },
+  {
+    path: '/:itemId/edit',
+    name: 'editItem',
+    component: EditItem
   }
 ];
 

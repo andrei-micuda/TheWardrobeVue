@@ -83,9 +83,16 @@ namespace TheWardrobe.API
           policy.RequireAuthenticatedUser();
           policy.AddRequirements(new AllowEditRequirement());
         });
+
+        options.AddPolicy("OwnsItem", policy =>
+        {
+          policy.RequireAuthenticatedUser();
+          policy.AddRequirements(new OwnsItemRequirement());
+        });
       });
 
       services.AddScoped<IAuthorizationHandler, AllowEditHandler>();
+      services.AddScoped<IAuthorizationHandler, OwnsItemHandler>();
 
       services.AddHttpContextAccessor();
 

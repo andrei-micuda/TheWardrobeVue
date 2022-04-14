@@ -5,7 +5,10 @@
         v-for="tab in tabs" :key="tab.tabName"
         v-bind:class="{'text-green-400 border-b-2 border-green-400 pb-1': (currentTab === tab.tabName)}"
         >
-      <button class="hover:text-green-400" @click="() => {currentTab = tab.tabName}">{{ tab.tabName }}</button>
+      <button class="hover:text-green-400" @click="() => {
+        currentTab = tab.tabName;
+        $router.push(tab.path);
+        }">{{ tab.tabName }}</button>
     </li>
     </ul>
     <main>
@@ -28,10 +31,17 @@ export default {
     return {
       currentTab: 'Buying',
       tabs: [
-        {tabName: "Buying"},
-        {tabName: "Selling"},
+        {tabName: "Buying", path: '/buy'},
+        {tabName: "Selling", path: '/sell'},
       ]
     }
+  },
+  mounted () {
+    if(this.$route.path === '/sell')
+    {
+      this.currentTab = 'Selling';
+    }
+    console.log("Mounting home...");
   },
 }
 </script>

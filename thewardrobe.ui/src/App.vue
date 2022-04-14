@@ -24,7 +24,7 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #fff;
 }
 
@@ -67,6 +67,20 @@ export default {
   &::before {
     @apply bg-green-400 !important;
   }
+}
+
+.ant-radio-button-wrapper:hover {
+  @apply text-green-400 !important;
+}
+
+.ant-form,
+.ant-form-item-label > label {
+  @apply text-gray-100 !important;
+}
+
+.ant-upload-list-item-card-actions .anticon,
+.ant-upload-list-item-info {
+  @apply text-gray-100 !important;
 }
 
 a {
