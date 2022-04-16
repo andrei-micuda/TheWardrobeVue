@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 import SignIn from '../views/SignIn.vue'
+import ViewItem from '../views/ViewItem.vue'
 import EditItem from '../views/EditItem.vue'
 
 import store from "../store";
@@ -27,7 +28,12 @@ const routes = [
     component: Register
   },
   {
-    path: '/:itemId/edit',
+    path: '/item/:itemId',
+    name: 'viewItem',
+    component: ViewItem
+  },
+  {
+    path: '/item/:itemId/edit',
     name: 'editItem',
     component: EditItem
   }
@@ -46,7 +52,7 @@ router.beforeEach((to, from, next) => {
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem('jwt');
 
-  console.log(loggedIn)
+  // console.log(loggedIn)
 
   if (authRequired && !loggedIn) {
     return next('/signIn');

@@ -20,9 +20,10 @@ namespace TheWardrobe.API.Repositories
   public interface IItemCatalogRepository
   {
     Item InsertItem(ItemRequestResponse model);
-    IEnumerable<ItemRequestResponse> GetItems(Guid sellerId);
+    IEnumerable<ItemRequestResponse> GetItems(QueryFilters filters);
     ItemRequestResponse GetItem(Guid itemId);
     void UpdateItem(ItemRequestResponse model);
+    void DeleteItem(Guid itemId);
   }
 
   public class ItemCatalogRepository : IItemCatalogRepository
@@ -87,15 +88,28 @@ namespace TheWardrobe.API.Repositories
       return connection.Query<string>("SELECT url FROM item_image WHERE item_id = @itemId", new { itemId });
     }
 
-    public IEnumerable<ItemRequestResponse> GetItems(Guid sellerId)
+    public IEnumerable<ItemRequestResponse> GetItems(QueryFilters filters)
     {
+      string sellerIdOperator = "";
+      Guid sellerId = new();
+      if (filters.SellerIdInclude != Guid.Empty)
+      {
+        sellerIdOperator = "=";
+        sellerId = filters.SellerIdInclude;
+      }
+      if (filters.SellerIdExclude != Guid.Empty)
+      {
+        sellerIdOperator = "<>";
+        sellerId = filters.SellerIdExclude;
+      }
+
       using var connection = _dapperContext.GetConnection();
 
-      var items = connection.Query<ItemRequestResponse>(@"
+      var items = connection.Query<ItemRequestResponse>(@$"
         SELECT i.*, b.name AS brand, c.name AS category, g.name AS gender, s.name AS size
         FROM item i, brand b, category c, gender g, size s
         WHERE
-          i.seller_id = @sellerId AND
+          i.seller_id {sellerIdOperator} @sellerId AND
           i.brand_id = b.id AND
           i.category_id = c.id AND
           i.gender_id = g.id AND
@@ -206,6 +220,13 @@ namespace TheWardrobe.API.Repositories
 
       ReplaceItemImages(item.Id, model.Images);
       return;
+    }
+
+    public void DeleteItem(Guid itemId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      connection.Delete<Item>(itemId);
     }
   }
 }

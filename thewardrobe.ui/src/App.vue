@@ -42,11 +42,18 @@ export default {
 }
 
 .ant-btn {
-  @apply bg-gray-600 border-gray-600 text-gray-100 hover:border-green-400 !important;
+  /* @apply bg-gray-600 border-gray-600 text-gray-100 hover:border-green-400 !important; */
+  @apply bg-transparent border-green-400 text-green-400 hover:bg-green-400 hover:text-gray-700 !important;
 }
 
 .ant-btn-primary {
-  @apply bg-gray-500 border-green-400 text-green-400 hover:bg-green-400 hover:text-gray-100 !important;
+  @apply bg-transparent border-green-400 text-green-400 hover:bg-green-400 hover:text-gray-100 !important;
+}
+
+.ant-btn-danger {
+  @apply text-gray-300 border-gray-300
+    hover:bg-red-400 hover:border-opacity-0 hover:text-gray-700
+    !important;
 }
 
 .ant-message {
@@ -69,7 +76,7 @@ export default {
   }
 }
 
-.ant-radio-button-wrapper:hover {
+.ant-radio-button-wrapper:hover:not(.ant-radio-button-wrapper-checked) {
   @apply text-green-400 !important;
 }
 
@@ -80,6 +87,19 @@ export default {
 
 .ant-upload-list-item-card-actions .anticon,
 .ant-upload-list-item-info {
+  @apply text-gray-100 !important;
+}
+
+.ant-modal-content {
+  @apply overflow-hidden !important;
+}
+
+.ant-modal-body {
+  @apply bg-gray-600 overflow-hidden !important;
+}
+
+.ant-modal-confirm-body .ant-modal-confirm-title,
+.ant-modal-confirm-body .ant-modal-confirm-content {
   @apply text-gray-100 !important;
 }
 

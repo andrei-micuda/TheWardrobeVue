@@ -6,7 +6,7 @@
       :data-source="items">
       <template #renderItem="item">
         <a-list-item>
-          <SellingItemCard :item="item" />
+          <ItemCard :item="item" :editable="editable" />
         </a-list-item>
       </template>
     </a-list>
@@ -14,12 +14,16 @@
 </template>
 
 <script>
-  import SellingItemCard from './SellingItemCard.vue';
+  import ItemCard from './ItemCard.vue';
   export default {
     components: {
-      SellingItemCard,
+      ItemCard,
     },
     props: {
+      editable: {
+        type: Boolean,
+        default: false
+      },
       items: {
         type: Array,
       },

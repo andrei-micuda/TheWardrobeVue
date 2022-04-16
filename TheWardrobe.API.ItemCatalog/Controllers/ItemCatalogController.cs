@@ -21,6 +21,20 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
       _itemCatalogRepository = itemCatalogRepository;
     }
 
+    [HttpGet]
+    [Route("/api/[controller]")]
+    public IActionResult GetItems([FromQuery] QueryFilters filters)
+    {
+      // sanity check query parameters
+      if (filters.SellerIdExclude != Guid.Empty && filters.SellerIdInclude != Guid.Empty)
+      {
+        // if both are provided return BadRequest
+        return BadRequest("Please only provide one of the following query parameters: sellerIdInclude, sellerIdExclude");
+      }
+      var items = _itemCatalogRepository.GetItems(filters);
+      return Ok(items);
+    }
+
     [HttpPost]
     [Route("/api/[controller]")]
     public IActionResult Post(ItemRequestResponse model)
@@ -30,18 +44,12 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     }
 
     [HttpGet]
-    [Route("/api/{sellerId}/[controller]")]
-    public IActionResult GetItemsBySeller(Guid sellerId)
-    {
-      return Ok(_itemCatalogRepository.GetItems(sellerId));
-    }
-
-    [HttpGet]
     [Route("/api/[controller]/{itemId}")]
     public IActionResult GetItemById(Guid itemId)
     {
       return Ok(_itemCatalogRepository.GetItem(itemId));
     }
+
 
     [HttpPut]
     [Route("/api/[controller]/{itemId}")]
@@ -49,6 +57,14 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     {
       model.Id = itemId;
       _itemCatalogRepository.UpdateItem(model);
+      return Ok();
+    }
+
+    [HttpDelete]
+    [Route("/api/[controller]/{itemId}")]
+    public IActionResult DeleteItemById(Guid itemId)
+    {
+      _itemCatalogRepository.DeleteItem(itemId);
       return Ok();
     }
   }

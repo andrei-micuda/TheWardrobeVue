@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import api from '../api';
+
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -8,8 +10,10 @@ const store = new Vuex.Store({
   // "State" is the application data your components
   // will subscribe to
   
-  state: {     
+  state: {
+    id: null,
     user: null,
+    userItems: null,
     jwt: null,
     sidebarShow: false
   },
@@ -18,12 +22,20 @@ const store = new Vuex.Store({
       let id = localStorage.getItem('id');
       let jwt = localStorage.getItem('jwt');
       let user = localStorage.getItem('user');
-      if (id && jwt && user)
-      {
-        state.id = id;
-        state.jwt = jwt;
-        state.user = user;
-      }
+
+      state.id = id;
+
+      // retrieve user items from db
+      api.get('/api/itemCatalog', {
+        params: { sellerIdInclude: id }
+      })
+        .then(res => {
+          var itemIds = res.data.map(i => i.id);
+          state.userItems = itemIds;
+        });
+
+      state.jwt = jwt;
+      state.user = user;
     },
     signInUser(state, { id, email, jwt }) {
       state.id = id;

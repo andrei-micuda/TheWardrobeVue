@@ -2,7 +2,7 @@
   <div>
     <TheSellingModal @refreshGrid="fetchItems" />
     <!-- {{test}} -->
-    <TheSellingGrid :items="items" />
+    <ItemGrid :editable="true" :items="items" />
   </div>
 </template>
 
@@ -11,12 +11,12 @@
   import store from '../../store';
 
   import TheSellingModal from './TheSellingModal.vue';
-  import TheSellingGrid from './TheSellingGrid.vue';
+  import ItemGrid from '../Item/ItemGrid.vue';
 
   export default {
    components: {
      TheSellingModal,
-     TheSellingGrid,
+     ItemGrid,
    },
    data() {
      return {
@@ -26,7 +26,11 @@
    },
    methods: {
      fetchItems() {
-       api.get(`/api/${store.state.id}/itemCatalog`)
+       api.get('/api/itemCatalog', {
+         params: {
+           sellerIdInclude: store.state.id
+         }
+       })
         .then(res => {
           this.items = res.data;
         });
@@ -34,7 +38,6 @@
    },
    mounted () {
      this.fetchItems();
-     api.get("/api/accounts/hello").then((res) => this.test = res.data);
    },
   }
 </script>

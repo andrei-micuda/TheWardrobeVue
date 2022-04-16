@@ -29,6 +29,7 @@ api.interceptors.request.use(
   async config => {
     config.headers = { 
       'Authorization': `Bearer ${localStorage.getItem('jwt')}`,
+      'Content-Type': 'application/json'
     }
     return config;
   },

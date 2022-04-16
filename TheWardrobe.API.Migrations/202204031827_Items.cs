@@ -35,12 +35,13 @@ namespace TheWardrobe.API.Migrations
 
       Create.Table("item_image")
         .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(SystemMethods.NewGuid)
-        .WithColumn("item_id").AsGuid().ForeignKey("item", "id")
+        .WithColumn("item_id").AsGuid().ForeignKey("item", "id").OnDelete(System.Data.Rule.Cascade)
         .WithColumn("url").AsString();
     }
 
     public override void Down()
     {
+      Delete.Table("item_image");
       Delete.Table("item");
       Delete.Table("brand");
       Delete.Table("gender");

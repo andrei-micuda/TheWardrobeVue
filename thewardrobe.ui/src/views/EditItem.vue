@@ -1,6 +1,6 @@
 <template>
   <a-form :form="form" v-bind="formItemLayout" @submit="handleSubmit" >
-  <VPageHeader @back="$router.back()" title="Edit Item" />
+  <VPageHeader @back="$router.back()" @apply="handleApply" @delete="handleDelete" title="Edit Item" />
     <div class="w-8/12 mx-auto bg-gray-800 px-10 py-8">
       <a-form-item label="Product Name">
         <a-input
@@ -138,23 +138,27 @@
             <a-button> <a-icon type="upload" />Upload</a-button>
           </a-upload>
       </a-form-item>
-      <!-- <a-button id="UpdateItemBtn" class="hidden" type="primary" html-type="submit">
+      <a-button id="UpdateItemBtn" class="hidden" type="primary" html-type="submit">
         Submit
-      </a-button> -->
+      </a-button>
     </div>
   </a-form>
 </template>
 
 <script>
+  /* eslint-disable no-unused-vars */
   // import $ from "cash-dom";
   import { v4 as uuidv4 } from 'uuid';
+  import $ from "cash-dom";
 
   import VPageHeader from "../components/VPageHeader.vue"
   
   import constData from '../const';
   import api from "../api";
   import getS3Client from "../aws";
-  // import notifier from "../notifier";
+  import router from "../router";
+  import canEdit from "../router/guards/canEdit";
+  import notifier from "../notifier";
   // import store from '../store';
 
   const categories = {
@@ -215,6 +219,12 @@
         },
       }
     },
+    beforeRouteEnter(to, from, next) {
+      canEdit(to.params.itemId, next);
+    },
+    beforeRouteUpdate(to, from, next) {
+      canEdit(to.params.itemId, next);
+    },
     beforeCreate() {
       this.form = this.$form.createForm(this, { name: 'updateItem' });
     },
@@ -241,10 +251,23 @@
           file.name = `Image ${i+1}`;
           return file;
         });
-        // this.handleUpload(images);
       },
       handleRemove(file) {
         console.log(file)
+      },
+      handleApply() {
+        $("#UpdateItemBtn").trigger("click");
+      },
+      handleDelete() {
+        api.delete(`/api/itemCatalog/${this.$route.params.itemId}`)
+          .then(() => {
+            notifier.success("Item has been delete successfully.");
+            router.push('/sell');
+          })
+          .catch(error => {
+            console.error(error);
+            error.handleGlobally && error.handleGlobally();
+          });
       },
       async handleSubmit(e) {
         e.preventDefault();
@@ -265,20 +288,13 @@
         this.form.validateFields(async (err, values) => {
           if (!err) {
             var imagesUrls = this.images.map(img => img.url);
-            // console.log(imagesUrls)
 
-            // var that = this;
             await api.put(`/api/itemCatalog/${this.$route.params.itemId}`, {
               ...values,
               images: imagesUrls})
-              .then(function(res) {
-                console.log(res.data)
-                // var item = res.data;
-                // item.images = that.uploadedImages;
-                // console.log(item)
-                // notifier.success("Successfully listed product.");
-                // that.$emit("toggleModal");
-                // that.$emit("refreshGrid");
+              .then(function() {
+                notifier.success("Changes have been saved");
+                router.push('/sell');
               })
               .catch(error => {
                 console.error(error);
