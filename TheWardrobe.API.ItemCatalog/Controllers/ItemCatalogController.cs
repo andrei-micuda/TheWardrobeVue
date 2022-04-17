@@ -26,7 +26,7 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     public IActionResult GetItems([FromQuery] QueryFilters filters)
     {
       // sanity check query parameters
-      if (filters.SellerIdExclude != Guid.Empty && filters.SellerIdInclude != Guid.Empty)
+      if (filters.SellerIdExclude != null && filters.SellerIdInclude != null)
       {
         // if both are provided return BadRequest
         return BadRequest("Please only provide one of the following query parameters: sellerIdInclude, sellerIdExclude");

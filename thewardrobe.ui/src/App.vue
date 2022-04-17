@@ -41,6 +41,10 @@ export default {
   color: #42b983;
 }
 
+.anticon {
+  @apply text-gray-100 !important;
+}
+
 .ant-btn {
   /* @apply bg-gray-600 border-gray-600 text-gray-100 hover:border-green-400 !important; */
   @apply bg-transparent border-green-400 text-green-400 hover:bg-green-400 hover:text-gray-700 !important;
@@ -80,6 +84,14 @@ export default {
   @apply text-green-400 !important;
 }
 
+.ant-radio-button-wrapper {
+  @apply bg-transparent border-gray-500 text-gray-100 !important;
+
+  &:not(:first-child)::before {
+    @apply bg-gray-500 !important;
+  }
+}
+
 .ant-form,
 .ant-form-item-label > label {
   @apply text-gray-100 !important;
@@ -101,6 +113,76 @@ export default {
 .ant-modal-confirm-body .ant-modal-confirm-title,
 .ant-modal-confirm-body .ant-modal-confirm-content {
   @apply text-gray-100 !important;
+}
+
+.ant-input {
+  @apply bg-transparent border-gray-500 text-gray-100 !important;
+
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2) !important;
+  }
+}
+
+.ant-select-tree .ant-select-switcher-icon {
+  @apply relative !important;
+  top: -3px;
+}
+
+.ant-select-selection--multiple {
+  max-height: 70px !important;
+  @apply overflow-auto bg-transparent border-gray-500 !important;
+
+  & .ant-select-search__field {
+    @apply text-gray-100 !important;
+  }
+
+  & .ant-select-selection__choice {
+    @apply bg-gray-700 border-gray-600 text-gray-100 !important;
+  }
+
+  & .ant-select-selection__choice__remove {
+    @apply text-gray-100 !important;
+  }
+}
+
+.ant-select-tree-dropdown {
+  @apply bg-gray-700 border-gray-600 !important;
+
+  & li .ant-select-tree-node-content-wrapper {
+    @apply text-gray-100 !important;
+
+    &:hover {
+      @apply bg-gray-500 !important;
+    }
+  }
+}
+
+.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
+  @apply bg-green-500 !important;
+}
+
+.ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner {
+  @apply bg-green-500 border-green-500 !important;
+}
+
+.ant-select-selection__clear {
+  @apply bg-transparent text-gray-100 !important;
+}
+
+.ant-slider-rail {
+  @apply bg-gray-500 !important;
+}
+
+.ant-slider-track {
+  @apply bg-green-400 !important;
+}
+
+.ant-slider-handle {
+  @apply border-green-400 bg-green-400 !important;
+
+  &:focus {
+    box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.2) !important;
+  }
 }
 
 a {

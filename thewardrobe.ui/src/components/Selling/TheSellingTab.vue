@@ -2,7 +2,7 @@
   <div>
     <TheSellingModal @refreshGrid="fetchItems" />
     <!-- {{test}} -->
-    <ItemGrid :editable="true" :items="items" />
+    <ItemGrid :initialMinPrice="minPrice" :initialMaxPrice="maxPrice" :editable="true" :items="items" />
   </div>
 </template>
 
@@ -21,7 +21,8 @@
    data() {
      return {
        items: null,
-       test: null
+       minPrice: null,
+       maxPrice: null,
      }
    },
    methods: {
@@ -32,7 +33,9 @@
          }
        })
         .then(res => {
-          this.items = res.data;
+          this.items = res.data.items;
+          this.minPrice = res.data.minPrice;
+          this.maxPrice = res.data.maxPrice;
         });
      }
    },

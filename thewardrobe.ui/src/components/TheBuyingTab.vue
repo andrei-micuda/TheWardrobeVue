@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ItemGrid :items="items" />
+    <ItemGrid :initialMinPrice="minPrice" :initialMaxPrice="maxPrice" :items="items" @filterData="fetchItems" />
   </div>
 </template>
 
@@ -17,19 +17,26 @@
    data() {
      return {
        items: null,
-       test: null
+       minPrice: null,
+       maxPrice: null
      }
    },
    methods: {
-     fetchItems() {
+     fetchItems(params = {}) {
+       params.sellerIdExclude = store.state.id;
        api.get('/api/itemCatalog', {
-         params: {
-           sellerIdExclude: store.state.id
-         }
+         params
        }).then(res => {
-          this.items = res.data;
+          this.items = res.data.items;
+          this.minPrice = res.data.minPrice;
+          this.maxPrice = res.data.maxPrice;
         });
-     }
+     },
+    //  handleFilterData(params) {
+    //     api.get('/api/itemCatalog', {
+    //       params
+    //     }).then(res => {this.items = res.data.items});
+    //   }
    },
    mounted () {
      this.fetchItems();

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 import notifier from "../notifier";
 import store from "../store";
 
@@ -22,6 +23,10 @@ const errorComposer = (error) => {
         notifier.error(error.message);
       }
     }
+}
+
+api.defaults.paramsSerializer = function (params) {
+  return qs.stringify(params, { indices: false }); // param=value1&param=value2
 }
 
 // add stored jwt to every request

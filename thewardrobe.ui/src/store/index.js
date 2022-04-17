@@ -30,7 +30,7 @@ const store = new Vuex.Store({
         params: { sellerIdInclude: id }
       })
         .then(res => {
-          var itemIds = res.data.map(i => i.id);
+          var itemIds = res.data.items.map(i => i.id);
           state.userItems = itemIds;
         });
 
