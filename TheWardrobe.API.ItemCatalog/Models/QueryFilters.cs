@@ -13,5 +13,7 @@ namespace TheWardrobe.API.ItemCatalog.Models
     public IEnumerable<string> Sizes { get; set; }
     public float? MinPrice { get; set; }
     public float? MaxPrice { get; set; }
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
   }
 }

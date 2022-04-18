@@ -185,6 +185,57 @@ export default {
   }
 }
 
+.ant-pagination-item,
+.ant-pagination-item-active,
+.ant-pagination-item-link {
+  @apply bg-transparent !important;
+}
+
+.ant-pagination-item-link .anticon {
+  @apply relative;
+  top: -3px;
+}
+
+.ant-pagination-item {
+  &:hover {
+    @apply border-green-400 !important;
+  }
+
+  & a {
+    @apply text-gray-100 !important;
+  }
+}
+
+.ant-pagination-item-active {
+  @apply border-green-400 !important;
+
+  & a {
+    @apply text-green-400 !important;
+  }
+}
+
+.ant-select-selection {
+  @apply bg-transparent text-gray-100 !important;
+
+  &:hover, &:focus, &:focus-visible, &:active {
+    @apply border-green-400 !important;
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2) !important;
+    outline: none !important;
+  }
+}
+
+.ant-select-selection-selected-value {
+  @apply mr-1 !important;
+}
+
+.ant-select-dropdown-menu-item {
+  @apply bg-gray-700 text-gray-100 !important;
+
+  &:hover {
+    @apply bg-gray-600 !important;
+  }
+}
+
 a {
   @apply hover:text-green-500 !important;
 }

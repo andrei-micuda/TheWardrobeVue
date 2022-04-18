@@ -109,7 +109,7 @@ namespace TheWardrobe.API.Repositories
       if (filters.Brands != null)
       {
         includedBrandIds = filters.Brands.Select(b => GetBrandId(b)).ToList();
-        brandFilteringSql = $"i.brand_id = ANY(@includedBrandIds) AND";
+        brandFilteringSql = $"i.brand_id = ANY(@includedBrandIds)";
       }
 
       var categoryFilteringSql = "";
@@ -117,7 +117,7 @@ namespace TheWardrobe.API.Repositories
       if (filters.Categories != null)
       {
         includedCategoryIds = filters.Categories.Select(c => GetCategoryId(c)).ToList();
-        categoryFilteringSql = $"i.category_id = ANY(@includedCategoryIds) AND";
+        categoryFilteringSql = $"i.category_id = ANY(@includedCategoryIds)";
       }
 
       var genderFilteringSql = "";
@@ -125,7 +125,7 @@ namespace TheWardrobe.API.Repositories
       if (filters.Genders != null)
       {
         includedGenderIds = filters.Genders.Select(g => GetGenderId(g)).ToList();
-        genderFilteringSql = $"i.gender_id = ANY(@includedGenderIds) AND";
+        genderFilteringSql = $"i.gender_id = ANY(@includedGenderIds)";
       }
 
       var sizeFilteringSql = "";
@@ -133,39 +133,71 @@ namespace TheWardrobe.API.Repositories
       if (filters.Sizes != null)
       {
         includedSizeIds = filters.Sizes.Select(s => GetSizeId(s)).ToList();
-        sizeFilteringSql = $"i.size_id = ANY(@includedSizeIds) AND";
+        sizeFilteringSql = $"i.size_id = ANY(@includedSizeIds)";
       }
 
       var minPriceFilteringSql = "";
       if (filters.MinPrice.HasValue)
       {
-        minPriceFilteringSql = $"i.price >= @MinPrice AND";
+        minPriceFilteringSql = $"i.price >= @MinPrice";
       }
 
       var maxPriceFilteringSql = "";
       if (filters.MaxPrice.HasValue)
       {
-        maxPriceFilteringSql = $"i.price <= @MaxPrice AND";
+        maxPriceFilteringSql = $"i.price <= @MaxPrice";
       }
 
       using var connection = _dapperContext.GetConnection();
 
-      res.Items = connection.Query<ItemRequestResponse>(@$"
+      var itemsSql = @$"
         SELECT i.*, b.name AS brand, c.name AS category, g.name AS gender, s.name AS size
         FROM item i, brand b, category c, gender g, size s
         WHERE
-          {(sellerIdOperator != "" ? $"i.seller_id {sellerIdOperator} @sellerId AND" : "")}
-          {minPriceFilteringSql}
-          {maxPriceFilteringSql}
-          {brandFilteringSql}
-          {categoryFilteringSql}
-          {genderFilteringSql}
-          {sizeFilteringSql}
-          i.brand_id = b.id AND
-          i.category_id = c.id AND
-          i.gender_id = g.id AND
-          i.size_id = s.id;
-      ", new
+          1 = 1
+          {(sellerIdOperator != "" ? $"AND i.seller_id {sellerIdOperator} @sellerId" : "")}
+          {(minPriceFilteringSql != "" ? $"AND {minPriceFilteringSql}" : "")}
+          {(maxPriceFilteringSql != "" ? $"AND {maxPriceFilteringSql}" : "")}
+          {(brandFilteringSql != "" ? $"AND {brandFilteringSql}" : "")}
+          {(categoryFilteringSql != "" ? $"AND {categoryFilteringSql}" : "")}
+          {(genderFilteringSql != "" ? $"AND {genderFilteringSql}" : "")}
+          {(sizeFilteringSql != "" ? $"AND {sizeFilteringSql}" : "")}
+          AND i.brand_id = b.id
+          AND i.category_id = c.id
+          AND i.gender_id = g.id
+          AND i.size_id = s.id
+          LIMIT @limit
+          OFFSET @offset;
+      ";
+
+      res.Items = connection.Query<ItemRequestResponse>(itemsSql, new
+      {
+        sellerId,
+        filters.MinPrice,
+        filters.MaxPrice,
+        includedBrandIds,
+        includedCategoryIds,
+        includedGenderIds,
+        includedSizeIds,
+        limit = filters.PageSize,
+        offset = (filters.Page - 1) * filters.PageSize
+      });
+
+      var numItemsSql = @$"
+        SELECT COUNT(*)
+        FROM item i
+        WHERE
+          1 = 1
+          {(sellerIdOperator != "" ? $"AND i.seller_id {sellerIdOperator} @sellerId" : "")}
+          {(minPriceFilteringSql != "" ? $"AND {minPriceFilteringSql}" : "")}
+          {(maxPriceFilteringSql != "" ? $"AND {maxPriceFilteringSql}" : "")}
+          {(brandFilteringSql != "" ? $"AND {brandFilteringSql}" : "")}
+          {(categoryFilteringSql != "" ? $"AND {categoryFilteringSql}" : "")}
+          {(genderFilteringSql != "" ? $"AND {genderFilteringSql}" : "")}
+          {(sizeFilteringSql != "" ? $"AND {sizeFilteringSql}" : "")};
+      ";
+
+      res.NumItems = connection.ExecuteScalar<int>(numItemsSql, new
       {
         sellerId,
         filters.MinPrice,

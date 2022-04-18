@@ -6,6 +6,7 @@ namespace TheWardrobe.API.ItemCatalog.Models
   public class ItemListResponse
   {
     public IEnumerable<ItemRequestResponse> Items { get; set; }
+    public int NumItems { get; set; }
     public float? MinPrice
     {
       get

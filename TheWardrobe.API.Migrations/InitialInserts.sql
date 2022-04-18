@@ -36,6 +36,10 @@ INSERT INTO brand (name)
 VALUES ('Lacoste');
 INSERT INTO brand (name)
 VALUES ('New Balance');
+INSERT INTO brand (name)
+VALUES ('Puma');
+INSERT INTO brand (name)
+VALUES ('Calvin Klein');
 INSERT INTO category (name)
 VALUES ('Anorak');
 INSERT INTO category (name)

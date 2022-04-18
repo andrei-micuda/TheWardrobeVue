@@ -2,7 +2,7 @@
   <div>
     <TheSellingModal @refreshGrid="fetchItems" />
     <!-- {{test}} -->
-    <ItemGrid :initialMinPrice="minPrice" :initialMaxPrice="maxPrice" :editable="true" :items="items" />
+    <ItemGrid :initialMinPrice="minPrice" :initialMaxPrice="maxPrice" :editable="true" :items="items" :numItems="numItems" :itemsPerPage="itemsPerPage" />
   </div>
 </template>
 
@@ -23,6 +23,8 @@
        items: null,
        minPrice: null,
        maxPrice: null,
+       numItems: null,
+       itemsPerPage: 10
      }
    },
    methods: {
@@ -36,6 +38,7 @@
           this.items = res.data.items;
           this.minPrice = res.data.minPrice;
           this.maxPrice = res.data.maxPrice;
+          this.numItems = res.data.numItems;
         });
      }
    },

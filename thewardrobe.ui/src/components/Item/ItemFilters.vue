@@ -2,7 +2,7 @@
   <div class="bg-gray-800 border border-gray-500 p-5 rounded">
     <div class="flex justify-between items-center">
       <span>FILTERS</span>
-      <a-button @click="getFilteredData">Apply</a-button>
+      <a-button @click="getFilteredData" id="ApplyFiltersBtn">Apply</a-button>
     </div>
 
     <a-divider class="bg-gray-500 my-4" />
@@ -209,6 +209,7 @@
         }
       },
       getFilteredData() {
+        console.log("Getting filtered data...")
         const params = {
           brands: this.selectedBrands,
           categories: this.selectedCategories,
