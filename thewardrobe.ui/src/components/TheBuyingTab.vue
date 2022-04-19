@@ -7,7 +7,8 @@
       :numItems="numItems"
       :currentPage="currentPage"
       :itemsPerPage="itemsPerPage"
-      @change="handlePageChange"
+      @orderChange="handleOrderChange"
+      @pageChange="handlePageChange"
       @filterData="fetchFilteredItems" />
   </div>
 </template>
@@ -32,13 +33,34 @@
        currentPage: 1,
        itemsPerPage: 10,
        numItems: null,
+       order: 'newest'
      }
    },
    methods: {
+     setOrderParams(params) {
+       if(this.order === 'newest')
+       {
+         params.orderBy = 'whenAdded';
+         params.order = 'asc';
+       }
+       else if(this.order === 'priceAsc')
+       {
+         params.orderBy = 'price';
+         params.order = 'asc';
+       }
+       else if(this.order === 'priceDesc')
+       {
+         params.orderBy = 'price';
+         params.order = 'desc';
+       }
+
+       return params;
+     },
      fetchItems(params = {}) {
       params.sellerIdExclude = store.state.id;
       params.page = this.currentPage;
       params.pageSize = this.itemsPerPage;
+      params = this.setOrderParams(params);
       api.get('/api/itemCatalog', {
         params
       }).then(res => {
@@ -52,7 +74,8 @@
       params.sellerIdExclude = store.state.id;
       params.page = this.currentPage;
       params.pageSize = this.itemsPerPage;
-        api.get('/api/itemCatalog', {
+      params = this.setOrderParams(params);
+      api.get('/api/itemCatalog', {
           params
         }).then(res => {
           this.items = res.data.items;
@@ -62,6 +85,11 @@
       handlePageChange(page, pageSize) {
         this.currentPage = page;
         this.itemsPerPage = pageSize;
+
+        $("#ApplyFiltersBtn").trigger("click");
+      },
+      handleOrderChange(orderVal) {
+        this.order = orderVal;
 
         $("#ApplyFiltersBtn").trigger("click");
       }

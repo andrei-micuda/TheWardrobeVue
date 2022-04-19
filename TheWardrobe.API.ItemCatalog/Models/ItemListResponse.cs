@@ -7,25 +7,7 @@ namespace TheWardrobe.API.ItemCatalog.Models
   {
     public IEnumerable<ItemRequestResponse> Items { get; set; }
     public int NumItems { get; set; }
-    public float? MinPrice
-    {
-      get
-      {
-        if (Items.Any())
-          return Items.Select(i => i.Price).Min(i => i);
-
-        return null;
-      }
-    }
-    public float? MaxPrice
-    {
-      get
-      {
-        if (Items.Any())
-          return Items.Select(i => i.Price).Max(i => i);
-
-        return null;
-      }
-    }
+    public float? MinPrice { get; set; }
+    public float? MaxPrice { get; set; }
   }
 }

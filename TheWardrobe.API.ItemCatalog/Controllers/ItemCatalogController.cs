@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TheWardrobe.API.ItemCatalog.Models;
 using TheWardrobe.API.Repositories;
+using TheWardrobe.CrossCutting.Helpers;
 
 namespace TheWardrobe.API.ItemCatalog.Controllers
 {
@@ -31,7 +32,17 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
         // if both are provided return BadRequest
         return BadRequest("Please only provide one of the following query parameters: sellerIdInclude, sellerIdExclude");
       }
-      var items = _itemCatalogRepository.GetItems(filters);
+
+      ItemListResponse items;
+
+      try
+      {
+        items = _itemCatalogRepository.GetItems(filters);
+      }
+      catch (AppException ex)
+      {
+        return BadRequest(ex.Message);
+      }
       return Ok(items);
     }
 

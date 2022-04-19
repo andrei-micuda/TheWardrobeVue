@@ -66,7 +66,7 @@
         >
         </a-tree-select>
       </a-form-item>
-      <a-form-item label="Price Range">
+      <a-form-item v-if="selectedMinPrice !== null" label="Price Range">
         <a-slider range
           v-model="selectedPriceRange"
           :min="initialMinPrice"
@@ -163,10 +163,28 @@
         selectedCategories: [],
         selectedGender: "all",
         selectedSizes: [],
-        selectedPriceRange: [this.initialMinPrice, this.initialMaxPrice]
+        selectedMinPrice: this.initialMinPrice,
+        selectedMaxPrice: this.initialMaxPrice
       }
     },
+    watch: {
+      initialMinPrice(newValue, oldValue) {
+        this.selectedMinPrice = newValue;
+      },
+      initialMaxPrice(newValue, oldValue) {
+        this.selectedMaxPrice = newValue;
+      },
+    },
     computed: {
+      selectedPriceRange: {
+        get: function() {
+          return [this.selectedMinPrice, this.selectedMaxPrice];
+        },
+        set: function(newPriceRange) {
+          this.selectedMinPrice = newPriceRange[0];
+          this.selectedMaxPrice = newPriceRange[1];
+        }
+      },
       includesClothing() {
         // check if all clothing categories have been selected
         if(this.selectedCategories.includes('Clothing'))
@@ -209,7 +227,6 @@
         }
       },
       getFilteredData() {
-        console.log("Getting filtered data...")
         const params = {
           brands: this.selectedBrands,
           categories: this.selectedCategories,

@@ -148,6 +148,25 @@ namespace TheWardrobe.API.Repositories
         maxPriceFilteringSql = $"i.price <= @MaxPrice";
       }
 
+      // maps valid order by query parameters to the sql column
+      var orderByColumns = new Dictionary<string, string>()
+      {
+        {"price", "price"},
+        {"whenAdded", "when_added"}
+      };
+
+      if (!orderByColumns.ContainsKey(filters.OrderBy))
+      {
+        throw new AppException("Invalid orderBy value.");
+      }
+      var order = filters.Order.ToUpper();
+      if (order != "ASC" && order != "DESC")
+      {
+        throw new AppException("Invalid order value.");
+      }
+
+      var orderByColumn = orderByColumns[filters.OrderBy];
+
       using var connection = _dapperContext.GetConnection();
 
       var itemsSql = @$"
@@ -166,8 +185,9 @@ namespace TheWardrobe.API.Repositories
           AND i.category_id = c.id
           AND i.gender_id = g.id
           AND i.size_id = s.id
-          LIMIT @limit
-          OFFSET @offset;
+        ORDER BY {orderByColumn} {order}
+        LIMIT @limit
+        OFFSET @offset;
       ";
 
       res.Items = connection.Query<ItemRequestResponse>(itemsSql, new
@@ -184,7 +204,7 @@ namespace TheWardrobe.API.Repositories
       });
 
       var numItemsSql = @$"
-        SELECT COUNT(*)
+        SELECT COUNT(*), MIN(price), MAX(price)
         FROM item i
         WHERE
           1 = 1
@@ -197,7 +217,7 @@ namespace TheWardrobe.API.Repositories
           {(sizeFilteringSql != "" ? $"AND {sizeFilteringSql}" : "")};
       ";
 
-      res.NumItems = connection.ExecuteScalar<int>(numItemsSql, new
+      (res.NumItems, res.MinPrice, res.MaxPrice) = connection.Query<(int, int, int)>(numItemsSql, new
       {
         sellerId,
         filters.MinPrice,
@@ -206,7 +226,7 @@ namespace TheWardrobe.API.Repositories
         includedCategoryIds,
         includedGenderIds,
         includedSizeIds
-      });
+      }).FirstOrDefault();
 
       foreach (var item in res.Items)
       {

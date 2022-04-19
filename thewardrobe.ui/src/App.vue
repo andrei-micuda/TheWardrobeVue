@@ -214,6 +214,12 @@ export default {
   }
 }
 
+.ant-select-open .ant-select-selection,
+.ant-select-focused .ant-select-selection {
+  @apply border-green-400 !important;
+  box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2) !important;
+}
+
 .ant-select-selection {
   @apply bg-transparent text-gray-100 !important;
 
@@ -226,6 +232,10 @@ export default {
 
 .ant-select-selection-selected-value {
   @apply mr-1 !important;
+}
+
+.ant-select-dropdown {
+  @apply bg-gray-700 border-2 border-gray-800 !important;
 }
 
 .ant-select-dropdown-menu-item {
