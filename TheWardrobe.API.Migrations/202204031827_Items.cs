@@ -115,7 +115,7 @@ namespace TheWardrobe.API.Migrations
 
       Create.Table("item")
         .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(SystemMethods.NewGuid)
-        .WithColumn("when_added").AsDateTime().WithDefaultValue(DateTime.UtcNow)
+        .WithColumn("when_added").AsDateTime()
         .WithColumn("seller_id").AsGuid().ForeignKey("account", "id")
         .WithColumn("product_name").AsString()
         .WithColumn("price").AsFloat()

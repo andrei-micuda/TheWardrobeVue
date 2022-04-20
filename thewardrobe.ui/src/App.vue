@@ -191,6 +191,10 @@ export default {
   @apply bg-transparent !important;
 }
 
+.ant-pagination-next:hover .ant-pagination-item-link {
+  @apply border-green-400 !important;
+}
+
 .ant-pagination-item-link .anticon {
   @apply relative;
   top: -3px;
@@ -244,6 +248,10 @@ export default {
   &:hover {
     @apply bg-gray-600 !important;
   }
+}
+
+.ant-input-suffix {
+  @apply text-gray-100 !important;
 }
 
 a {

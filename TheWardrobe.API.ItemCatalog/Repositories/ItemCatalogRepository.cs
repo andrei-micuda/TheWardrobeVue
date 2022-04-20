@@ -45,6 +45,7 @@ namespace TheWardrobe.API.Repositories
       item.SizeId = GetSizeId(model.Size);
       item.GenderId = GetGenderId(model.Gender);
       item.BrandId = GetBrandId(model.Brand);
+      item.WhenAdded = DateTime.UtcNow;
 
       using var connection = _dapperContext.GetConnection();
       item.Id = connection.Insert<Guid, Item>(item);

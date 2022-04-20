@@ -14,7 +14,7 @@ namespace TheWardrobe.API.ItemCatalog.Models
     public float? MinPrice { get; set; }
     public float? MaxPrice { get; set; }
     public string OrderBy { get; set; } = "whenAdded";
-    public string Order { get; set; } = "asc"; // asc or desc
+    public string Order { get; set; } = "desc"; // asc or desc
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = 10;
   }

@@ -1,13 +1,16 @@
 <template>
   <div>
-    <TheSellingModal @refreshGrid="fetchItems" />
+    <TheSellingModal @refreshGrid="handleRefreshGrid" />
     <!-- {{test}} -->
-    <ItemGrid :initialMinPrice="minPrice" :initialMaxPrice="maxPrice" :editable="true" :items="items" :numItems="numItems" :itemsPerPage="itemsPerPage" />
+    <ItemGrid
+      source="/api/itemCatalog"
+      :params="params"
+      :editable="true"
+      :triggerFetch="triggerFetch" />
   </div>
 </template>
 
 <script>
-  import api from '../../api';
   import store from '../../store';
 
   import TheSellingModal from './TheSellingModal.vue';
@@ -20,30 +23,14 @@
    },
    data() {
      return {
-       items: null,
-       minPrice: null,
-       maxPrice: null,
-       numItems: null,
-       itemsPerPage: 10
+       params: { sellerIdInclude: store.state.id },
+       triggerFetch: true
      }
    },
    methods: {
-     fetchItems() {
-       api.get('/api/itemCatalog', {
-         params: {
-           sellerIdInclude: store.state.id
-         }
-       })
-        .then(res => {
-          this.items = res.data.items;
-          this.minPrice = res.data.minPrice;
-          this.maxPrice = res.data.maxPrice;
-          this.numItems = res.data.numItems;
-        });
+     handleRefreshGrid() {
+       this.triggerFetch = !this.triggerFetch;
      }
-   },
-   mounted () {
-     this.fetchItems();
    },
   }
 </script>

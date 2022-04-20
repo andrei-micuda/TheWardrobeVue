@@ -22,5 +22,7 @@ namespace TheWardrobe.API.ItemCatalog.Entities
     public int CategoryId { get; set; }
     [Column("size_id")]
     public int SizeId { get; set; }
+    [Column("when_added")]
+    public DateTime WhenAdded { get; internal set; }
   }
 }
