@@ -8,8 +8,8 @@
       <span class="inline-flex items-center text-xl relative top-0.5">{{title}}</span>
     </div>
     
-    <div class="flex flex-row-reverse items-center">
-      <a-button size="large" class="ml-5" @click="$emit('apply')">Apply</a-button>
+    <div v-if="showEditActions" class="flex flex-row-reverse items-center">
+      <a-button size="large" type="primary" class="ml-5" @click="$emit('apply')">Apply</a-button>
       <!-- <VButton @click="$emit('apply')">Apply</VButton> -->
       <a-button size="large" type="danger" ghost @click="showDeleteConfirm">
         Delete
@@ -26,6 +26,10 @@
       title: {
         type: String,
       },
+      showEditActions: {
+        type: Boolean,
+        default: false,
+      }
     },
     methods: {
       showDeleteConfirm() {

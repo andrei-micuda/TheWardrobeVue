@@ -13,6 +13,7 @@ namespace TheWardrobe.API.ItemCatalog.Models
     public string Gender { get; set; }
     public string Category { get; set; }
     public string Size { get; set; }
+    public bool IsFavorite { get; set; }
     public IEnumerable<string> Images { get; set; }
   }
 }

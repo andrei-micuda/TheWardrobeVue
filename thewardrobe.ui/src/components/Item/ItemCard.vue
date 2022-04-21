@@ -5,7 +5,7 @@
                   transition ease-in-out">
         <a-carousel arrows>
           <template #prevArrow>
-            <div class="custom-slick-arrow" style="left: 10px; z-index: 10">
+            <div class="custom-slick-arrow z-10" style="left: 10px;">
               <Icon icon="bi:arrow-left-circle-fill" width="20" height="20" class="text-gray-600" />
             </div>
           </template>
@@ -19,15 +19,21 @@
           </div>
         </a-carousel>
 
-        <a-row class="p-4">
+        <a-row class="p-4 flex items-center">
           <a-col :span="16" class="text-left">
             <p class="price text-gray-100 text-lg">{{item.price}} RON</p>
             <p class="text-gray-200">Size: {{item.size}}</p>
             <p class="text-gray-200">Brand: {{item.brand}}</p>
           </a-col>
-          <!-- <a-col :span="8">
-            <router-link :to="{name: 'editItem', params: {itemId: item.id}}"><VButton>Edit</VButton></router-link>
-          </a-col> -->
+          <a-col :span="8" class="flex justify-end items-center mr-2">
+            <button @click.stop.prevent="toggleFavorite" class="z-100">
+              <Icon
+                :icon="item.isFavorite ? 'ci:heart-fill' : 'ci:heart-outline'"
+                :width="32"
+                :class="item.isFavorite ? 'text-red-400' : 'text-gray-100'"
+                />
+            </button>
+          </a-col>
         </a-row>
       </div>
     </router-link>
@@ -37,7 +43,8 @@
 <script>
   import { Icon } from '@iconify/vue2';
 
-  // import VButton from "../VButton";
+  import api from '../../api';
+  import store from '../../store';
 
   export default {
     props: {
@@ -54,6 +61,28 @@
           return {name: 'editItem', params: {itemId: this.item.id}}
         
         return {name: 'viewItem', params: {itemId: this.item.id}}
+      }
+    },
+    methods: {
+      toggleFavorite() {
+
+        if(!this.item.isFavorite) {
+          api.post(`/api/${store.state.id}/favorites`, {
+            itemId: this.item.id
+          })
+            .then(() => {
+              this.item.isFavorite = true;
+            })
+        }
+        else
+        {
+          api.delete(`/api/${store.state.id}/favorites`, {
+            data: {itemId: this.item.id}
+          })
+            .then(() => {
+              this.item.isFavorite = false;
+            })
+        }
       }
     },
     components: {

@@ -1,4 +1,3 @@
-using System;
 using FluentMigrator;
 
 namespace TheWardrobe.API.Migrations
@@ -117,6 +116,7 @@ namespace TheWardrobe.API.Migrations
         .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(SystemMethods.NewGuid)
         .WithColumn("when_added").AsDateTime()
         .WithColumn("seller_id").AsGuid().ForeignKey("account", "id")
+        .WithColumn("is_available").AsBoolean().WithDefaultValue(true)
         .WithColumn("product_name").AsString()
         .WithColumn("price").AsFloat()
         .WithColumn("brand_id").AsInt64().ForeignKey("brand", "id")

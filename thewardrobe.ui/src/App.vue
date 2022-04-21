@@ -46,8 +46,19 @@ export default {
 }
 
 .ant-btn {
-  /* @apply bg-gray-600 border-gray-600 text-gray-100 hover:border-green-400 !important; */
-  @apply bg-transparent border-green-400 text-green-400 hover:bg-green-400 hover:text-gray-700 !important;
+  @apply bg-transparent text-gray-100 !important;
+
+  &:hover {
+    @apply border-green-400 !important;
+  }  
+}
+
+.ant-btn-default {
+  @apply bg-transparent border-gray-300 text-gray-300 hover:border-green-300 hover:text-gray-700 !important;
+
+  &:hover {
+    @apply text-gray-100 !important;
+  }
 }
 
 .ant-btn-primary {
@@ -252,6 +263,14 @@ export default {
 
 .ant-input-suffix {
   @apply text-gray-100 !important;
+}
+
+.ant-switch {
+  @apply bg-transparent border-gray-500 !important;
+}
+
+.ant-switch-checked {
+  @apply bg-green-400 border-transparent !important;
 }
 
 a {

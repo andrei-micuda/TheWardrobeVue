@@ -2,7 +2,7 @@
   <div class="bg-gray-800 border border-gray-500 p-5 rounded">
     <div class="flex justify-between items-center">
       <span>FILTERS</span>
-      <a-button @click="getFilteredData" id="ApplyFiltersBtn">Apply</a-button>
+      <a-button @click="getFilteredData" id="ApplyFiltersBtn" type="primary">Apply</a-button>
     </div>
 
     <a-divider class="bg-gray-500 my-4" />
@@ -81,14 +81,9 @@
             <span>{{selectedPriceRange[1]}}</span>
           </a-col>
         </a-row>
-        <!-- <a-row type="flex" justify="space-between">
-          <a-col :span="6">
-            <a-input v-model="selectedPriceRange[0]" size="small" placeholder="Min" @pressEnter="onMinPriceChange" />
-          </a-col>
-          <a-col :span="6">
-            <a-input v-model="selectedPriceRange[1]" size="small" placeholder="Max" @pressEnter="onMaxPriceChange" />
-          </a-col>
-        </a-row> -->
+      </a-form-item>
+      <a-form-item label="Only favorites?" class="flex space-x-2">
+        <a-switch :checked="onlyFavorites" @change="v => onlyFavorites = v" />
       </a-form-item>
     </a-form>
   </div>
@@ -164,7 +159,8 @@
         selectedGender: "all",
         selectedSizes: [],
         selectedMinPrice: this.initialMinPrice,
-        selectedMaxPrice: this.initialMaxPrice
+        selectedMaxPrice: this.initialMaxPrice,
+        onlyFavorites: false
       }
     },
     watch: {
@@ -232,7 +228,8 @@
           categories: this.selectedCategories,
           sizes: this.selectedSizes,
           minPrice: this.selectedPriceRange[0],
-          maxPrice: this.selectedPriceRange[1]
+          maxPrice: this.selectedPriceRange[1],
+          onlyFavorites: this.onlyFavorites
         }
 
         if(this.selectedGender !== 'all')

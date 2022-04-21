@@ -54,6 +54,7 @@
   import ItemFilters from './ItemFilters.vue';
 
   import api from '../../api';
+  import store from '../../store';
 
   export default {
     components: {
@@ -114,7 +115,10 @@
         return params;
       },
       onShowSizeChange(current, pageSize) {
-        console.log(current, pageSize);
+        this.itemsPerPage = pageSize;
+        this.currentPage = current;
+
+        $("#ApplyFiltersBtn").trigger("click");
       },
       handlePageChange(page, pageSize) {
         this.currentPage = page;
@@ -129,6 +133,7 @@
       },
       fetchItems(otherParams = {}) {
         let finalParams = {...this.params, ...otherParams};
+        finalParams.requesterId = store.state.id;
         finalParams.page = this.currentPage;
         finalParams.pageSize = this.itemsPerPage;
         finalParams = this.setOrderParams(finalParams);
@@ -144,6 +149,7 @@
       fetchFilteredItems(otherParams) {
         console.log("Getting filtered data")
         let finalParams = {...this.params, ...otherParams};
+        finalParams.requesterId = store.state.id;
         finalParams.page = this.currentPage;
         finalParams.pageSize = this.itemsPerPage;
         finalParams = this.setOrderParams(finalParams);

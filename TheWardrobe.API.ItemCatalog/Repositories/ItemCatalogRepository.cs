@@ -171,10 +171,22 @@ namespace TheWardrobe.API.Repositories
       using var connection = _dapperContext.GetConnection();
 
       var itemsSql = @$"
-        SELECT i.*, b.name AS brand, c.name AS category, g.name AS gender, s.name AS size
-        FROM item i, brand b, category c, gender g, size s
+        SELECT
+          i.*,
+          b.name AS brand,
+          c.name AS category,
+          g.name AS gender,
+          s.name AS size
+          {(filters.RequesterId != null ? ", f.account_id IS NOT NULL as is_favorite" : "")}
+        FROM item i
+             {(filters.RequesterId != null ? $"{(filters.OnlyFavorites ? "RIGHT" : "LEFT")} JOIN favorite f ON f.item_id = i.id AND f.account_id = @RequesterId" : "")},
+             brand b,
+             category c,
+             gender g,
+             size s
         WHERE
           1 = 1
+          {(filters.OnlyFavorites ? "AND f.account_id IS NOT NULL" : "")}
           {(sellerIdOperator != "" ? $"AND i.seller_id {sellerIdOperator} @sellerId" : "")}
           {(minPriceFilteringSql != "" ? $"AND {minPriceFilteringSql}" : "")}
           {(maxPriceFilteringSql != "" ? $"AND {maxPriceFilteringSql}" : "")}
@@ -193,6 +205,7 @@ namespace TheWardrobe.API.Repositories
 
       res.Items = connection.Query<ItemRequestResponse>(itemsSql, new
       {
+        filters.RequesterId,
         sellerId,
         filters.MinPrice,
         filters.MaxPrice,
@@ -207,6 +220,7 @@ namespace TheWardrobe.API.Repositories
       var numItemsSql = @$"
         SELECT COUNT(*), MIN(price), MAX(price)
         FROM item i
+          {(filters.OnlyFavorites ? "RIGHT JOIN favorite f ON f.item_id = i.id AND f.account_id = @RequesterId" : "")}
         WHERE
           1 = 1
           {(sellerIdOperator != "" ? $"AND i.seller_id {sellerIdOperator} @sellerId" : "")}
@@ -220,6 +234,7 @@ namespace TheWardrobe.API.Repositories
 
       (res.NumItems, res.MinPrice, res.MaxPrice) = connection.Query<(int, int, int)>(numItemsSql, new
       {
+        filters.RequesterId,
         sellerId,
         filters.MinPrice,
         filters.MaxPrice,

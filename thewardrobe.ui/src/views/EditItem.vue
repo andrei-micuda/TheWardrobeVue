@@ -1,6 +1,6 @@
 <template>
   <a-form :form="form" v-bind="formItemLayout" @submit="handleSubmit" >
-  <VPageHeader @back="$router.back()" @apply="handleApply" @delete="handleDelete" title="Edit Item" />
+    <VPageHeader @back="$router.back()" @apply="handleApply" @delete="handleDelete" :showEditActions="true" title="Edit Item" />
     <div class="w-8/12 mx-auto bg-gray-800 px-10 py-8">
       <a-form-item label="Product Name">
         <a-input

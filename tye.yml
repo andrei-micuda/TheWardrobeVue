@@ -13,14 +13,18 @@ services:
   - name: thewardrobe-item-catalog
     project: TheWardrobe.API.ItemCatalog/TheWardrobe.API.ItemCatalog.csproj
     bindings:
-    - port: 5051
+    - port: 5071
   - name: thewardrobe-clothes-classification
     image: clothes_classification_api
     bindings:
-    - port: 5052
+    - port: 5072
       containerPort: 5000
       protocol: http
+  - name: thewardrobe-cart
+    project: TheWardrobe.API.Cart/TheWardrobe.API.Cart.csproj
+    bindings:
+    - port: 5073
   - name: thewardrobe-email-svc
     project: TheWardrobe.EmailSvc/TheWardrobe.EmailSvc.csproj
     bindings:
-    - port: 5053
+    - port: 5074
