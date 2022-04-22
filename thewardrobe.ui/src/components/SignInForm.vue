@@ -63,7 +63,7 @@
         console.log("Authenticating...");
         this.isAuthenticating = true;
 
-        api.post('/api/accounts/authenticate', {
+        api.post('/api/account/authenticate', {
             "email": this.email,
             "password": this.password,
         }).then(res => {

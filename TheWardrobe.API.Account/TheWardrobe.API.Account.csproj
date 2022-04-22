@@ -10,10 +10,6 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
     <PackageReference Include="Dapper" Version="2.0.90" />
     <PackageReference Include="Dapper.SimpleCRUD" Version="2.3.0" />
-    <PackageReference Include="FluentMigrator" Version="3.3.1" />
-    <PackageReference Include="FluentMigrator.Runner" Version="3.3.1" />
-    <PackageReference Include="FluentMigrator.Runner.Postgres" Version="3.3.1" />
-    <PackageReference Include="Flurl.Http" Version="3.2.2" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.0" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="7.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.10" />
@@ -23,11 +19,9 @@
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
-    <PackageReference Include="Yarp.ReverseProxy" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TheWardrobe.API.Migrations\TheWardrobe.API.Migrations.csproj" />
     <ProjectReference Include="..\TheWardrobe.CrossCutting\TheWardrobe.CrossCutting.csproj" />
   </ItemGroup>
 

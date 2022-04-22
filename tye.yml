@@ -6,10 +6,14 @@
 #
 name: thewardrobe
 services:
-  - name: thewardrobe-api
-    project: TheWardrobe.API/TheWardrobe.API.csproj
+  - name: thewardrobe-gateway
+    project: TheWardrobe.API.Gateway/TheWardrobe.API.Gateway.csproj
     bindings:
     - port: 5050
+  - name: thewardrobe-account
+    project: TheWardrobe.API.Account/TheWardrobe.API.Account.csproj
+    bindings:
+    - port: 5070
   - name: thewardrobe-item-catalog
     project: TheWardrobe.API.ItemCatalog/TheWardrobe.API.ItemCatalog.csproj
     bindings:

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using TheWardrobe.Helpers;
 
-namespace TheWardrobe.API.Policies
+namespace TheWardrobe.API.Gateway.Policies
 {
   public class OwnsItemRequirement : IAuthorizationRequirement { }
 

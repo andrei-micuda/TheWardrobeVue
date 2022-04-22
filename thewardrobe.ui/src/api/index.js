@@ -6,7 +6,7 @@ import store from "../store";
 let api = axios.create();
 
 const refreshAccessToken = async () => {
-  var res = await api.post("/api/accounts/refresh-token");
+  var res = await api.post("/api/account/refresh-token");
   var data = res.data;
   console.log(data);
   store.commit("refreshToken", data.jwt);

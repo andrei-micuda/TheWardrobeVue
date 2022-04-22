@@ -19,13 +19,13 @@ namespace TheWardrobe.API.Controllers
 
   [ApiController]
   [Route("api/[controller]")]
-  public class AccountsController : BaseController
+  public class AccountController : BaseController
   {
     private readonly IMapper _mapper;
     private readonly IAccountRepository _accountService;
     private readonly IBus _bus;
 
-    public AccountsController(
+    public AccountController(
             IMapper mapper,
             IAccountRepository accountService,
             IBus bus)

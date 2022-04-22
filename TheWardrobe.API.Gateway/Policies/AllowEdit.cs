@@ -4,7 +4,7 @@ using Flurl;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
-namespace TheWardrobe.API.Policies
+namespace TheWardrobe.API.Gateway.Policies
 {
   public class AllowEditRequirement : IAuthorizationRequirement { }
 
