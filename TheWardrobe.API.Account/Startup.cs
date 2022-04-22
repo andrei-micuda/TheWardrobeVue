@@ -55,6 +55,7 @@ namespace TheWardrobe.API
 
       // configure DI for application services
       services.AddScoped<IAccountRepository, AccountRepository>();
+      services.AddScoped<IDeliveryAddressRepository, DeliveryAddressRepository>();
       services.AddScoped<ISendEmailPublisher, SendEmailPublisher>();
     }
 
@@ -83,9 +84,9 @@ namespace TheWardrobe.API
       // custom jwt auth middleware
       // app.UseMiddleware<JwtMiddleware>();
 
-      app.UseAuthentication();
       app.UseRouting();
-      app.UseAuthorization();
+      // app.UseAuthentication();
+      // app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
       {

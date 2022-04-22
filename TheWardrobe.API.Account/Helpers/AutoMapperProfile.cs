@@ -1,5 +1,6 @@
 using AutoMapper;
 using TheWardrobe.API.Entities;
+using TheWardrobe.API.Models;
 using TheWardrobe.API.Models.Accounts;
 
 namespace TheWardrobe.API.Helpers
@@ -30,6 +31,8 @@ namespace TheWardrobe.API.Helpers
             return true;
           }
         ));
+
+      CreateMap<DeliveryAddressRequest, DeliveryAddress>();
     }
   }
 }

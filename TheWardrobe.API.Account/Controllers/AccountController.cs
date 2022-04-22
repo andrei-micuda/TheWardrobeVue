@@ -35,13 +35,6 @@ namespace TheWardrobe.API.Controllers
       _bus = bus;
     }
 
-    [Authorize]
-    [HttpGet("hello")]
-    public IActionResult Hello()
-    {
-      return Ok("Hello world!");
-    }
-
     [HttpPost("authenticate")]
     public ActionResult<AuthenticateResponse> Authenticate(AuthenticateRequest model)
     {

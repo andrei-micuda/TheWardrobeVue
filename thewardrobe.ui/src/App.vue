@@ -285,6 +285,13 @@ export default {
   @apply bg-gray-700 text-gray-100 !important;
 }
 
+.ant-modal-header,
+.ant-modal-title,
+.ant-modal-body,
+.ant-modal-footer {
+  @apply bg-gray-600 border-gray-500 text-gray-100 !important;
+}
+
 a {
   @apply hover:text-green-500 !important;
 }

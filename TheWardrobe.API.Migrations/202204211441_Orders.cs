@@ -40,7 +40,11 @@ namespace TheWardrobe.API.Migrations
 
     public override void Down()
     {
-
+      Delete.Table("review");
+      Delete.Table("order");
+      Delete.Table("delivery_address");
+      Delete.Table("cart");
+      Delete.Table("favorite");
     }
   }
 }
