@@ -22,6 +22,13 @@ namespace TheWardrobe.API.Cart.Controllers
       _cartRepository = cartRepository;
     }
 
+    [HttpGet]
+    [Route("/api/{accountId}/favorites/{itemId}")]
+    public IActionResult GetFavoriteStatus(Guid accountId, Guid itemId)
+    {
+      var isFavorite = _cartRepository.CheckIsFavorite(accountId, itemId);
+      return Ok(new { isFavorite });
+    }
     [HttpPost]
     [Route("/api/{accountId}/favorites")]
     public IActionResult Post(Guid accountId, FavoritesRequest model)

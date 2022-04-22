@@ -20,6 +20,7 @@ namespace TheWardrobe.API.Cart.Repositories
   {
     void Add(Guid accountId, FavoritesRequest model);
     void Remove(Guid accountId, FavoritesRequest model);
+    bool CheckIsFavorite(Guid accountId, Guid itemId);
   }
 
   public class CartRepository : ICartRepository
@@ -40,6 +41,17 @@ namespace TheWardrobe.API.Cart.Repositories
       using var connection = _dapperContext.GetConnection();
 
       connection.Execute("INSERT INTO favorite VALUES (@accountId, @itemId);", fav);
+    }
+
+    public bool CheckIsFavorite(Guid accountId, Guid itemId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.ExecuteScalar<bool>(@"
+        SELECT COUNT(*) > 0
+        FROM favorite f
+        WHERE f.item_id = @itemId
+        AND f.account_id = @accountId;", new { itemId, accountId });
     }
 
     public void Remove(Guid accountId, FavoritesRequest model)

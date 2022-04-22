@@ -5,6 +5,8 @@ import Register from '../views/Register.vue'
 import SignIn from '../views/SignIn.vue'
 import ViewItem from '../views/ViewItem.vue'
 import EditItem from '../views/EditItem.vue'
+import Orders from '../views/Orders.vue';
+import Account from '../views/Account.vue';
 
 import store from "../store";
 
@@ -36,6 +38,17 @@ const routes = [
     path: '/item/:itemId/edit',
     name: 'editItem',
     component: EditItem
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: Account
+  },
+  {
+    path: '/orders',
+    alias: ['/orders/incoming', '/orders/outgoing'],
+    name: 'orders',
+    component: Orders
   }
 ];
 
@@ -45,14 +58,12 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   // close sidebar if it was previously open
-  store.commit("closeSidebar");
+  store.commit('setIsDrawerVisible', false);
 
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ['/signIn', '/register'];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem('jwt');
-
-  // console.log(loggedIn)
 
   if (authRequired && !loggedIn) {
     return next('/signIn');

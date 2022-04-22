@@ -65,7 +65,6 @@
     },
     methods: {
       toggleFavorite() {
-
         if(!this.item.isFavorite) {
           api.post(`/api/${store.state.id}/favorites`, {
             itemId: this.item.id

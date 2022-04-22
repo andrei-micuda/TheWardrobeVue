@@ -273,6 +273,18 @@ export default {
   @apply bg-green-400 border-transparent !important;
 }
 
+.ant-drawer-header {
+  @apply bg-gray-700 border-gray-500 !important;
+
+  & .ant-drawer-title {
+    @apply text-gray-100 !important;
+  }
+}
+
+.ant-drawer-content {
+  @apply bg-gray-700 text-gray-100 !important;
+}
+
 a {
   @apply hover:text-green-500 !important;
 }

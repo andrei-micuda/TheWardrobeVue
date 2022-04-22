@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import api from '../api';
+import router from '../router';
 
 Vue.use(Vuex);
 
@@ -15,7 +16,7 @@ const store = new Vuex.Store({
     user: null,
     userItems: null,
     jwt: null,
-    sidebarShow: false
+    isDrawerVisible: false
   },
   mutations: {
     initStore(state) {
@@ -55,6 +56,8 @@ const store = new Vuex.Store({
       localStorage.removeItem('id');
       localStorage.removeItem('jwt');
       localStorage.removeItem('user');
+
+      router.replace('/signIn');
     },
     refreshToken(state, jwt) {
       console.log("Refreshed JWT: ", jwt)
@@ -62,11 +65,8 @@ const store = new Vuex.Store({
 
       localStorage.setItem("jwt", jwt);
     },
-    toggleSidebar(state) {
-      state.sidebarShow = !state.sidebarShow;
-    },
-    closeSidebar(state) {
-      state.sidebarShow = false;
+    setIsDrawerVisible(state, val) {
+      state.isDrawerVisible = val;
     }
   }
 });
