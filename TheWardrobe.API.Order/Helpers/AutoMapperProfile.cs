@@ -1,6 +1,6 @@
 using AutoMapper;
-using TheWardrobe.API.Cart.Entities;
-using TheWardrobe.API.Cart.Models;
+using TheWardrobe.API.Entities;
+using TheWardrobe.API.Models;
 
 namespace TheWardrobe.API.Cart.Helpers
 {

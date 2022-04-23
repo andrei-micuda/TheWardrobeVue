@@ -292,6 +292,14 @@ export default {
   @apply bg-gray-600 border-gray-500 text-gray-100 !important;
 }
 
+.ant-collapse, .ant-collapse-content {
+  @apply bg-transparent text-gray-100 !important;
+}
+
+.ant-collapse-header {
+  @apply text-gray-100 !important;
+}
+
 a {
   @apply hover:text-green-500 !important;
 }

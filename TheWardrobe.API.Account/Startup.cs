@@ -55,6 +55,7 @@ namespace TheWardrobe.API
 
       // configure DI for application services
       services.AddScoped<IAccountRepository, AccountRepository>();
+      services.AddScoped<IAccountDetailsRepository, AccountDetailsRepository>();
       services.AddScoped<IDeliveryAddressRepository, DeliveryAddressRepository>();
       services.AddScoped<ISendEmailPublisher, SendEmailPublisher>();
     }

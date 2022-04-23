@@ -6,6 +6,17 @@ import router from '../router';
 
 Vue.use(Vuex);
 
+function setAccountDetails(state, accountId)
+{
+  // retrieve user name and email from db
+  api.get(`/api/${accountId}/accountDetails`)
+    .then(res => {
+      state.email = res.data.email;
+      state.firstName = res.data.firstName;
+      state.lastName = res.data.lastName;
+    })
+}
+
 const store = new Vuex.Store({
   
   // "State" is the application data your components
@@ -13,7 +24,9 @@ const store = new Vuex.Store({
   
   state: {
     id: null,
-    user: null,
+    email: null,
+    firstName: null,
+    lastName: null,
     userItems: null,
     jwt: null,
     isDrawerVisible: false
@@ -22,40 +35,46 @@ const store = new Vuex.Store({
     initStore(state) {
       let id = localStorage.getItem('id');
       let jwt = localStorage.getItem('jwt');
-      let user = localStorage.getItem('user');
-
+      
       state.id = id;
-
-      // retrieve user items from db
-      api.get('/api/itemCatalog', {
-        params: { sellerIdInclude: id }
-      })
-        .then(res => {
-          var itemIds = res.data.items.map(i => i.id);
-          state.userItems = itemIds;
-        });
-
       state.jwt = jwt;
-      state.user = user;
+
+      if (id)
+      {
+        setAccountDetails(state, id);
+  
+        // retrieve user items from db
+        api.get('/api/itemCatalog', {
+          params: { sellerIdInclude: id }
+        })
+          .then(res => {
+            var itemIds = res.data.items.map(i => i.id);
+            state.userItems = itemIds;
+          });
+      }
     },
-    signInUser(state, { id, email, jwt }) {
+    updateAccountDetails(state, { email, firstName, lastName }) {
+      console.log("updateAccountDetails")
+      state.email = email;
+      state.firstName = firstName;
+      state.lastName = lastName;
+    },
+    signInUser(state, { id, jwt }) {
       state.id = id;
-      state.user = email;
       state.jwt = jwt;
+
+      setAccountDetails(state, id);
 
       localStorage.setItem('id', id);
       localStorage.setItem('jwt', jwt);
-      localStorage.setItem('user', email);
     },
     signOut(state) {
       console.log("Signing out...");
       state.id = null;
-      state.user = null;
       state.jwt = null;
 
       localStorage.removeItem('id');
       localStorage.removeItem('jwt');
-      localStorage.removeItem('user');
 
       router.replace('/signIn');
     },

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TheWardrobe.API.Cart.Entities
+namespace TheWardrobe.API.Entities
 {
 
   [Table("favorite")]

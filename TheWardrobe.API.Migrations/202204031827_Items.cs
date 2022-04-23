@@ -114,7 +114,7 @@ namespace TheWardrobe.API.Migrations
 
       Create.Table("item")
         .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(SystemMethods.NewGuid)
-        .WithColumn("when_added").AsDateTime()
+        .WithColumn("when_added").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)
         .WithColumn("seller_id").AsGuid().ForeignKey("account", "id")
         .WithColumn("is_available").AsBoolean().WithDefaultValue(true)
         .WithColumn("product_name").AsString()

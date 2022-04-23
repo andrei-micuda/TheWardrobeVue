@@ -24,8 +24,8 @@ services:
     - port: 5072
       containerPort: 5000
       protocol: http
-  - name: thewardrobe-cart
-    project: TheWardrobe.API.Cart/TheWardrobe.API.Cart.csproj
+  - name: thewardrobe-order
+    project: TheWardrobe.API.Order/TheWardrobe.API.Order.csproj
     bindings:
     - port: 5073
   - name: thewardrobe-email-svc

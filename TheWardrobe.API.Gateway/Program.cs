@@ -63,7 +63,7 @@ namespace TheWardrobe.API.Gateway
     {
       // Instantiate the runner
       var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
-      // runner.MigrateDown(0);
+      // runner.MigrateDown(202204200000);
 
       // Execute the migrations
       runner.MigrateUp();

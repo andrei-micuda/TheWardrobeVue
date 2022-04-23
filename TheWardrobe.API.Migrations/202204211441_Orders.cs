@@ -29,8 +29,13 @@ namespace TheWardrobe.API.Migrations
         .WithColumn("seller_id").AsGuid().ForeignKey("account", "id")
         .WithColumn("buyer_id").AsGuid().ForeignKey("account", "id")
         .WithColumn("delivery_address_id").AsGuid().ForeignKey("delivery_address", "id")
-        .WithColumn("when_placed").AsDateTime()
+        .WithColumn("total").AsInt64()
+        .WithColumn("when_placed").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)
         .WithColumn("status").AsInt64();
+
+      Create.Table("order_item")
+        .WithColumn("item_id").AsGuid().PrimaryKey().ForeignKey("item", "id").OnDelete(System.Data.Rule.SetNull)
+        .WithColumn("order_id").AsGuid().ForeignKey("order", "id").OnDelete(System.Data.Rule.SetNull);
 
       Create.Table("review")
         .WithColumn("order_id").AsGuid().ForeignKey("order", "id").PrimaryKey()
@@ -41,6 +46,7 @@ namespace TheWardrobe.API.Migrations
     public override void Down()
     {
       Delete.Table("review");
+      Delete.Table("order_item");
       Delete.Table("order");
       Delete.Table("delivery_address");
       Delete.Table("cart");

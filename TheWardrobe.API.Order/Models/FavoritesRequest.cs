@@ -1,6 +1,6 @@
 using System;
 
-namespace TheWardrobe.API.Cart.Models
+namespace TheWardrobe.API.Models
 {
   public class FavoritesRequest
   {

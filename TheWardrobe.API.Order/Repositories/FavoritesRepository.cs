@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using TheWardrobe.Helpers;
 using TheWardrobe.CrossCutting.Helpers;
-using TheWardrobe.API.Cart.Models;
-using TheWardrobe.API.Cart.Entities;
+using TheWardrobe.API.Models;
+using TheWardrobe.API.Entities;
 
-namespace TheWardrobe.API.Cart.Repositories
+namespace TheWardrobe.API.Repositories
 {
   public interface ICartRepository
   {

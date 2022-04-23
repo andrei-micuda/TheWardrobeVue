@@ -15,6 +15,7 @@ namespace TheWardrobe.API.Migrations
         .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(SystemMethods.NewGuid)
         .WithColumn("first_name").AsString().Nullable()
         .WithColumn("last_name").AsString().Nullable()
+        .WithColumn("phone_number").AsString().Nullable()
         .WithColumn("email").AsString()
         .WithColumn("password_hash").AsString()
         .WithColumn("role_id").AsGuid().ForeignKey("role", "id").Nullable()

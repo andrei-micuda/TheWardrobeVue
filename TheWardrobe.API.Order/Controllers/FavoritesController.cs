@@ -4,11 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TheWardrobe.API.Cart.Models;
-using TheWardrobe.API.Cart.Repositories;
+using TheWardrobe.API.Models;
+using TheWardrobe.API.Repositories;
 using TheWardrobe.CrossCutting.Helpers;
 
-namespace TheWardrobe.API.Cart.Controllers
+namespace TheWardrobe.API.Controllers
 {
   [ApiController]
   // [Route("/api/[controller]/[action]")]

@@ -61,7 +61,7 @@
     },
     computed: {
       email() {
-        return store.state.user;
+        return store.state.email;
       }
     },
     components: {

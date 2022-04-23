@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using TheWardrobe.API.Cart.Repositories;
+using TheWardrobe.API.Repositories;
 using TheWardrobe.Helpers;
 
 namespace TheWardrobe.API.Cart
@@ -34,6 +34,7 @@ namespace TheWardrobe.API.Cart
       // configure DI for application services
       services.AddScoped<IDapperContext, DapperContext>();
       services.AddScoped<ICartRepository, CartRepository>();
+      services.AddScoped<IOrderRepository, OrderRepository>();
 
       services.AddControllers();
       services.AddSwaggerGen(c =>

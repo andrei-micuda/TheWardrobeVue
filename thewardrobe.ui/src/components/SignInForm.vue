@@ -55,7 +55,7 @@
     },
     computed: {
       user() {
-        return store.state.user; 
+        return store.state.email; 
       }
     },
     methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <section class="DeliveryAddressesSection">
     <p class="text-xl mb-2">Delivery addresses</p>
     <ul class="bg-gray-700 p-4">
       <li v-for="addr in deliveryAddresses" :key="addr.id" class="p-2">
@@ -86,7 +86,7 @@
         <a-button id="AddAddressBtn" class="hidden" type="primary" html-type="submit"></a-button>
       </a-form>
     </a-modal>
-  </div>
+  </section>
 </template>
 
 <script>
