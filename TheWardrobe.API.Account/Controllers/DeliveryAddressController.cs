@@ -27,14 +27,14 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpPost]
-    public IActionResult Post(Guid accountId, [FromBody] DeliveryAddressRequest model)
+    public IActionResult Post(Guid accountId, [FromBody] DeliveryAddressRequestResponse model)
     {
       var res = _repository.AddDeliveryAddress(accountId, model);
       return Ok(res);
     }
 
     [HttpPut("{deliveryAddressId}")]
-    public IActionResult Put(Guid accountId, Guid deliveryAddressId, [FromBody] DeliveryAddressRequest model)
+    public IActionResult Put(Guid accountId, Guid deliveryAddressId, [FromBody] DeliveryAddressRequestResponse model)
     {
       var res = _repository.UpdateDeliveryAddress(accountId, deliveryAddressId, model);
       return Ok(res);

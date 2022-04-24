@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TheWardrobe.API.Models;
 using TheWardrobe.API.Repositories;
 using TheWardrobe.CrossCutting.Helpers;
 
@@ -22,9 +23,9 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet]
-    public IActionResult GetOrders(Guid accountId)
+    public IActionResult GetOrders(Guid accountId, [FromQuery] OrderQueryFilters filters)
     {
-      var res = _orderRepository.GetOrders(accountId);
+      var res = _orderRepository.GetOrdersSummary(accountId, filters);
       return Ok(res);
     }
   }

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace TheWardrobe.API.ItemCatalog.Models
+namespace TheWardrobe.API.Models
 {
-  public class QueryFilters
+  public class ItemQueryFilters
   {
     public Guid? RequesterId { get; set; }
     public Guid? SellerIdInclude { get; set; }

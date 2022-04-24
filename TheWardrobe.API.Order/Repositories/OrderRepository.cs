@@ -12,12 +12,13 @@ using AutoMapper;
 using TheWardrobe.Helpers;
 using TheWardrobe.CrossCutting.Helpers;
 using TheWardrobe.API.Entities;
+using TheWardrobe.API.Models;
 
 namespace TheWardrobe.API.Repositories
 {
   public interface IOrderRepository
   {
-    IEnumerable<Order> GetOrders(Guid accountId);
+    OrderListResponse GetOrdersSummary(Guid accountId, OrderQueryFilters filters);
   }
 
   public class OrderRepository : IOrderRepository
@@ -31,11 +32,70 @@ namespace TheWardrobe.API.Repositories
       _dapperContext = dapperContext;
     }
 
-    public IEnumerable<Order> GetOrders(Guid accountId)
+    public OrderListResponse GetOrdersSummary(Guid accountId, OrderQueryFilters filters)
     {
+      var res = new OrderListResponse();
       using var connection = _dapperContext.GetConnection();
 
-      return connection.GetList<Order>(new { BuyerId = accountId });
+      // maps valid order by query parameters to the sql column
+      var orderByColumns = new Dictionary<string, string>()
+      {
+        {"whenPlaced", "when_placed"},
+      };
+
+      if (!orderByColumns.ContainsKey(filters.OrderBy))
+      {
+        throw new AppException("Invalid orderBy value.");
+      }
+      var order = filters.Order.ToUpper();
+      if (order != "ASC" && order != "DESC")
+      {
+        throw new AppException("Invalid order value.");
+      }
+
+      var orderByColumn = orderByColumns[filters.OrderBy];
+
+      res.Orders = connection.Query<OrderResponse>(@$"
+        SELECT *
+        FROM ""order""
+        WHERE {(filters.Type == OrderType.Incoming ? "buyer_id" : "seller_id")} = @accountId
+        AND status = @Status
+        ORDER BY {orderByColumn} {order}
+        LIMIT @limit
+        OFFSET @offset;
+      ", new
+      {
+        accountId,
+        filters.Status,
+        limit = filters.PageSize,
+        offset = filters.PageSize * (filters.Page - 1)
+      });
+
+      foreach (var o in res.Orders)
+      {
+        o.Buyer = connection.ExecuteScalar<string>(@"
+         SELECT COALESCE(first_name || ' ' || last_name, email)
+         FROM account
+         WHERE id = @BuyerId", o);
+
+        o.Seller = connection.ExecuteScalar<string>(@"
+         SELECT COALESCE(first_name || ' ' || last_name, email)
+         FROM account
+         WHERE id = @SellerId", o);
+      }
+
+      res.NumOrders = connection.ExecuteScalar<int>(@$"
+        SELECT COUNT(*)
+        FROM ""order""
+        WHERE {(filters.Type == OrderType.Incoming ? "buyer_id" : "seller_id")} = @accountId
+        AND status = @Status;
+        ", new
+      {
+        accountId,
+        filters.Status,
+      });
+
+      return res;
     }
   }
 }

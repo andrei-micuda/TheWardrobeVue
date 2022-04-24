@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TheWardrobe.API.Models
 {
-  public class DeliveryAddressRequest
+  public class DeliveryAddressRequestResponse
   {
     public string Address { get; set; }
     public string City { get; set; }

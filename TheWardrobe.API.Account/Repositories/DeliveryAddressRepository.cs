@@ -12,10 +12,10 @@ namespace TheWardrobe.API.Repositories
 {
   public interface IDeliveryAddressRepository
   {
-    DeliveryAddress AddDeliveryAddress(Guid accountId, DeliveryAddressRequest model);
+    DeliveryAddress AddDeliveryAddress(Guid accountId, DeliveryAddressRequestResponse model);
     IEnumerable<DeliveryAddress> GetAll(Guid accountId);
     void DeleteDeliveryAddress(Guid accountId, Guid deliveryAddressId);
-    DeliveryAddress UpdateDeliveryAddress(Guid accountId, Guid deliveryAddressId, DeliveryAddressRequest model);
+    DeliveryAddress UpdateDeliveryAddress(Guid accountId, Guid deliveryAddressId, DeliveryAddressRequestResponse model);
   }
 
   public class DeliveryAddressRepository : IDeliveryAddressRepository
@@ -28,7 +28,7 @@ namespace TheWardrobe.API.Repositories
       _mapper = mapper;
       _dapperContext = dapperContext;
     }
-    public DeliveryAddress AddDeliveryAddress(Guid accountId, DeliveryAddressRequest model)
+    public DeliveryAddress AddDeliveryAddress(Guid accountId, DeliveryAddressRequestResponse model)
     {
       var address = _mapper.Map<DeliveryAddress>(model);
       address.AccountId = accountId;
@@ -56,7 +56,7 @@ namespace TheWardrobe.API.Repositories
       ", new { deliveryAddressId, accountId });
     }
 
-    public DeliveryAddress UpdateDeliveryAddress(Guid accountId, Guid deliveryAddressId, DeliveryAddressRequest model)
+    public DeliveryAddress UpdateDeliveryAddress(Guid accountId, Guid deliveryAddressId, DeliveryAddressRequestResponse model)
     {
       var address = _mapper.Map<DeliveryAddress>(model);
       address.Id = deliveryAddressId;

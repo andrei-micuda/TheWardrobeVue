@@ -1,7 +1,7 @@
 using System;
 using Dapper;
 
-namespace TheWardrobe.API.ItemCatalog.Entities
+namespace TheWardrobe.API.Entities
 {
   [Table("item")]
   public class Item

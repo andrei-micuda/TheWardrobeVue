@@ -32,7 +32,7 @@ namespace TheWardrobe.API.Helpers
           }
         ));
 
-      CreateMap<DeliveryAddressRequest, DeliveryAddress>();
+      CreateMap<DeliveryAddressRequestResponse, DeliveryAddress>();
     }
   }
 }

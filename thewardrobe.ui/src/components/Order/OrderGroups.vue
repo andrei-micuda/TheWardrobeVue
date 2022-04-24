@@ -2,13 +2,13 @@
   <div class="bg-gray-800 p-8 w-3/5 mx-auto rounded">
     <a-collapse v-model="activeKey">
       <a-collapse-panel key="pending" header="Pending" class="font-bold text-lg">
-        <p>Pending Orders</p>
+        <OrderList :orderStatus="0" :isIncoming="isIncoming" />
       </a-collapse-panel>
       <a-collapse-panel key="inProgress" header="In Progress" class="font-bold text-lg">
-        <OrderList />
+        <OrderList :orderStatus="1" :isIncoming="isIncoming" />
       </a-collapse-panel>
       <a-collapse-panel key="finished" header="Finished Orders" class="font-bold text-lg">
-        <p>Finished Orders</p>
+        <OrderList :orderStatus="2" :isIncoming="isIncoming" />
       </a-collapse-panel>
     </a-collapse>
   </div>
@@ -22,6 +22,12 @@
       return {
         activeKey: "inProgress"
       }
+    },
+    props: {
+      isIncoming: {
+        type: Boolean,
+        default: true
+      },
     },
     components: {
       OrderList,

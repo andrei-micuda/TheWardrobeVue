@@ -10,17 +10,17 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoMapper;
 using TheWardrobe.Helpers;
-using TheWardrobe.API.ItemCatalog.Entities;
-using TheWardrobe.API.ItemCatalog.Models;
 using TheWardrobe.API.ItemCatalog.Helpers;
 using TheWardrobe.CrossCutting.Helpers;
+using TheWardrobe.API.Models;
+using TheWardrobe.API.Entities;
 
 namespace TheWardrobe.API.Repositories
 {
   public interface IItemCatalogRepository
   {
     Item InsertItem(ItemRequestResponse model);
-    ItemListResponse GetItems(QueryFilters filters);
+    ItemListResponse GetItems(ItemQueryFilters filters);
     ItemRequestResponse GetItem(Guid itemId);
     void UpdateItem(ItemRequestResponse model);
     void DeleteItem(Guid itemId);
@@ -89,7 +89,7 @@ namespace TheWardrobe.API.Repositories
       return connection.Query<string>("SELECT url FROM item_image WHERE item_id = @itemId", new { itemId });
     }
 
-    public ItemListResponse GetItems(QueryFilters filters)
+    public ItemListResponse GetItems(ItemQueryFilters filters)
     {
       var res = new ItemListResponse();
       string sellerIdOperator = "";

@@ -1,6 +1,6 @@
 using AutoMapper;
-using TheWardrobe.API.ItemCatalog.Entities;
-using TheWardrobe.API.ItemCatalog.Models;
+using TheWardrobe.API.Entities;
+using TheWardrobe.API.Models;
 
 namespace TheWardrobe.API.ItemCatalog.Helpers
 {

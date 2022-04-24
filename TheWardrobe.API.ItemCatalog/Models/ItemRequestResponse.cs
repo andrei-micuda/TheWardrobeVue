@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TheWardrobe.API.ItemCatalog.Models
+namespace TheWardrobe.API.Models
 {
   public class ItemRequestResponse
   {

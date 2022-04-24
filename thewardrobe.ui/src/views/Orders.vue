@@ -13,8 +13,7 @@
     </li>
     </ul>
     <main>
-      <OrderGroups v-if="currentTab === 'Incoming'" />
-      <!-- <TheSellingTab v-if="currentTab === 'Selling'" /> -->
+      <OrderGroups :isIncoming="currentTab === 'Incoming'" />
     </main>
   </section>
 </template>

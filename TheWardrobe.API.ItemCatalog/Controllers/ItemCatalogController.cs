@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TheWardrobe.API.ItemCatalog.Models;
+using TheWardrobe.API.Models;
 using TheWardrobe.API.Repositories;
 using TheWardrobe.CrossCutting.Helpers;
 
@@ -24,7 +24,7 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
 
     [HttpGet]
     [Route("/api/[controller]")]
-    public IActionResult GetItems([FromQuery] QueryFilters filters)
+    public IActionResult GetItems([FromQuery] ItemQueryFilters filters)
     {
       // sanity check query parameters
       if (filters.SellerIdExclude != null && filters.SellerIdInclude != null)
