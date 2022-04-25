@@ -300,7 +300,7 @@ export default {
   @apply text-gray-100 !important;
 }
 
-a {
+/* a {
   @apply hover:text-green-500 !important;
-}
+} */
 </style>

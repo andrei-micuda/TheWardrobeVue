@@ -2,13 +2,14 @@ using AutoMapper;
 using TheWardrobe.API.Entities;
 using TheWardrobe.API.Models;
 
-namespace TheWardrobe.API.Cart.Helpers
+namespace TheWardrobe.API.Order.Helpers
 {
   public class AutoMapperProfile : Profile
   {
     public AutoMapperProfile()
     {
       CreateMap<FavoritesRequest, Favorite>();
+      CreateMap<CartRequest, Cart>();
     }
   }
 }

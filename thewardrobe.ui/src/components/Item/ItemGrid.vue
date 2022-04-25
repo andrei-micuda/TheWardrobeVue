@@ -5,7 +5,7 @@
       <a-col :span="6">
         <ItemFilters :initialMinPrice="minPrice" :initialMaxPrice="maxPrice" @filterData="fetchFilteredItems" />
       </a-col>
-      <a-col v-if="items && items.length > 0" :span="18">
+      <a-col :span="18">
         <a-row class="w-5/6 mx-auto" type="flex" justify="space-between">
           <a-col>
             <a-pagination
@@ -33,7 +33,8 @@
           </a-col>
         </a-row>
 
-        <a-list class="w-5/6 mx-auto"
+        <a-list v-if="items && items.length > 0"
+          class="w-5/6 mx-auto"
           :grid="{ gutter: 32, column: 3 }"
           :data-source="items">
           <template #renderItem="item">

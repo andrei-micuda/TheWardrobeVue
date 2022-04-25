@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace TheWardrobe.API.Cart
+namespace TheWardrobe.API.Order
 {
   public class Program
   {

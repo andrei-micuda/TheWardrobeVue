@@ -28,8 +28,12 @@
         <p class="text-lg">Size: {{item.size}}</p>
         <p class="text-2xl font-bold">{{item.price}} RON</p>
 
-        <a-button id="AddToCartBtn" type="primary" class="px-5 py-3 uppercase my-4 font-bold" large>
-          Add to cart <i class="anticon"><Icon icon="eva:shopping-cart-outline" :width="20" /></i>
+        <a-button
+          :id="isInCart ? 'RemoveFromCartBtn' : 'AddToCartBtn'"
+          :type="isInCart ? 'danger' : 'primary'"
+          @click="toggleCart"
+          class="px-5 py-3 uppercase my-4 font-bold hover:text-gray-600" large>
+          {{isInCart ? 'Remove from cart' : 'Add to cart'}} <i class="anticon"><Icon icon="eva:shopping-cart-outline" :width="20" /></i>
         </a-button>
         <br />
         <a-button
@@ -59,6 +63,7 @@
     data() {
       return {
         item: null,
+        isInCart: false,
         accountId: store.state.id
       }
     },
@@ -68,12 +73,17 @@
           console.log(res.data)
           this.item = res.data;
           
-          // if user is logged in, get favorite state
+          // if user is logged in, get favorite state and cart state
           if(this.accountId) {
             api.get(`/api/${this.accountId}/favorites/${this.item.id}`)
             .then(res => {
               this.item.isFavorite = res.data.isFavorite;
-            })
+            });
+
+            api.get(`/api/${this.accountId}/cart/${this.item.id}`)
+            .then(res => {
+              this.isInCart = res.data.isInCart;
+            });
           }
         });
     },
@@ -96,6 +106,27 @@
               this.item.isFavorite = false;
             })
         }
+      },
+      toggleCart() {
+        if(!this.isInCart) {
+          api.post(`/api/${store.state.id}/cart`, {
+            itemId: this.item.id
+          })
+            .then(() => {
+              console.log("added to cart")
+              this.isInCart = true;
+            });
+        }
+        else
+        {
+          api.delete(`/api/${store.state.id}/cart`, {
+            data: {itemId: this.item.id}
+          })
+            .then(() => {
+              console.log("removed from cart")
+              this.isInCart = false;
+            });
+        }
       }
     },
     components: {
@@ -110,7 +141,7 @@
     height: auto !important;
 
     &:hover i {
-      @apply text-gray-100 !important;
+      @apply text-gray-600 !important;
     }
 
     & span {
@@ -121,6 +152,16 @@
     & i {
       @apply text-green-400 !important;
       transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+  }
+  
+  #RemoveFromCartBtn {
+    height: auto !important;
+
+
+    & span {
+      @apply relative !important;
+      top: 3px;
     }
   }
 

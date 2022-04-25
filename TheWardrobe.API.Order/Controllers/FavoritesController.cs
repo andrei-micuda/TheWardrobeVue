@@ -15,25 +15,25 @@ namespace TheWardrobe.API.Controllers
   public class FavoritesController : ControllerBase
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<FavoritesController>();
-    private readonly ICartRepository _cartRepository;
+    private readonly IFavoritesRepository _favoritesRepository;
 
-    public FavoritesController(ICartRepository cartRepository)
+    public FavoritesController(IFavoritesRepository favoritesRepository)
     {
-      _cartRepository = cartRepository;
+      _favoritesRepository = favoritesRepository;
     }
 
     [HttpGet]
     [Route("/api/{accountId}/favorites/{itemId}")]
     public IActionResult GetFavoriteStatus(Guid accountId, Guid itemId)
     {
-      var isFavorite = _cartRepository.CheckIsFavorite(accountId, itemId);
+      var isFavorite = _favoritesRepository.CheckIsFavorite(accountId, itemId);
       return Ok(new { isFavorite });
     }
     [HttpPost]
     [Route("/api/{accountId}/favorites")]
     public IActionResult Post(Guid accountId, FavoritesRequest model)
     {
-      _cartRepository.Add(accountId, model);
+      _favoritesRepository.Add(accountId, model);
       return Ok();
     }
 
@@ -41,7 +41,7 @@ namespace TheWardrobe.API.Controllers
     [Route("/api/{accountId}/favorites")]
     public IActionResult Delete(Guid accountId, FavoritesRequest model)
     {
-      _cartRepository.Remove(accountId, model);
+      _favoritesRepository.Remove(accountId, model);
       return Ok();
     }
   }

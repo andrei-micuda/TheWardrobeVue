@@ -16,54 +16,54 @@ using TheWardrobe.API.Entities;
 
 namespace TheWardrobe.API.Repositories
 {
-  public interface IFavoritesRepository
+  public interface ICartRepository
   {
-    void Add(Guid accountId, FavoritesRequest model);
-    void Remove(Guid accountId, FavoritesRequest model);
-    bool CheckIsFavorite(Guid accountId, Guid itemId);
+    void Add(Guid accountId, CartRequest model);
+    void Remove(Guid accountId, CartRequest model);
+    bool CheckIsInCart(Guid accountId, Guid itemId);
   }
 
-  public class FavoritesRepository : IFavoritesRepository
+  public class CartRepository : ICartRepository
   {
     private readonly IMapper _mapper;
     private readonly IDapperContext _dapperContext;
 
-    public FavoritesRepository(IMapper mapper, IDapperContext dapperContext)
+    public CartRepository(IMapper mapper, IDapperContext dapperContext)
     {
       _mapper = mapper;
       _dapperContext = dapperContext;
     }
 
-    public void Add(Guid accountId, FavoritesRequest model)
+    public void Add(Guid accountId, CartRequest model)
     {
-      var fav = _mapper.Map<Favorite>(model);
-      fav.AccountId = accountId;
+      var cart = _mapper.Map<Cart>(model);
+      cart.AccountId = accountId;
       using var connection = _dapperContext.GetConnection();
 
-      connection.Execute("INSERT INTO favorite VALUES (@accountId, @itemId);", fav);
+      connection.Execute("INSERT INTO cart VALUES (@accountId, @itemId);", cart);
     }
 
-    public bool CheckIsFavorite(Guid accountId, Guid itemId)
+    public bool CheckIsInCart(Guid accountId, Guid itemId)
     {
       using var connection = _dapperContext.GetConnection();
 
       return connection.ExecuteScalar<bool>(@"
         SELECT COUNT(*) > 0
-        FROM favorite f
-        WHERE f.item_id = @itemId
-        AND f.account_id = @accountId;", new { itemId, accountId });
+        FROM cart c
+        WHERE c.item_id = @itemId
+        AND c.account_id = @accountId;", new { itemId, accountId });
     }
 
-    public void Remove(Guid accountId, FavoritesRequest model)
+    public void Remove(Guid accountId, CartRequest model)
     {
-      var fav = _mapper.Map<Favorite>(model);
-      fav.AccountId = accountId;
+      var cart = _mapper.Map<Cart>(model);
+      cart.AccountId = accountId;
       using var connection = _dapperContext.GetConnection();
 
       connection.Execute(@"
-        DELETE FROM favorite
+        DELETE FROM cart
         WHERE account_id = @accountId
-        AND item_id = @itemId;", fav);
+        AND item_id = @itemId;", cart);
     }
   }
 }

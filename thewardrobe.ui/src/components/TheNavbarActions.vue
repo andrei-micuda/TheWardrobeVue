@@ -1,16 +1,30 @@
 <template>
   <div class="hidden xl:flex items-center space-x-5">
-    <a class="flex items-center hover:text-gray-200" href="#">
-        <Icon :icon="icons.cart" class="h-6 w-6" />
-    </a>
+    <a-dropdown :trigger="['click']">
+      <a class="flex items-center hover:text-gray-200" @click="e => e.preventDefault()">
+          <Icon :icon="icons.cart" class="h-6 w-6" />
+      </a>
+      <a-menu slot="overlay">
+        <a-menu-item key="0">
+          <a href="http://www.alipay.com/">1st menu item</a>
+        </a-menu-item>
+        <a-menu-item key="1">
+          <a href="http://www.taobao.com/">2nd menu item</a>
+        </a-menu-item>
+        <a-menu-divider />
+        <a-menu-item key="3">
+          3rd menu item
+        </a-menu-item>
+      </a-menu>
+    </a-dropdown>
 
     <!-- Profile Button -->
     <div class="relative inline-block text-left">
       <button class="flex items-center hover:text-gray-200" @click="() => $store.commit('setIsDrawerVisible', true)">
           <Icon :icon="icons.profile" class="h-6 w-6" />
           <span class="flex absolute -mt-5 mr-6">
-            <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
           </span>
       </button>
       <a-drawer
@@ -70,6 +84,8 @@
   }
 </script>
 
-<style scoped>
-
+<style lang="postcss" scoped>
+ul a {
+  @apply hover:text-green-400 !important;
+}
 </style>

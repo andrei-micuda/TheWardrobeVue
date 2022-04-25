@@ -14,7 +14,7 @@ using Microsoft.OpenApi.Models;
 using TheWardrobe.API.Repositories;
 using TheWardrobe.Helpers;
 
-namespace TheWardrobe.API.Cart
+namespace TheWardrobe.API.Order
 {
   public class Startup
   {
@@ -34,6 +34,7 @@ namespace TheWardrobe.API.Cart
       // configure DI for application services
       services.AddScoped<IDapperContext, DapperContext>();
       services.AddScoped<ICartRepository, CartRepository>();
+      services.AddScoped<IFavoritesRepository, FavoritesRepository>();
       services.AddScoped<IOrderRepository, OrderRepository>();
 
       services.AddControllers();
