@@ -21,6 +21,7 @@ namespace TheWardrobe.API.Repositories
     void Add(Guid accountId, CartRequest model);
     void Remove(Guid accountId, CartRequest model);
     bool CheckIsInCart(Guid accountId, Guid itemId);
+    IEnumerable<Guid> GetCart(Guid accountId);
   }
 
   public class CartRepository : ICartRepository
@@ -52,6 +53,13 @@ namespace TheWardrobe.API.Repositories
         FROM cart c
         WHERE c.item_id = @itemId
         AND c.account_id = @accountId;", new { itemId, accountId });
+    }
+
+    public IEnumerable<Guid> GetCart(Guid accountId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.Query<Guid>("SELECT item_id from cart WHERE account_id = @accountId", new { accountId });
     }
 
     public void Remove(Guid accountId, CartRequest model)

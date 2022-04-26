@@ -88,7 +88,7 @@ export default {
 
 .small {
   & .ant-upload-select-picture-card {
-    @apply w-10 h-10;
+    @apply w-10 h-10 !important;
     & i {
       font-size: 24px !important;
     }
@@ -96,8 +96,13 @@ export default {
 
   & .ant-upload-list-item,
   & .ant-upload-list-picture-card-container {
-    @apply w-10 h-10 p-0;
+    @apply w-10 h-10 p-0 !important;
   }
 }
+
+/* .ant-upload-list-picture-card .ant-upload-list-item {
+  width: 100% !important;
+  height: 100% !important;
+} */
 
 </style>

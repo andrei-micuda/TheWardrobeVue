@@ -16,10 +16,12 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<ItemCatalogController>();
     private readonly IItemCatalogRepository _itemCatalogRepository;
+    private readonly IAccountDetailsRepository _accountDetailsRepository;
 
-    public ItemCatalogController(IItemCatalogRepository itemCatalogRepository)
+    public ItemCatalogController(IItemCatalogRepository itemCatalogRepository, IAccountDetailsRepository accountDetailsRepository)
     {
       _itemCatalogRepository = itemCatalogRepository;
+      _accountDetailsRepository = accountDetailsRepository;
     }
 
     [HttpGet]
@@ -58,7 +60,9 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     [Route("/api/[controller]/{itemId}")]
     public IActionResult GetItemById(Guid itemId)
     {
-      return Ok(_itemCatalogRepository.GetItem(itemId));
+      var item = _itemCatalogRepository.GetItem(itemId);
+      item.Seller = _accountDetailsRepository.GetAccountName(item.SellerId);
+      return Ok();
     }
 
 

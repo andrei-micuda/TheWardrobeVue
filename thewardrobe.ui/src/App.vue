@@ -63,12 +63,14 @@ export default {
 
 .ant-btn-primary {
   @apply bg-transparent border-green-400 text-green-400 hover:bg-green-400 hover:text-gray-100 !important;
+  text-shadow: none !important;
 }
 
 .ant-btn-danger {
   @apply text-gray-300 border-gray-300
     hover:bg-red-400 hover:border-opacity-0 hover:text-gray-700
     !important;
+  text-shadow: none !important;
 }
 
 .ant-message {
@@ -166,6 +168,14 @@ export default {
       @apply bg-gray-500 !important;
     }
   }
+
+  & .ant-select-dropdown-search {
+    @apply bg-gray-700 !important;
+
+    & .ant-select-search__field {
+      @apply bg-transparent text-gray-100 !important;
+    }
+  }
 }
 
 .ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
@@ -252,6 +262,8 @@ export default {
 .ant-select-dropdown {
   @apply bg-gray-700 border-2 border-gray-800 !important;
 }
+
+
 
 .ant-select-dropdown-menu-item {
   @apply bg-gray-700 text-gray-100 !important;

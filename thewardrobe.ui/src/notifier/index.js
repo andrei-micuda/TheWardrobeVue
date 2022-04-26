@@ -1,5 +1,6 @@
 import { message } from 'ant-design-vue';
 
+// TODO no colors on messages icons
 
 const notifier = {
   success: function (msg) {

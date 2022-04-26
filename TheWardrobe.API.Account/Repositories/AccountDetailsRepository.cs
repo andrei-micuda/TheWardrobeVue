@@ -15,6 +15,7 @@ namespace TheWardrobe.API.Repositories
   {
     AccountDetails GetAccountDetails(Guid accountId);
     AccountDetails UpdateAccountDetails(AccountDetails model);
+    string GetAccountName(Guid accountId);
   }
 
   public class AccountDetailsRepository : IAccountDetailsRepository
@@ -33,6 +34,16 @@ namespace TheWardrobe.API.Repositories
       using var connection = _dapperContext.GetConnection();
 
       return connection.Get<AccountDetails>(accountId);
+    }
+
+    public string GetAccountName(Guid accountId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.ExecuteScalar<string>(@"
+         SELECT COALESCE(first_name || ' ' || last_name, email)
+         FROM account
+         WHERE id = @accountId", new { accountId });
     }
 
     public AccountDetails UpdateAccountDetails(AccountDetails model)

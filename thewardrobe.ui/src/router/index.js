@@ -5,6 +5,7 @@ import Register from '../views/Register.vue'
 import SignIn from '../views/SignIn.vue'
 import ViewItem from '../views/ViewItem.vue'
 import EditItem from '../views/EditItem.vue'
+import Cart from '../views/Cart.vue';
 import Orders from '../views/Orders.vue';
 import Account from '../views/Account.vue';
 
@@ -43,6 +44,11 @@ const routes = [
     path: '/account',
     name: 'account',
     component: Account
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    component: Cart
   },
   {
     path: '/orders',

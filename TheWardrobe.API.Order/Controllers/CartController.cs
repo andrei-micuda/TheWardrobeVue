@@ -16,10 +16,14 @@ namespace TheWardrobe.API.Controllers
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<CartController>();
     private readonly ICartRepository _cartRepository;
+    private readonly IItemCatalogRepository _itemCatalogRepository;
+    private readonly IAccountDetailsRepository _accountDetailsRepository;
 
-    public CartController(ICartRepository cartRepository)
+    public CartController(ICartRepository cartRepository, IItemCatalogRepository itemCatalogRepository, IAccountDetailsRepository accountDetailsRepository)
     {
       _cartRepository = cartRepository;
+      _itemCatalogRepository = itemCatalogRepository;
+      _accountDetailsRepository = accountDetailsRepository;
     }
 
     [HttpGet("{itemId}")]
@@ -27,6 +31,21 @@ namespace TheWardrobe.API.Controllers
     {
       var isInCart = _cartRepository.CheckIsInCart(accountId, itemId);
       return Ok(new { isInCart });
+    }
+
+    [HttpGet]
+    public IActionResult GetCart(Guid accountId)
+    {
+      var itemIds = _cartRepository.GetCart(accountId);
+      var items = itemIds.Select(id => _itemCatalogRepository.GetItem(id));
+
+      var res = items.Select(i =>
+      {
+        i.Seller = _accountDetailsRepository.GetAccountName(i.SellerId);
+        return i;
+      });
+
+      return Ok(res);
     }
 
     [HttpPost]

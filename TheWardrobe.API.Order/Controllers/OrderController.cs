@@ -16,16 +16,23 @@ namespace TheWardrobe.API.Controllers
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<OrderController>();
     private readonly IOrderRepository _orderRepository;
+    private readonly IAccountDetailsRepository _accountDetailsRepository;
 
-    public OrderController(IOrderRepository orderRepository)
+    public OrderController(IOrderRepository orderRepository, IAccountDetailsRepository accountDetailsRepository)
     {
       _orderRepository = orderRepository;
+      _accountDetailsRepository = accountDetailsRepository;
     }
 
     [HttpGet]
     public IActionResult GetOrders(Guid accountId, [FromQuery] OrderQueryFilters filters)
     {
       var res = _orderRepository.GetOrdersSummary(accountId, filters);
+      foreach (var o in res.Orders)
+      {
+        o.Buyer = _accountDetailsRepository.GetAccountName(o.BuyerId);
+        o.Seller = _accountDetailsRepository.GetAccountName(o.SellerId);
+      }
       return Ok(res);
     }
   }

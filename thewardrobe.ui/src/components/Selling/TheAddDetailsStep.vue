@@ -142,6 +142,8 @@
 
   import TheInlineImageUpload from './TheInlineImageUpload.vue';
 
+  //TODO Add listeners to new item (cant click it until reload now)
+
   const categories = {
     clothing: constData.clothingCategories
   };

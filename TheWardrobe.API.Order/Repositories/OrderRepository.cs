@@ -71,18 +71,18 @@ namespace TheWardrobe.API.Repositories
         offset = filters.PageSize * (filters.Page - 1)
       });
 
-      foreach (var o in res.Orders)
-      {
-        o.Buyer = connection.ExecuteScalar<string>(@"
-         SELECT COALESCE(first_name || ' ' || last_name, email)
-         FROM account
-         WHERE id = @BuyerId", o);
+      // foreach (var o in res.Orders)
+      // {
+      //   o.Buyer = connection.ExecuteScalar<stringasdfda>(@"
+      //    SELECT COALESCE(first_name || ' ' || last_name, email)
+      //    FROM account
+      //    WHERE id = @BuyerId", o);
 
-        o.Seller = connection.ExecuteScalar<string>(@"
-         SELECT COALESCE(first_name || ' ' || last_name, email)
-         FROM account
-         WHERE id = @SellerId", o);
-      }
+      //   o.Seller = connection.ExecuteScalar<string>(@"
+      //    SELECT COALESCE(first_name || ' ' || last_name, email)
+      //    FROM account
+      //    WHERE id = @SellerId", o);
+      // }
 
       res.NumOrders = connection.ExecuteScalar<int>(@$"
         SELECT COUNT(*)

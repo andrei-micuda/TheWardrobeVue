@@ -161,6 +161,8 @@
   import notifier from "../notifier";
   // import store from '../store';
 
+  //TODO back button submits changes
+
   const categories = {
     clothing: constData.clothingCategories
   };

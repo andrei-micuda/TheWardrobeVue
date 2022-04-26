@@ -1,22 +1,9 @@
 <template>
   <div class="hidden xl:flex items-center space-x-5">
-    <a-dropdown :trigger="['click']">
-      <a class="flex items-center hover:text-gray-200" @click="e => e.preventDefault()">
-          <Icon :icon="icons.cart" class="h-6 w-6" />
-      </a>
-      <a-menu slot="overlay">
-        <a-menu-item key="0">
-          <a href="http://www.alipay.com/">1st menu item</a>
-        </a-menu-item>
-        <a-menu-item key="1">
-          <a href="http://www.taobao.com/">2nd menu item</a>
-        </a-menu-item>
-        <a-menu-divider />
-        <a-menu-item key="3">
-          3rd menu item
-        </a-menu-item>
-      </a-menu>
-    </a-dropdown>
+    <!-- <CartListOverview /> -->
+    <router-link to="/cart" class="flex items-center text-gray-100 hover:text-gray-200">
+      <Icon icon="eva:shopping-cart-outline" class="h-6 w-6" />
+    </router-link>
 
     <!-- Profile Button -->
     <div class="relative inline-block text-left">
@@ -63,6 +50,8 @@
 
   import store from '../store';
 
+  // import CartListOverview from './Cart/CartListOverview.vue';
+
   export default {
     data() {
       return {
@@ -80,6 +69,7 @@
     },
     components: {
       Icon,
+      // CartListOverview
     },
   }
 </script>
