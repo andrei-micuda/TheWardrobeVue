@@ -8,6 +8,7 @@ import EditItem from '../views/EditItem.vue'
 import Cart from '../views/Cart.vue';
 import Orders from '../views/Orders.vue';
 import Account from '../views/Account.vue';
+import Checkout from '../views/Checkout.vue';
 
 import store from "../store";
 
@@ -49,6 +50,11 @@ const routes = [
     path: '/cart',
     name: 'cart',
     component: Cart
+  },
+  {
+    path: '/checkout/:sellerId',
+    name: 'checkout',
+    component: Checkout
   },
   {
     path: '/orders',

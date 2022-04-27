@@ -24,6 +24,9 @@ namespace TheWardrobe.API.Controllers
       _accountDetailsRepository = accountDetailsRepository;
     }
 
+    // [HttpPost]
+    // public IActionResult PlaceOrder(Guid accountId, )
+
     [HttpGet]
     public IActionResult GetOrders(Guid accountId, [FromQuery] OrderQueryFilters filters)
     {

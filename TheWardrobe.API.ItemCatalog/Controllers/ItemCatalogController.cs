@@ -62,7 +62,7 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     {
       var item = _itemCatalogRepository.GetItem(itemId);
       item.Seller = _accountDetailsRepository.GetAccountName(item.SellerId);
-      return Ok();
+      return Ok(item);
     }
 
 

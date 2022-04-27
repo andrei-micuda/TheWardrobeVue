@@ -68,6 +68,7 @@
       }
     },
     mounted () {
+      console.log(this.$route.params)
       api.get(`/api/itemCatalog/${this.$route.params.itemId}`)
         .then(res => {
           console.log(res.data)

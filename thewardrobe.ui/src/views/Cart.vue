@@ -1,9 +1,9 @@
 <template>
   <div>
     <VPageHeader title="My Cart" @back="$router.back()" />
-    <ul v-if="items">
+    <ul v-if="items" class="w-3/5 mx-auto space-y-10">
       <li v-for="group in itemGroups.keys()" :key="group">
-        {{group}}
+        <CartList :itemGroup="itemGroups.get(group)" @updateItems="fetchItems" />
       </li>
     </ul>
   </div>
@@ -11,6 +11,7 @@
 
 <script>
   import VPageHeader from '../components/VPageHeader.vue';
+  import CartList from '../components/Cart/CartList.vue';
 
   import api from '../api';
   import store from '../store';
@@ -27,17 +28,20 @@
         return groupBy(this.items, i => i.sellerId);
       }
     },
-    mounted () {
-      api.get(`/api/${store.state.id}/cart`)
+    methods: {
+      fetchItems() {
+        api.get(`/api/${store.state.id}/cart`)
         .then(res => {
           this.items = res.data;
-
-          console.log(this.items)
-          console.log(groupBy(this.items, i => i.sellerId));
-        })
+        });
+      }
+    },
+    mounted () {
+      this.fetchItems();
     },
     components: {
-      VPageHeader
+      VPageHeader,
+      CartList
     }
   }
 </script>

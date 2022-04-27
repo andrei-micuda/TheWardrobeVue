@@ -26,17 +26,10 @@ namespace TheWardrobe.API.Controllers
       _accountDetailsRepository = accountDetailsRepository;
     }
 
-    [HttpGet("{itemId}")]
-    public IActionResult GetFavoriteStatus(Guid accountId, Guid itemId)
-    {
-      var isInCart = _cartRepository.CheckIsInCart(accountId, itemId);
-      return Ok(new { isInCart });
-    }
-
     [HttpGet]
-    public IActionResult GetCart(Guid accountId)
+    public IActionResult GetCart(Guid accountId, [FromQuery] Guid? sellerId)
     {
-      var itemIds = _cartRepository.GetCart(accountId);
+      var itemIds = _cartRepository.GetCart(accountId, sellerId);
       var items = itemIds.Select(id => _itemCatalogRepository.GetItem(id));
 
       var res = items.Select(i =>
