@@ -14,7 +14,7 @@ namespace TheWardrobe.API.Models
     public Guid BuyerId { get; set; }
     public string Buyer { get; set; }
     public DeliveryAddressRequestResponse DeliveryAddress { get; set; }
-    public int Total { get; set; }
+    public float Total { get; set; }
     public DateTime WhenPlaced { get; set; }
     public OrderStatus Status { get; set; }
     public IEnumerable<ItemRequestResponse> OrderItems { get; set; }

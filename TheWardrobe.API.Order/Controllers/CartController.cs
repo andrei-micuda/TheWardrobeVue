@@ -27,6 +27,14 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet]
+    [Route("{itemId}")]
+    public IActionResult GetFavoriteStatus(Guid accountId, Guid itemId)
+    {
+      var isInCart = _cartRepository.CheckIsInCart(accountId, itemId);
+      return Ok(new { isInCart });
+    }
+
+    [HttpGet]
     public IActionResult GetCart(Guid accountId, [FromQuery] Guid? sellerId)
     {
       var itemIds = _cartRepository.GetCart(accountId, sellerId);

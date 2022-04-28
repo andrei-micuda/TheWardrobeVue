@@ -24,8 +24,6 @@ namespace TheWardrobe.API.Entities
     public Guid BuyerId { get; set; }
     [Column("delivery_address_id")]
     public Guid DeliveryAddressId { get; set; }
-    [Column("total")]
-    public int Total { get; set; }
     [Column("when_placed")]
     public DateTime WhenPlaced { get; set; }
     [Column("status")]

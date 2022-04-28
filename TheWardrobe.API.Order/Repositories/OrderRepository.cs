@@ -19,6 +19,7 @@ namespace TheWardrobe.API.Repositories
   public interface IOrderRepository
   {
     OrderListResponse GetOrdersSummary(Guid accountId, OrderQueryFilters filters);
+    void PlaceOrder(Guid accountId, OrderRequest model);
   }
 
   public class OrderRepository : IOrderRepository
@@ -30,6 +31,45 @@ namespace TheWardrobe.API.Repositories
     {
       _mapper = mapper;
       _dapperContext = dapperContext;
+    }
+
+    public void PlaceOrder(Guid accountId, OrderRequest model)
+    {
+      var order = _mapper.Map<Entities.Order>(model);
+      order.BuyerId = accountId;
+      order.WhenPlaced = DateTime.UtcNow;
+
+      using var connection = _dapperContext.GetConnection();
+      connection.Open();
+      using var tx = connection.BeginTransaction();
+
+      try
+      {
+        var orderId = connection.Insert<Guid, Entities.Order>(order);
+        var orderItems = model.Items.Select(id => new
+        {
+          ItemId = id,
+          OrderId = orderId
+        });
+
+        foreach (var orderItem in orderItems)
+        {
+          connection.Execute(@"
+            INSERT INTO order_item(item_id, order_id)
+            VALUES (@ItemId, @OrderId)", orderItem);
+        }
+
+        tx.Commit();
+      }
+      catch (Exception ex)
+      {
+        tx.Rollback();
+        throw new AppException("Order could not be placed.");
+      }
+      finally
+      {
+        connection.Close();
+      }
     }
 
     public OrderListResponse GetOrdersSummary(Guid accountId, OrderQueryFilters filters)
@@ -71,18 +111,16 @@ namespace TheWardrobe.API.Repositories
         offset = filters.PageSize * (filters.Page - 1)
       });
 
-      // foreach (var o in res.Orders)
-      // {
-      //   o.Buyer = connection.ExecuteScalar<stringasdfda>(@"
-      //    SELECT COALESCE(first_name || ' ' || last_name, email)
-      //    FROM account
-      //    WHERE id = @BuyerId", o);
-
-      //   o.Seller = connection.ExecuteScalar<string>(@"
-      //    SELECT COALESCE(first_name || ' ' || last_name, email)
-      //    FROM account
-      //    WHERE id = @SellerId", o);
-      // }
+      foreach (var orderResponse in res.Orders)
+      {
+        orderResponse.Total = connection.ExecuteScalar<float>(@"
+          SELECT SUM(i.price)
+          FROM item i
+          WHERE i.id IN (
+            SELECT item_id
+            FROM order_item
+            WHERE order_id = @OrderId)", new { OrderId = orderResponse.Id });
+      }
 
       res.NumOrders = connection.ExecuteScalar<int>(@$"
         SELECT COUNT(*)

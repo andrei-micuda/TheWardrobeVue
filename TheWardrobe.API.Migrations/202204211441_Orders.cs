@@ -29,7 +29,6 @@ namespace TheWardrobe.API.Migrations
         .WithColumn("seller_id").AsGuid().ForeignKey("account", "id")
         .WithColumn("buyer_id").AsGuid().ForeignKey("account", "id")
         .WithColumn("delivery_address_id").AsGuid().ForeignKey("delivery_address", "id")
-        .WithColumn("total").AsInt64()
         .WithColumn("when_placed").AsDateTime().WithDefault(SystemMethods.CurrentDateTime)
         .WithColumn("status").AsInt64();
 

@@ -29,6 +29,7 @@ namespace TheWardrobe.API.Controllers
       var isFavorite = _favoritesRepository.CheckIsFavorite(accountId, itemId);
       return Ok(new { isFavorite });
     }
+
     [HttpPost]
     [Route("/api/{accountId}/favorites")]
     public IActionResult Post(Guid accountId, FavoritesRequest model)
