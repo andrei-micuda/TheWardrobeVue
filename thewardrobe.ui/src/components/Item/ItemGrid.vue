@@ -148,12 +148,16 @@
         });
       },
       fetchFilteredItems(otherParams) {
-        console.log("Getting filtered data")
-        let finalParams = {...this.params, ...otherParams};
-        finalParams.requesterId = store.state.id;
-        finalParams.page = this.currentPage;
-        finalParams.pageSize = this.itemsPerPage;
+        let finalParams = {
+          requesterId: store.state.id,
+          page: this.currentPage,
+          pageSize: this.itemsPerPage,
+          ...this.params,
+          ...otherParams
+        };
         finalParams = this.setOrderParams(finalParams);
+
+        console.log(finalParams);
 
         api.get(this.source, {
             params: finalParams

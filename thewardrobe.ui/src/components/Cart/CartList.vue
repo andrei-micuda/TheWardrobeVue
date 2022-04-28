@@ -47,7 +47,6 @@
     },
     methods: {
       deleteItem(itemId) {
-        console.log("Deleting item " + itemId);
         api.delete(`/api/${store.state.id}/cart`, {
             data: { itemId }
           })

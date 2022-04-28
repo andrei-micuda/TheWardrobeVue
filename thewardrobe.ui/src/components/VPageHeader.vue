@@ -1,5 +1,5 @@
 <template>
-  <div class="w-screen flex items-center p-5 justify-between">
+  <div class="flex items-center p-5 justify-between">
     <div class="flex items-center">
       <button @click="$emit('back')">
         <Icon icon="eva:arrow-back-outline" width="32" height="32"

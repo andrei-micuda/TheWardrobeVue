@@ -25,13 +25,23 @@
           </ul>
         </div>
 
-        <DeliveryAddressRadio />
+        <DeliveryAddressRadio @deliveryAddressChange="handleDeliveryAddressChange" />
       </a-col>
       <a-col :span="12">
-        <div class="bg-gray-800 ml-10 p-4 rounded text-lg space-y-4">
-          <p class="font-bold text-xl">Order Summary</p>
-          <p>Total: <span class="font-bold">{{total}} RON</span></p>
-          <p>Delivery Address:</p>
+        <div class="bg-gray-800 ml-10 p-4 rounded text-lg space-y-6">
+          <p class="font-bold text-xl mb-6">Order Summary</p>
+          <div>
+            <p>Total:</p>
+            <p class="font-bold">{{total}} RON</p>
+          </div>
+          <div>
+            <p>Delivery Address:</p>
+            <div v-if="deliveryAddress">
+              <p class="font-bold">{{deliveryAddress.address}}</p>
+              <p>{{deliveryAddress.city}}, {{deliveryAddress.country}} {{deliveryAddress.postalCode}}</p>
+            </div>
+          </div>
+          <a-button type="primary" size="large" @click="placeOrder">Place Order</a-button>
         </div>
       </a-col>
     </a-row>
@@ -44,13 +54,15 @@
   import { Icon } from '@iconify/vue2';
 
   import api from '../api';
+  import notifier from '../notifier';
   import store from '../store';
 
   export default {
     data() {
       return {
         sellerId: this.$route.params.sellerId,
-        items: null
+        items: null,
+        deliveryAddress: null
       }
     },
     computed: {
@@ -59,10 +71,34 @@
       }
     },
     mounted () {
-      api.get(`/api/${store.state.id}/cart`, {params: { sellerId: this.sellerId }})
-        .then(res => {
-          this.items = res.data;
+      this.fetchItems();
+    },
+    methods: {
+      placeOrder() {
+        api.post(`/api/${store.state.id}/order`, {
+          sellerId: this.sellerId,
+          deliveryAddressId: this.deliveryAddress.id,
+          items: this.items.map(i => i.id)
         });
+      },
+      fetchItems() {
+        api.get(`/api/${store.state.id}/cart`, {params: { sellerId: this.sellerId }})
+          .then(res => {
+            this.items = res.data;
+          });
+      },
+      deleteItem(itemId) {
+        api.delete(`/api/${store.state.id}/cart`, {
+            data: { itemId }
+          })
+          .then(() => {
+            notifier.success("Removed item from cart.");
+            this.fetchItems();
+          });
+      },
+      handleDeliveryAddressChange(addr) {
+        this.deliveryAddress = addr;
+      }
     },
     components: {
       VPageHeader,

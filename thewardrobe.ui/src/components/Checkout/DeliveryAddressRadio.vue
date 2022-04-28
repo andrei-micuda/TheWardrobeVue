@@ -1,8 +1,8 @@
 <template>
   <section class="bg-gray-800 rounded p-4">
     <p class="text-lg pb-4">Delivery addresses</p>
-    <a-radio-group id="DeliveryAddressRadio" class="bg-gray-700 w-full p-4" v-model="deliveryAddressId">
-      <a-radio v-for="addr in deliveryAddresses" :key="addr.id" :value="addr.id" class="text-gray-100">
+    <a-radio-group id="DeliveryAddressRadio" class="bg-gray-700 w-full p-4" v-model="selectedDeliveryAddress">
+      <a-radio v-for="addr in deliveryAddresses" :key="addr.id" :value="addr" class="text-gray-100">
         <div>
           <div>
             <p class="font-bold">{{addr.address}}</p>
@@ -10,7 +10,7 @@
           </div>
         </div>
       </a-radio>
-      <a-button type="primary" @click="showModal" class="mt-6">Add address</a-button>
+      <a-button @click="showModal" class="mt-6">Add address</a-button>
     </a-radio-group>
     <a-modal v-model="modalVisible" title="Add new delivery address" @ok="handleOk">
       <a-form :form="form" @submit="handleSubmit" hideRequiredMark>
@@ -78,7 +78,7 @@
             placeholder="123456"
           />
         </a-form-item>
-        <a-button id="AddAddressBtn" class="hidden" type="primary" html-type="submit"></a-button>
+        <a-button id="AddAddressBtn" class="hidden" html-type="submit"></a-button>
       </a-form>
     </a-modal>
   </section>
@@ -96,7 +96,7 @@
       return {
         deliveryAddresses: [],
         modalVisible: false,
-        deliveryAddressId: null
+        selectedDeliveryAddress: null
       }
     },
     methods: {
@@ -127,7 +127,13 @@
       api.get(`/api/${store.state.id}/deliveryAddress`)
         .then(res => {
           this.deliveryAddresses = res.data;
+          this.selectedDeliveryAddress = this.deliveryAddresses[0];
         })
+    },
+    watch: {
+      selectedDeliveryAddress(newValue) {
+        this.$emit("deliveryAddressChange", newValue);
+      }
     },
   }
 </script>

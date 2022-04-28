@@ -85,6 +85,14 @@ export default {
   @apply bg-green-400 !important;
 }
 
+.ant-radio-inner {
+  @apply border-green-400 bg-gray-800 !important;
+
+  &::after {
+    @apply bg-green-400 !important;
+  }
+}
+
 .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
   @apply bg-green-400 border-green-400 !important;
 
@@ -212,7 +220,8 @@ export default {
   @apply bg-transparent !important;
 }
 
-.ant-pagination-next:hover .ant-pagination-item-link {
+.ant-pagination-next:hover .ant-pagination-item-link,
+.ant-pagination-prev:hover .ant-pagination-item-link {
   @apply border-green-400 !important;
 }
 
