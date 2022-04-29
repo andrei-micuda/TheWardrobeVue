@@ -32,7 +32,9 @@
             <p>Placed at: {{order.whenPlaced.format('DD/MM/YYYY HH:mm')}} | Total: <span class="font-bold">{{order.total}} RON</span></p>
           </div>
           <div>
-            <a-button @click="() => {}">details</a-button>
+            <router-link :to="{name: 'order', params: {orderId: order.id}}">
+              <a-button>details</a-button>
+            </router-link>
           </div>
         </div>
       </li>

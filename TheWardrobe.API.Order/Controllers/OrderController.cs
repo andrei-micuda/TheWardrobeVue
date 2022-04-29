@@ -17,11 +17,15 @@ namespace TheWardrobe.API.Controllers
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<OrderController>();
     private readonly IOrderRepository _orderRepository;
     private readonly IAccountDetailsRepository _accountDetailsRepository;
+    private readonly IDeliveryAddressRepository _deliveryAddressRepository;
+    private readonly IItemCatalogRepository _itemCatalogRepository;
 
-    public OrderController(IOrderRepository orderRepository, IAccountDetailsRepository accountDetailsRepository)
+    public OrderController(IOrderRepository orderRepository, IAccountDetailsRepository accountDetailsRepository, IDeliveryAddressRepository deliveryAddressRepository, IItemCatalogRepository itemCatalogRepository)
     {
       _orderRepository = orderRepository;
       _accountDetailsRepository = accountDetailsRepository;
+      _deliveryAddressRepository = deliveryAddressRepository;
+      _itemCatalogRepository = itemCatalogRepository;
     }
 
     [HttpPost]
@@ -29,6 +33,21 @@ namespace TheWardrobe.API.Controllers
     {
       _orderRepository.PlaceOrder(accountId, model);
       return Ok();
+    }
+
+    [HttpGet("{orderId}")]
+    public IActionResult GetOrderById(Guid orderId)
+    {
+      var order = _orderRepository.GetOrder(orderId);
+      order.Buyer = _accountDetailsRepository.GetAccountName(order.BuyerId);
+      order.Seller = _accountDetailsRepository.GetAccountName(order.SellerId);
+      order.DeliveryAddress = _deliveryAddressRepository.Get(order.DeliveryAddress.Id);
+
+      order.OrderItems = _orderRepository.GetOrderItemIds(orderId)
+                                          .Select(itemId => _itemCatalogRepository.GetItem(itemId));
+
+      order.Total = order.OrderItems.Sum(item => item.Price);
+      return Ok(order);
     }
 
     [HttpGet]

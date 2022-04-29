@@ -13,6 +13,7 @@ namespace TheWardrobe.API.Repositories
   public interface IDeliveryAddressRepository
   {
     DeliveryAddress AddDeliveryAddress(Guid accountId, DeliveryAddressRequestResponse model);
+    DeliveryAddress Get(Guid deliveryAddressId);
     IEnumerable<DeliveryAddress> GetAll(Guid accountId);
     void DeleteDeliveryAddress(Guid accountId, Guid deliveryAddressId);
     DeliveryAddress UpdateDeliveryAddress(Guid accountId, Guid deliveryAddressId, DeliveryAddressRequestResponse model);
@@ -39,12 +40,20 @@ namespace TheWardrobe.API.Repositories
       return address;
     }
 
+    public DeliveryAddress Get(Guid deliveryAddressId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.Get<DeliveryAddress>(deliveryAddressId);
+    }
+
     public IEnumerable<DeliveryAddress> GetAll(Guid accountId)
     {
       using var connection = _dapperContext.GetConnection();
 
       return connection.GetList<DeliveryAddress>(new { AccountId = accountId });
     }
+
     public void DeleteDeliveryAddress(Guid accountId, Guid deliveryAddressId)
     {
       using var connection = _dapperContext.GetConnection();

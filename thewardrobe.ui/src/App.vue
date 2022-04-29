@@ -321,6 +321,45 @@ export default {
   @apply text-gray-100 !important;
 }
 
+.ant-steps-item-finish {
+  & .ant-steps-item-tail::after {
+    @apply bg-green-400 !important;
+  }
+
+  & .ant-steps-item-icon {
+    @apply bg-transparent border-green-400 !important;
+  }
+
+  & .ant-steps-item-icon > .ant-steps-icon {
+    top: -4px;
+  }
+}
+
+.ant-steps-item-process {
+  & .ant-steps-item-icon {
+    @apply bg-green-400 border-green-500 !important;
+  }
+
+  & .ant-steps-icon {
+    @apply text-gray-800 !important;
+  }
+}
+
+.ant-steps-item-wait {
+  & .ant-steps-item-icon {
+    @apply bg-transparent border-gray-100 !important;
+  }
+
+  & .ant-steps-icon {
+    @apply text-gray-100 !important;
+  }
+}
+
+.ant-steps-vertical .ant-steps-item-content .ant-steps-item-title,
+.ant-steps-vertical .ant-steps-item-content .ant-steps-item-description {
+  @apply text-gray-100 !important;
+}
+
 /* a {
   @apply hover:text-green-500 !important;
 } */

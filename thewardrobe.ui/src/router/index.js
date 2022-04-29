@@ -6,6 +6,7 @@ import SignIn from '../views/SignIn.vue'
 import ViewItem from '../views/ViewItem.vue'
 import EditItem from '../views/EditItem.vue'
 import Cart from '../views/Cart.vue';
+import Order from '../views/Order.vue';
 import Orders from '../views/Orders.vue';
 import Account from '../views/Account.vue';
 import Checkout from '../views/Checkout.vue';
@@ -61,7 +62,12 @@ const routes = [
     alias: ['/orders/incoming', '/orders/outgoing'],
     name: 'orders',
     component: Orders
-  }
+  },
+  {
+    path: '/order/:orderId',
+    name: 'order',
+    component: Order
+  },
 ];
 
 const router = new VueRouter({

@@ -20,6 +20,8 @@ namespace TheWardrobe.API.Repositories
   {
     OrderListResponse GetOrdersSummary(Guid accountId, OrderQueryFilters filters);
     void PlaceOrder(Guid accountId, OrderRequest model);
+    OrderResponse GetOrder(Guid orderId);
+    IEnumerable<Guid> GetOrderItemIds(Guid orderId);
   }
 
   public class OrderRepository : IOrderRepository
@@ -134,6 +136,32 @@ namespace TheWardrobe.API.Repositories
       });
 
       return res;
+    }
+
+    public OrderResponse GetOrder(Guid orderId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      var order = connection.QueryFirstOrDefault<Entities.Order>(@$"
+        SELECT *
+        FROM ""order""
+        WHERE id = @orderId;
+      ", new { orderId });
+
+      var res = _mapper.Map<OrderResponse>(order);
+      res.DeliveryAddress = new();
+      res.DeliveryAddress.Id = order.DeliveryAddressId;
+
+      return res;
+    }
+
+    public IEnumerable<Guid> GetOrderItemIds(Guid orderId)
+    {
+      using var connection = _dapperContext.GetConnection();
+      return connection.Query<Guid>(@"
+        SELECT item_id
+        FROM order_item
+        WHERE order_id = @orderId", new { orderId });
     }
   }
 }

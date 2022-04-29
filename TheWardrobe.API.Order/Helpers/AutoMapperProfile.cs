@@ -11,6 +11,7 @@ namespace TheWardrobe.API.Order.Helpers
       CreateMap<FavoritesRequest, Favorite>();
       CreateMap<CartRequest, Cart>();
       CreateMap<OrderRequest, Entities.Order>();
+      CreateMap<Entities.Order, OrderResponse>();
     }
   }
 }
