@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TheWardrobe.API.Entities;
 using TheWardrobe.API.Models;
 using TheWardrobe.API.Repositories;
 using TheWardrobe.CrossCutting.Helpers;
@@ -60,6 +61,16 @@ namespace TheWardrobe.API.Controllers
         o.Seller = _accountDetailsRepository.GetAccountName(o.SellerId);
       }
       return Ok(res);
+    }
+
+    [HttpPatch("{orderId}")]
+    public IActionResult UpdateOrderStatus(Guid accountId, Guid orderId, [FromBody] OrderStatusChangeRequest model)
+    {
+      var wasUpdated = _orderRepository.UpdateOrderStatus(accountId, orderId, model.Status);
+
+      if (wasUpdated)
+        return Ok();
+      return BadRequest();
     }
   }
 }

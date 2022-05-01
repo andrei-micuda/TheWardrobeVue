@@ -10,7 +10,9 @@ namespace TheWardrobe.API.Entities
   {
     Pending,
     InProgress,
-    Completed
+    Completed,
+    Cancelled,
+    Declined
   }
 
   [Table("order")]

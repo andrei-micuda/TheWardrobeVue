@@ -322,7 +322,8 @@ export default {
 }
 
 .ant-steps-item-finish {
-  & .ant-steps-item-tail::after {
+  & .ant-steps-item-tail::after,
+  & .ant-steps-item-title::after {
     @apply bg-green-400 !important;
   }
 
@@ -332,6 +333,20 @@ export default {
 
   & .ant-steps-item-icon > .ant-steps-icon {
     top: -4px;
+  }
+}
+
+.ant-steps-item-error {
+  & .ant-steps-item-tail::after {
+    @apply bg-red-400 !important;
+  }
+
+  & .ant-steps-item-icon {
+    @apply bg-transparent border-red-400 !important;
+  }
+
+  & .ant-steps-item-icon > .ant-steps-icon {
+    top: -5px;
   }
 }
 
@@ -356,7 +371,9 @@ export default {
 }
 
 .ant-steps-vertical .ant-steps-item-content .ant-steps-item-title,
-.ant-steps-vertical .ant-steps-item-content .ant-steps-item-description {
+.ant-steps-vertical .ant-steps-item-content .ant-steps-item-description,
+.ant-steps-horizontal .ant-steps-item-content .ant-steps-item-title,
+.ant-steps-horizontal .ant-steps-item-content .ant-steps-item-description {
   @apply text-gray-100 !important;
 }
 

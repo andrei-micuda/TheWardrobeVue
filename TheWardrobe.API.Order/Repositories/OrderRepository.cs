@@ -13,6 +13,7 @@ using TheWardrobe.Helpers;
 using TheWardrobe.CrossCutting.Helpers;
 using TheWardrobe.API.Entities;
 using TheWardrobe.API.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TheWardrobe.API.Repositories
 {
@@ -22,6 +23,9 @@ namespace TheWardrobe.API.Repositories
     void PlaceOrder(Guid accountId, OrderRequest model);
     OrderResponse GetOrder(Guid orderId);
     IEnumerable<Guid> GetOrderItemIds(Guid orderId);
+    Guid GetBuyerId(Guid orderId);
+    Guid GetSellerId(Guid orderId);
+    bool UpdateOrderStatus(Guid accountId, Guid orderId, OrderStatus status);
   }
 
   public class OrderRepository : IOrderRepository
@@ -162,6 +166,96 @@ namespace TheWardrobe.API.Repositories
         SELECT item_id
         FROM order_item
         WHERE order_id = @orderId", new { orderId });
+    }
+
+    public Guid GetBuyerId(Guid orderId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.ExecuteScalar<Guid>(@"SELECT buyer_id FROM ""order"" WHERE id = @orderId", new { orderId });
+    }
+
+    public Guid GetSellerId(Guid orderId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.ExecuteScalar<Guid>(@"SELECT seller_id FROM ""order"" WHERE id = @orderId", new { orderId });
+    }
+
+    private void SetOrderStatus(Guid orderId, OrderStatus status)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      connection.Execute(@"UPDATE ""order"" SET status = @status WHERE id = @orderId", new { orderId, status });
+    }
+
+    public bool UpdateOrderStatus(Guid accountId, Guid orderId, OrderStatus status)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      var buyerId = GetBuyerId(orderId);
+      var sellerId = GetSellerId(orderId);
+
+      var currentStatus = connection.ExecuteScalar<OrderStatus>(@"
+        SELECT status
+        FROM ""order""
+        WHERE id = @orderId", new { orderId });
+
+      connection.Open();
+      var tx = connection.BeginTransaction();
+
+      if (status == OrderStatus.Pending)
+      {
+        // pending status shall not be set through the API
+        return false;
+      }
+
+      if (status == OrderStatus.InProgress)
+      {
+        // only seller can accept order
+        if (currentStatus != OrderStatus.Pending || accountId != sellerId)
+          return false;
+
+        // decline all other pending orders that contain any of the items in the accepted order
+        var orderItemIds = GetOrderItemIds(orderId);
+
+        var otherOrderIds = connection.Query<Guid>(@"
+          SELECT DISTINCT order_id
+          FROM order_item
+          WHERE order_id != @orderId
+          AND item_id = ANY(@orderItemIds)", new { orderId, orderItemIds });
+
+        foreach (var id in otherOrderIds)
+        {
+          SetOrderStatus(id, OrderStatus.Declined);
+        }
+      }
+
+      if (status == OrderStatus.Completed)
+      {
+        // only buyer can confirm order completion
+        if (currentStatus != OrderStatus.Pending || accountId != buyerId)
+          return false;
+      }
+
+      if (status == OrderStatus.Cancelled)
+      {
+        // only buyer can cancel an order
+        if (currentStatus != OrderStatus.Pending || accountId != buyerId)
+          return false;
+      }
+
+      if (status == OrderStatus.Declined)
+      {
+        // only seller can cancel an order
+        if (currentStatus != OrderStatus.Pending || accountId != sellerId)
+          return false;
+      }
+
+      SetOrderStatus(orderId, status);
+
+      tx.Commit();
+      return true;
     }
   }
 }

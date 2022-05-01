@@ -33,7 +33,8 @@ namespace TheWardrobe.API.Migrations
         .WithColumn("status").AsInt64();
 
       Create.Table("order_item")
-        .WithColumn("item_id").AsGuid().PrimaryKey().ForeignKey("item", "id").OnDelete(System.Data.Rule.SetNull)
+        .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(SystemMethods.NewGuid)
+        .WithColumn("item_id").AsGuid().ForeignKey("item", "id").OnDelete(System.Data.Rule.SetNull)
         .WithColumn("order_id").AsGuid().ForeignKey("order", "id").OnDelete(System.Data.Rule.SetNull);
 
       Create.Table("review")

@@ -224,7 +224,7 @@
       },
       getFilteredData() {
         const params = {
-          page: 1,
+          // page: 1,
           brands: this.selectedBrands,
           categories: this.selectedCategories,
           sizes: this.selectedSizes,

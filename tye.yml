@@ -5,6 +5,7 @@
 #    https://aka.ms/AA7q20u
 #
 name: thewardrobe
+dashboardPort: 8008
 services:
   - name: thewardrobe-gateway
     project: TheWardrobe.API.Gateway/TheWardrobe.API.Gateway.csproj

@@ -79,7 +79,10 @@
           sellerId: this.sellerId,
           deliveryAddressId: this.deliveryAddress.id,
           items: this.items.map(i => i.id)
-        });
+        })
+          .then(() => {
+            this.$router.replace("/orders");
+          });
       },
       fetchItems() {
         api.get(`/api/${store.state.id}/cart`, {params: { sellerId: this.sellerId }})
