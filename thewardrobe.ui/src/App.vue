@@ -42,7 +42,7 @@ export default {
 }
 
 .anticon {
-  @apply text-gray-100 !important;
+  /* @apply text-gray-100 !important; */
 }
 
 .ant-btn {
@@ -144,6 +144,12 @@ export default {
   }
 }
 
+.ant-select-tree {
+  & .anticon {
+    @apply text-gray-100 !important;
+  }
+}
+
 .ant-select-tree .ant-select-switcher-icon {
   @apply relative !important;
   top: -3px;
@@ -214,6 +220,12 @@ export default {
   }
 }
 
+.ant-pagination {
+  & .anticon {
+    @apply text-gray-100 !important;
+  }
+}
+
 .ant-pagination-item,
 .ant-pagination-item-active,
 .ant-pagination-item-link {
@@ -245,6 +257,12 @@ export default {
 
   & a {
     @apply text-green-400 !important;
+  }
+}
+
+.ant-select {
+  & .anticon {
+    @apply text-gray-100 !important;
   }
 }
 
@@ -334,6 +352,10 @@ export default {
   & .ant-steps-item-icon > .ant-steps-icon {
     top: -4px;
   }
+
+  & .anticon {
+    @apply text-gray-100 !important;
+  }
 }
 
 .ant-steps-item-error {
@@ -375,6 +397,13 @@ export default {
 .ant-steps-horizontal .ant-steps-item-content .ant-steps-item-title,
 .ant-steps-horizontal .ant-steps-item-content .ant-steps-item-description {
   @apply text-gray-100 !important;
+}
+
+.ant-rate-star-zero {
+  & .ant-rate-star-first,
+  & .ant-rate-star-second {
+    @apply text-gray-400 !important;
+  }
 }
 
 /* a {

@@ -39,8 +39,8 @@ namespace TheWardrobe.API.Migrations
 
       Create.Table("review")
         .WithColumn("order_id").AsGuid().ForeignKey("order", "id").PrimaryKey()
-        .WithColumn("buyer_rating").AsInt16().Nullable()
-        .WithColumn("seller_rating").AsInt16().Nullable();
+        .WithColumn("buyer_rating").AsInt32().Nullable()
+        .WithColumn("seller_rating").AsInt32().Nullable();
     }
 
     public override void Down()

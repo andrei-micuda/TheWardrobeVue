@@ -40,8 +40,13 @@
               <a-button type="primary" @click="() => handleOrderStatusChange(orderStatuses.completed)">Mark as received</a-button>
             </div>
           </div>
-          <div v-else-if="order.status === orderStatuses.completed">
-            The order has been completed successfully.
+          <div v-else-if="order.status === orderStatuses.completed" class="space-y-4">
+            <p>The order has been completed successfully.</p>
+
+            <div class="bg-gray-700 rounded p-4">
+              <p>Please rate your experience with this {{account == order.buyerId ? 'seller' : 'buyer'}}:</p>
+              <a-rate v-model="rating" @change="handleRatingChange" class="text-yellow-300" />
+            </div>
           </div>
         </div>
       </a-col>
@@ -85,6 +90,7 @@
   import VPageHeader from '../components/VPageHeader.vue';
 
   import api from '../api';
+  import notifier from '../notifier';
   import store from '../store';
 
   export default {
@@ -92,6 +98,7 @@
       return {
         account: store.state.id,
         order: null,
+        rating: 0,
         orderStatuses: {
           pending: 0,
           inProgress: 1,
@@ -124,6 +131,7 @@
         api.get(`/api/${this.account}/order/${this.$route.params.orderId}`)
         .then(res => {
           this.order = res.data;
+          console.log(res.data);
         });
       },
       handleOrderStatusChange(status) {
@@ -136,6 +144,12 @@
             this.fetchOrderData();
           });
       },
+      handleRatingChange(rating) {
+        api.patch(`/api/${this.account}/order/${this.order.id}/review`, { rating })
+          .then(() => {
+            notifier.success("Successfully reviewed order!");
+          });
+      }
     },
     components: {
       VPageHeader

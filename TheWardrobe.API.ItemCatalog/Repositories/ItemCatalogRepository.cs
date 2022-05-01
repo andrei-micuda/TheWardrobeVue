@@ -335,6 +335,12 @@ namespace TheWardrobe.API.Repositories
 
       item.Images = GetItemImages(item.Id);
 
+      item.SellerRating = connection.ExecuteScalar<float?>(@"
+        SELECT AVG(r.seller_rating)
+        FROM review r, ""order"" o
+        WHERE r.order_id = o.id
+        AND o.seller_id = @sellerId;", new { item.SellerId });
+
       return item;
     }
 

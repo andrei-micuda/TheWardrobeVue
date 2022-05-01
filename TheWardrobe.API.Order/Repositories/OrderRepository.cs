@@ -21,11 +21,12 @@ namespace TheWardrobe.API.Repositories
   {
     OrderListResponse GetOrdersSummary(Guid accountId, OrderQueryFilters filters);
     void PlaceOrder(Guid accountId, OrderRequest model);
-    OrderResponse GetOrder(Guid orderId);
+    OrderResponse GetOrder(Guid accountId, Guid orderId);
     IEnumerable<Guid> GetOrderItemIds(Guid orderId);
     Guid GetBuyerId(Guid orderId);
     Guid GetSellerId(Guid orderId);
     bool UpdateOrderStatus(Guid accountId, Guid orderId, OrderStatus status);
+    bool ReviewOrder(Guid accountId, Guid orderId, int rating);
   }
 
   public class OrderRepository : IOrderRepository
@@ -142,8 +143,14 @@ namespace TheWardrobe.API.Repositories
       return res;
     }
 
-    public OrderResponse GetOrder(Guid orderId)
+    public OrderResponse GetOrder(Guid accountId, Guid orderId)
     {
+      var buyerId = GetBuyerId(orderId);
+      var sellerId = GetSellerId(orderId);
+
+      if (accountId != buyerId && accountId != sellerId)
+        return null;
+
       using var connection = _dapperContext.GetConnection();
 
       var order = connection.QueryFirstOrDefault<Entities.Order>(@$"
@@ -155,6 +162,8 @@ namespace TheWardrobe.API.Repositories
       var res = _mapper.Map<OrderResponse>(order);
       res.DeliveryAddress = new();
       res.DeliveryAddress.Id = order.DeliveryAddressId;
+
+      (res.BuyerRating, res.SellerRating) = GetOrderReview(accountId, orderId);
 
       return res;
     }
@@ -189,6 +198,16 @@ namespace TheWardrobe.API.Repositories
       connection.Execute(@"UPDATE ""order"" SET status = @status WHERE id = @orderId", new { orderId, status });
     }
 
+    private OrderStatus GetOrderStatus(Guid orderId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.ExecuteScalar<OrderStatus>(@"
+        SELECT status
+        FROM ""order""
+        WHERE id = @orderId", new { orderId });
+    }
+
     public bool UpdateOrderStatus(Guid accountId, Guid orderId, OrderStatus status)
     {
       using var connection = _dapperContext.GetConnection();
@@ -196,10 +215,7 @@ namespace TheWardrobe.API.Repositories
       var buyerId = GetBuyerId(orderId);
       var sellerId = GetSellerId(orderId);
 
-      var currentStatus = connection.ExecuteScalar<OrderStatus>(@"
-        SELECT status
-        FROM ""order""
-        WHERE id = @orderId", new { orderId });
+      var currentStatus = GetOrderStatus(orderId);
 
       connection.Open();
       var tx = connection.BeginTransaction();
@@ -234,8 +250,13 @@ namespace TheWardrobe.API.Repositories
       if (status == OrderStatus.Completed)
       {
         // only buyer can confirm order completion
-        if (currentStatus != OrderStatus.Pending || accountId != buyerId)
+        if (currentStatus != OrderStatus.InProgress || accountId != buyerId)
           return false;
+
+        // create entry for order reviews
+        connection.Execute(@"
+          INSERT INTO review (order_id)
+          VALUES (@orderId);", new { orderId });
       }
 
       if (status == OrderStatus.Cancelled)
@@ -256,6 +277,48 @@ namespace TheWardrobe.API.Repositories
 
       tx.Commit();
       return true;
+    }
+
+    public bool ReviewOrder(Guid accountId, Guid orderId, int rating)
+    {
+      var buyerId = GetBuyerId(orderId);
+      var sellerId = GetSellerId(orderId);
+
+      var orderStatus = GetOrderStatus(orderId);
+
+      using var connection = _dapperContext.GetConnection();
+
+      if (orderStatus != OrderStatus.Completed)
+        return false;
+
+      if (accountId == buyerId)
+      {
+        connection.Execute(@"
+          UPDATE review
+          SET seller_rating = @rating;", new { rating });
+      }
+      else if (accountId == sellerId)
+      {
+        connection.Execute(@"
+          UPDATE review
+          SET buyer_rating = @rating;", new { rating });
+      }
+      else
+      {
+        return false;
+      }
+
+      return true;
+    }
+
+    private (int, int) GetOrderReview(Guid accountId, Guid orderId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.QueryFirstOrDefault<(int, int)>(@"
+        SELECT buyer_rating, seller_rating
+        FROM review
+        WHERE order_id = @orderId;", new { orderId });
     }
   }
 }

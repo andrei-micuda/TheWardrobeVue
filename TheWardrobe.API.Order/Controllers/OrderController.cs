@@ -37,9 +37,9 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet("{orderId}")]
-    public IActionResult GetOrderById(Guid orderId)
+    public IActionResult GetOrderById(Guid accountId, Guid orderId)
     {
-      var order = _orderRepository.GetOrder(orderId);
+      var order = _orderRepository.GetOrder(accountId, orderId);
       order.Buyer = _accountDetailsRepository.GetAccountName(order.BuyerId);
       order.Seller = _accountDetailsRepository.GetAccountName(order.SellerId);
       order.DeliveryAddress = _deliveryAddressRepository.Get(order.DeliveryAddress.Id);
@@ -69,6 +69,16 @@ namespace TheWardrobe.API.Controllers
       var wasUpdated = _orderRepository.UpdateOrderStatus(accountId, orderId, model.Status);
 
       if (wasUpdated)
+        return Ok();
+      return BadRequest();
+    }
+
+    [HttpPatch("{orderId}/review")]
+    public IActionResult ReviewOrder(Guid accountId, Guid orderId, [FromBody] ReviewRequest model)
+    {
+      var wasSuccessful = _orderRepository.ReviewOrder(accountId, orderId, model.Rating);
+
+      if (wasSuccessful)
         return Ok();
       return BadRequest();
     }

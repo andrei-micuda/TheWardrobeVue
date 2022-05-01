@@ -18,5 +18,7 @@ namespace TheWardrobe.API.Models
     public DateTime WhenPlaced { get; set; }
     public OrderStatus Status { get; set; }
     public IEnumerable<ItemRequestResponse> OrderItems { get; set; }
+    public int BuyerRating { get; set; }
+    public int SellerRating { get; set; }
   }
 }
