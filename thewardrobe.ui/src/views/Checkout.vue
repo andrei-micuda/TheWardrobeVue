@@ -30,6 +30,17 @@
       <a-col :span="12">
         <div class="bg-gray-800 ml-10 p-4 rounded text-lg space-y-6">
           <p class="font-bold text-xl mb-6">Order Summary</p>
+          
+          <div>
+            <p>Sold by:</p>
+            <div class="flex items-center space-x-2">
+              <p class="font-bold">{{seller}}</p>
+              <div class="flex items-center space-x-1 bg-gray-700 px-3 py-1 rounded">
+                <p id="SellerRating" class="text-sm text-center">{{sellerRating ? sellerRating.toFixed(2) : 'N/A'}}</p>
+                <Icon icon="ant-design:star-filled" width="16" />
+              </div>
+            </div>
+          </div>
           <div>
             <p>Total:</p>
             <p class="font-bold">{{total}} RON</p>
@@ -68,6 +79,12 @@
     computed: {
       total() {
         return this.items.reduce((acc, item) => acc + item.price, 0); 
+      },
+      seller() {
+        return this.items[0].seller;
+      },
+      sellerRating() {
+        return this.items[0].sellerRating;
       }
     },
     mounted () {

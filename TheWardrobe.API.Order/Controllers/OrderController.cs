@@ -51,8 +51,17 @@ namespace TheWardrobe.API.Controllers
       return Ok(order);
     }
 
+    [HttpGet("ratings")]
+    public IActionResult GetOrders(Guid accountId)
+    {
+      var buyerRating = _orderRepository.GetBuyerRating(accountId);
+      var sellerRating = _orderRepository.GetSellerRating(accountId);
+
+      return Ok(new { buyerRating, sellerRating });
+    }
+
     [HttpGet]
-    public IActionResult GetOrders(Guid accountId, [FromQuery] OrderQueryFilters filters)
+    public IActionResult GetRatings(Guid accountId, [FromQuery] OrderQueryFilters filters)
     {
       var res = _orderRepository.GetOrdersSummary(accountId, filters);
       foreach (var o in res.Orders)

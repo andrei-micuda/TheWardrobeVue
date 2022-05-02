@@ -85,6 +85,9 @@
       <a-form-item label="Only favorites?" class="flex space-x-2">
         <a-switch :checked="onlyFavorites" @change="v => onlyFavorites = v" />
       </a-form-item>
+      <a-form-item label="Only available?" class="flex space-x-2">
+        <a-switch :checked="onlyAvailable" @change="v => onlyAvailable = v" />
+      </a-form-item>
     </a-form>
   </div>
 </template>
@@ -140,6 +143,7 @@
   const brandData = [...constData.brands.map(brand => {
     return {title: brand, value: brand}
   })];
+
   export default {
     props: {
       initialMinPrice: {
@@ -160,7 +164,8 @@
         selectedSizes: [],
         selectedMinPrice: this.initialMinPrice,
         selectedMaxPrice: this.initialMaxPrice,
-        onlyFavorites: false
+        onlyFavorites: false,
+        onlyAvailable: true
       }
     },
     watch: {
@@ -230,7 +235,8 @@
           sizes: this.selectedSizes,
           minPrice: this.selectedPriceRange[0],
           maxPrice: this.selectedPriceRange[1],
-          onlyFavorites: this.onlyFavorites
+          onlyFavorites: this.onlyFavorites,
+          onlyAvailable: this.onlyAvailable
         }
 
         if(this.selectedGender !== 'all')

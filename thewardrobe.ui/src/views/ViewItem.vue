@@ -20,12 +20,19 @@
         </a-carousel>
       </a-col>
 
-      <a-col :span="12" class="pl-6">
+      <a-col :span="12" class="pl-6 text-lg">
         <p class="text-2xl font-bold">{{item.productName}}</p>
         <p class="text-lg">Brand: {{item.brand}}</p>
         <p class="text-lg">Category: {{item.category}}</p>
         <p class="text-lg">Gender: {{item.gender}}</p>
         <p class="text-lg">Size: {{item.size}}</p>
+        <div class="flex items-center space-x-2">
+          <p>Sold by: {{item.seller}}</p>
+          <div class="flex items-center space-x-1 bg-gray-800 px-3 py-1 rounded">
+            <p id="SellerRating" class="text-sm text-center">{{item.sellerRating ? item.sellerRating.toFixed(2) : 'N/A'}}</p>
+            <Icon icon="ant-design:star-filled" width="16" />
+          </div>
+        </div>
         <p class="text-2xl font-bold">{{item.price}} RON</p>
 
         <a-button
@@ -202,5 +209,10 @@
       @apply text-red-400 !important;
       transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     }
+  }
+
+  #SellerRating {
+    @apply relative !important;
+    top: 1px;
   }
 </style>

@@ -187,6 +187,7 @@ namespace TheWardrobe.API.Repositories
         WHERE
           1 = 1
           {(filters.OnlyFavorites ? "AND f.account_id IS NOT NULL" : "")}
+          {(filters.OnlyAvailable ? "AND i.is_available" : "")}
           {(sellerIdOperator != "" ? $"AND i.seller_id {sellerIdOperator} @sellerId" : "")}
           {(minPriceFilteringSql != "" ? $"AND {minPriceFilteringSql}" : "")}
           {(maxPriceFilteringSql != "" ? $"AND {maxPriceFilteringSql}" : "")}
@@ -223,6 +224,8 @@ namespace TheWardrobe.API.Repositories
           {(filters.OnlyFavorites ? "RIGHT JOIN favorite f ON f.item_id = i.id AND f.account_id = @RequesterId" : "")}
         WHERE
           1 = 1
+          {(filters.OnlyFavorites ? "AND f.account_id IS NOT NULL" : "")}
+          {(filters.OnlyAvailable ? "AND i.is_available" : "")}
           {(sellerIdOperator != "" ? $"AND i.seller_id {sellerIdOperator} @sellerId" : "")}
           {(minPriceFilteringSql != "" ? $"AND {minPriceFilteringSql}" : "")}
           {(maxPriceFilteringSql != "" ? $"AND {maxPriceFilteringSql}" : "")}

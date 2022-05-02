@@ -23,7 +23,7 @@
           </a-steps>
 
           <div v-if="order.status === orderStatuses.pending">
-            <div v-if="account === order.buyerId" class="space-y-1">
+            <div v-if="isBuyer" class="space-y-1">
               <p>Waiting for the seller to accept your order.</p>
               <a-button type="danger" @click="() => handleOrderStatusChange(orderStatuses.cancelled)">Cancel Order</a-button>
             </div>
@@ -35,7 +35,7 @@
           </div>
           <div v-else-if="order.status === orderStatuses.inProgress" class="space-y-2">
             <p>The order is on its way.</p>
-            <div v-if="account === order.buyerId" class="space-y-1">
+            <div v-if="isBuyer" class="space-y-1">
               <p>Please mark the order as completed once you have received it.</p>
               <a-button type="primary" @click="() => handleOrderStatusChange(orderStatuses.completed)">Mark as received</a-button>
             </div>
@@ -44,8 +44,8 @@
             <p>The order has been completed successfully.</p>
 
             <div class="bg-gray-700 rounded p-4">
-              <p>Please rate your experience with this {{account == order.buyerId ? 'seller' : 'buyer'}}:</p>
-              <a-rate v-model="rating" @change="handleRatingChange" class="text-yellow-300" />
+              <p>Please rate your experience with this {{isBuyer ? 'seller' : 'buyer'}}:</p>
+              <a-rate v-model="orderRating" @change="handleRatingChange" class="text-yellow-300" />
             </div>
           </div>
         </div>
@@ -53,8 +53,14 @@
       <a-col :span="8">
         <div class="bg-gray-800 ml-10 p-4 rounded space-y-6">
           <div class="space-y-1">
-            <p class="text-lg">Order {{account === order.buyerId ? 'from': 'to'}}:</p>
-            <p class="font-bold">{{account === order.buyerId ? order.seller : order.buyer}}</p>
+            <p class="text-lg">Order {{isBuyer ? 'from': 'to'}}:</p>
+            <div class="flex items-center space-x-2">
+              <p class="font-bold">{{isBuyer ? order.seller : order.buyer}}</p>
+              <div class="flex items-center space-x-1 bg-gray-700 px-3 py-1 rounded">
+                <p id="SellerRating" class="text-sm text-center">{{rating}}</p>
+                <Icon icon="ant-design:star-filled" width="16" />
+              </div>
+            </div>
           </div>
 
           <a-divider />
@@ -88,6 +94,7 @@
 
 <script>
   import VPageHeader from '../components/VPageHeader.vue';
+  import { Icon } from "@iconify/vue2";
 
   import api from '../api';
   import notifier from '../notifier';
@@ -98,7 +105,7 @@
       return {
         account: store.state.id,
         order: null,
-        rating: 0,
+        orderRating: 0,
         orderStatuses: {
           pending: 0,
           inProgress: 1,
@@ -122,6 +129,18 @@
           return "Delivering";
         return "Delivered";
       },
+      isBuyer() {
+        return this.account === this.order.buyerId;
+      },
+      rating() {
+        const buyerRating = this.order.buyerRating;
+        const sellerRating = this.order.sellerRating;
+
+        if(this.isBuyer)
+          return sellerRating ? sellerRating.toFixed(2) : 'N/A';
+        
+        return buyerRating ? buyerRating.toFixed(2) : 'N/A';
+      }
     },
     mounted () {
       this.fetchOrderData();
@@ -131,7 +150,10 @@
         api.get(`/api/${this.account}/order/${this.$route.params.orderId}`)
         .then(res => {
           this.order = res.data;
-          console.log(res.data);
+          if(this.isBuyer)
+            this.orderRating = this.order.orderSellerRating;
+          else
+            this.orderRating = this.order.orderBuyerRating;
         });
       },
       handleOrderStatusChange(status) {
@@ -144,15 +166,16 @@
             this.fetchOrderData();
           });
       },
-      handleRatingChange(rating) {
-        api.patch(`/api/${this.account}/order/${this.order.id}/review`, { rating })
+      handleRatingChange(orderRating) {
+        api.patch(`/api/${this.account}/order/${this.order.id}/review`, { rating: orderRating })
           .then(() => {
             notifier.success("Successfully reviewed order!");
           });
       }
     },
     components: {
-      VPageHeader
+      VPageHeader,
+      Icon
     }
   }
 </script>

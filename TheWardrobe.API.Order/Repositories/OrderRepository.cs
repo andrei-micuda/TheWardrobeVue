@@ -27,6 +27,8 @@ namespace TheWardrobe.API.Repositories
     Guid GetSellerId(Guid orderId);
     bool UpdateOrderStatus(Guid accountId, Guid orderId, OrderStatus status);
     bool ReviewOrder(Guid accountId, Guid orderId, int rating);
+    float? GetBuyerRating(Guid buyerId);
+    float? GetSellerRating(Guid sellerId);
   }
 
   public class OrderRepository : IOrderRepository
@@ -163,7 +165,10 @@ namespace TheWardrobe.API.Repositories
       res.DeliveryAddress = new();
       res.DeliveryAddress.Id = order.DeliveryAddressId;
 
-      (res.BuyerRating, res.SellerRating) = GetOrderReview(accountId, orderId);
+      res.BuyerRating = GetBuyerRating(buyerId);
+      res.SellerRating = GetSellerRating(sellerId);
+
+      (res.OrderBuyerRating, res.OrderSellerRating) = GetOrderReview(accountId, orderId);
 
       return res;
     }
@@ -232,9 +237,14 @@ namespace TheWardrobe.API.Repositories
         if (currentStatus != OrderStatus.Pending || accountId != sellerId)
           return false;
 
-        // decline all other pending orders that contain any of the items in the accepted order
         var orderItemIds = GetOrderItemIds(orderId);
 
+        // remove items from user carts
+        connection.Execute(@"
+          DELETE FROM cart
+          WHERE item_id = ANY(@orderItemIds);", new { orderItemIds });
+
+        // decline all other pending orders that contain any of the items in the accepted order
         var otherOrderIds = connection.Query<Guid>(@"
           SELECT DISTINCT order_id
           FROM order_item
@@ -295,13 +305,15 @@ namespace TheWardrobe.API.Repositories
       {
         connection.Execute(@"
           UPDATE review
-          SET seller_rating = @rating;", new { rating });
+          SET seller_rating = @rating
+          WHERE order_id = @orderId;", new { rating, orderId });
       }
       else if (accountId == sellerId)
       {
         connection.Execute(@"
           UPDATE review
-          SET buyer_rating = @rating;", new { rating });
+          SET buyer_rating = @rating
+          WHERE order_id = @orderId;", new { rating, orderId });
       }
       else
       {
@@ -319,6 +331,28 @@ namespace TheWardrobe.API.Repositories
         SELECT buyer_rating, seller_rating
         FROM review
         WHERE order_id = @orderId;", new { orderId });
+    }
+
+    public float? GetSellerRating(Guid sellerId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.ExecuteScalar<float?>(@"
+        SELECT AVG(r.seller_rating)
+        FROM review r, ""order"" o
+        WHERE r.order_id = o.id
+        AND o.seller_id = @sellerId;", new { sellerId });
+    }
+
+    public float? GetBuyerRating(Guid buyerId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.ExecuteScalar<float?>(@"
+        SELECT AVG(r.buyer_rating)
+        FROM review r, ""order"" o
+        WHERE r.order_id = o.id
+        AND o.buyer_id = @buyerId;", new { buyerId });
     }
   }
 }

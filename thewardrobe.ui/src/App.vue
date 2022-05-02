@@ -315,6 +315,10 @@ export default {
 .ant-drawer-header {
   @apply bg-gray-700 border-gray-500 !important;
 
+  & .anticon {
+    @apply text-gray-100 !important;
+  }
+
   & .ant-drawer-title {
     @apply text-gray-100 !important;
   }

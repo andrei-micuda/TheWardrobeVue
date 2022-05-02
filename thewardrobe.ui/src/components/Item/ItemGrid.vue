@@ -137,6 +137,7 @@
         finalParams.requesterId = store.state.id;
         finalParams.page = this.currentPage;
         finalParams.pageSize = this.itemsPerPage;
+        finalParams.onlyAvailable = true;
         finalParams = this.setOrderParams(finalParams);
         api.get(this.source, {
           params: finalParams

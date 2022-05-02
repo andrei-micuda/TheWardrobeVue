@@ -15,6 +15,7 @@ namespace TheWardrobe.API.Models
     public float? MinPrice { get; set; }
     public float? MaxPrice { get; set; }
     public bool OnlyFavorites { get; set; }
+    public bool OnlyAvailable { get; set; }
     public string OrderBy { get; set; } = "whenAdded";
     public string Order { get; set; } = "desc"; // asc or desc
     public int Page { get; set; } = 1;

@@ -1,6 +1,13 @@
 <template>
-  <div class="bg-gray-800 rounded p-8">
-    <p class="text-xl mb-5">Items from <span class="font-bold">{{itemGroup[0].seller}}</span></p>
+  <div class="bg-gray-800 rounded p-8 mb-5">
+    <div class="flex items-center space-x-2 mb-5">
+      <p class="text-xl">Items from <span class="font-bold">{{itemGroup[0].seller}}</span></p>
+      <div class="flex items-center space-x-1 bg-gray-700 px-3 py-1 rounded">
+        <p id="SellerRating" class="text-sm text-center">{{itemGroup[0].sellerRating ? itemGroup[0].sellerRating.toFixed(2) : 'N/A'}}</p>
+        <Icon icon="ant-design:star-filled" width="16" />
+      </div>
+    </div>
+      
     <ul class="space-y-5">
       <li v-for="item in itemGroup" :key="item.id" class="bg-gray-700">
         <a-row type="flex" class="p-4">
