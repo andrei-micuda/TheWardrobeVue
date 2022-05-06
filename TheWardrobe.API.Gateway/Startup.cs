@@ -59,9 +59,9 @@ namespace TheWardrobe.API.Gateway
         });
 
       // Add the reverse proxy to capability to the server
-      var proxyBuilder = services.AddReverseProxy();
-      // Initialize the reverse proxy from the "ReverseProxy" section of configuration
-      proxyBuilder.LoadFromConfig(Configuration.GetSection("ReverseProxy"));
+      var proxyBuilder = services.AddReverseProxy()
+        .LoadFromConfig(Configuration.GetSection("ReverseProxy"))
+        .AddConfigFilter<MapServices>();
 
       services.AddAuthorization(options =>
       {
@@ -117,6 +117,11 @@ namespace TheWardrobe.API.Gateway
       app.UseEndpoints(endpoints =>
       {
         endpoints.MapReverseProxy();
+        endpoints.MapGet("/test-tye", async context =>
+        {
+          var url = Configuration.GetServiceUri("thewardrobe-account");
+          await context.Response.WriteAsync(url.ToString());
+        });
       });
     }
   }
