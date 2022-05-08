@@ -231,7 +231,7 @@
       this.form = this.$form.createForm(this, { name: 'updateItem' });
     },
     mounted() {
-      api.get(`/api/itemCatalog/${this.$route.params.itemId}`)
+      api.get(`/public/api/itemCatalog/${this.$route.params.itemId}`)
       .then(res => {
         var { productName, price, gender, category, size, brand, images } = res.data;
 
@@ -261,7 +261,7 @@
         $("#UpdateItemBtn").trigger("click");
       },
       handleDelete() {
-        api.delete(`/api/itemCatalog/${this.$route.params.itemId}`)
+        api.delete(`/public/api/itemCatalog/${this.$route.params.itemId}`)
           .then(() => {
             notifier.success("Item has been delete successfully.");
             router.push('/sell');
@@ -291,7 +291,7 @@
           if (!err) {
             var imagesUrls = this.images.map(img => img.url);
 
-            await api.put(`/api/itemCatalog/${this.$route.params.itemId}`, {
+            await api.put(`/public/api/itemCatalog/${this.$route.params.itemId}`, {
               ...values,
               images: imagesUrls})
               .then(function() {

@@ -224,7 +224,7 @@
             var uploadedImagesUrls = this.uploadedImages.map(img => img.resourceUrl);
 
             var that = this;
-            await api.post("/api/itemCatalog", {
+            await api.post("/public/api/itemCatalog", {
               ...values,
               images: uploadedImagesUrls,
               sellerId: store.state.id})

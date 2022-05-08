@@ -110,7 +110,7 @@
         e.preventDefault();
         this.form.validateFields(async (err, values) => {
           if (!err) {
-            api.post(`/api/${store.state.id}/deliveryAddress`, {...values})
+            api.post(`/public/api/${store.state.id}/deliveryAddress`, {...values})
               .then(res => {
                 notifier.success('Successfully added address.');
                 this.deliveryAddresses.push(res.data);
@@ -124,7 +124,7 @@
       this.form = this.$form.createForm(this, { name: 'addAddress' });
     },
     mounted () {
-      api.get(`/api/${store.state.id}/deliveryAddress`)
+      api.get(`/public/api/${store.state.id}/deliveryAddress`)
         .then(res => {
           this.deliveryAddresses = res.data;
           this.selectedDeliveryAddress = this.deliveryAddresses[0];

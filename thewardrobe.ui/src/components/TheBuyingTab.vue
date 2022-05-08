@@ -1,7 +1,7 @@
 <template>
   <div>
     <ItemGrid
-      source="/api/itemCatalog"
+      source="/public/api/itemCatalog"
       :params="params" />
   </div>
 </template>

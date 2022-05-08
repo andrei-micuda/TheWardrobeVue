@@ -74,7 +74,7 @@
         console.log("Registering...");
         this.isRegistering = true;
 
-        axios.post('/api/account/register', {
+        axios.post('/public/api/account/register', {
             "email": this.email,
             "password": this.password,
             "confirmPassword": this.rePassword

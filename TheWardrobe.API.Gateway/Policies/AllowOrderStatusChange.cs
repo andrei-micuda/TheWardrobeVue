@@ -23,7 +23,7 @@ namespace TheWardrobe.API.Gateway.Policies
     }
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AllowOrderStatusChangeRequirement requirement)
     {
-      var orderIdStr = new Url(_httpContext.Request.Path).PathSegments[2];
+      var orderIdStr = new Url(_httpContext.Request.Path).PathSegments[3];
 
       try
       {
@@ -43,10 +43,8 @@ namespace TheWardrobe.API.Gateway.Policies
 
         if (accountId == buyerId || accountId == sellerId)
           context.Succeed(requirement);
-
-        int x = 10;
       }
-      catch (Exception ex)
+      catch (Exception)
       {
 
       }

@@ -91,7 +91,7 @@
     methods: {
       fetchData() {
         console.log(this.params)
-        api.get(`/api/${store.state.id}/order`, {
+        api.get(`/public/api/${store.state.id}/order`, {
         params: {
           ...this.params,
           status: this.orderStatus

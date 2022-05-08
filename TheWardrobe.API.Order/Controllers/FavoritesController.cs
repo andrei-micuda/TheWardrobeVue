@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TheWardrobe.API.Models;
 using TheWardrobe.API.Repositories;
-using TheWardrobe.CrossCutting.Helpers;
+using TheWardrobe.Helpers;
 
 namespace TheWardrobe.API.Controllers
 {
   [ApiController]
-  // [Route("/api/[controller]/[action]")]
+  // [Route("/public/api/[controller]/[action]")]
   public class FavoritesController : ControllerBase
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<FavoritesController>();
@@ -23,7 +23,7 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet]
-    [Route("/api/{accountId}/favorites/{itemId}")]
+    [Route("/public/api/{accountId}/favorites/{itemId}")]
     public IActionResult GetFavoriteStatus(Guid accountId, Guid itemId)
     {
       var isFavorite = _favoritesRepository.CheckIsFavorite(accountId, itemId);
@@ -31,7 +31,7 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpPost]
-    [Route("/api/{accountId}/favorites")]
+    [Route("/public/api/{accountId}/favorites")]
     public IActionResult Post(Guid accountId, FavoritesRequest model)
     {
       _favoritesRepository.Add(accountId, model);
@@ -39,7 +39,7 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpDelete]
-    [Route("/api/{accountId}/favorites")]
+    [Route("/public/api/{accountId}/favorites")]
     public IActionResult Delete(Guid accountId, FavoritesRequest model)
     {
       _favoritesRepository.Remove(accountId, model);

@@ -10,7 +10,6 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoMapper;
 using TheWardrobe.Helpers;
-using TheWardrobe.CrossCutting.Helpers;
 using TheWardrobe.API.Models;
 using TheWardrobe.API.Entities;
 

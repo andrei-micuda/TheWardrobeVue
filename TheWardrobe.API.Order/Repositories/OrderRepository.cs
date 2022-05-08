@@ -10,7 +10,6 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoMapper;
 using TheWardrobe.Helpers;
-using TheWardrobe.CrossCutting.Helpers;
 using TheWardrobe.API.Entities;
 using TheWardrobe.API.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -70,7 +69,7 @@ namespace TheWardrobe.API.Repositories
 
         tx.Commit();
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         tx.Rollback();
         throw new AppException("Order could not be placed.");

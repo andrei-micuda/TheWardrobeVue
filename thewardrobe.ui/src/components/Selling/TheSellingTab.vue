@@ -3,7 +3,7 @@
     <TheSellingModal @refreshGrid="handleRefreshGrid" />
     <!-- {{test}} -->
     <ItemGrid
-      source="/api/itemCatalog"
+      source="/public/api/itemCatalog"
       :params="params"
       :editable="true"
       :triggerFetch="triggerFetch" />

@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using TheWardrobe.Helpers;
 using TheWardrobe.API.ItemCatalog.Helpers;
-using TheWardrobe.CrossCutting.Helpers;
 using TheWardrobe.API.Models;
 using TheWardrobe.API.Entities;
 

@@ -23,7 +23,7 @@ namespace TheWardrobe.API.Gateway.Policies
     }
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OwnsItemRequirement requirement)
     {
-      var itemId = new Url(_httpContext.Request.Path).PathSegments[2];
+      var itemId = new Url(_httpContext.Request.Path).PathSegments[3];
 
       var userId = context.User.Claims
           .Where(c => c.Type == "id")

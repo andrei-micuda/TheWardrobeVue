@@ -125,7 +125,7 @@
         this.updatingAddressId = id;
       },
       handleDeleteAddress(addressId) {
-        api.delete(`/api/${store.state.id}/deliveryAddress/${addressId}`)
+        api.delete(`/public/api/${store.state.id}/deliveryAddress/${addressId}`)
           .then(() => {
             notifier.success('Successfully deleted address.');
             this.deliveryAddresses = this.deliveryAddresses.filter(addr => addr.id != addressId);
@@ -136,7 +136,7 @@
         this.form.validateFields(async (err, values) => {
           if (!err) {
             if(this.updatingAddressId != null) {
-              api.put(`/api/${store.state.id}/deliveryAddress/${this.updatingAddressId}`, {...values})
+              api.put(`/public/api/${store.state.id}/deliveryAddress/${this.updatingAddressId}`, {...values})
                 .then(res => {
                   var addrIndex = this.deliveryAddresses.findIndex(addr => addr.id === this.updatingAddressId);
                   this.deliveryAddresses[addrIndex] = res.data;
@@ -146,7 +146,7 @@
                 });
             }
             else {
-              api.post(`/api/${store.state.id}/deliveryAddress`, {...values})
+              api.post(`/public/api/${store.state.id}/deliveryAddress`, {...values})
                 .then(res => {
                   notifier.success('Successfully added address.');
                   this.deliveryAddresses.push(res.data);
@@ -161,7 +161,7 @@
       this.form = this.$form.createForm(this, { name: 'addAddress' });
     },
     mounted () {
-      api.get(`/api/${store.state.id}/deliveryAddress`)
+      api.get(`/public/api/${store.state.id}/deliveryAddress`)
         .then(res => {
           this.deliveryAddresses = res.data;
         })

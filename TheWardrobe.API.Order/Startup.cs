@@ -33,9 +33,6 @@ namespace TheWardrobe.API.Order
 
       // configure DI for application services
       services.AddScoped<IDapperContext, DapperContext>();
-      services.AddScoped<IAccountDetailsRepository, AccountDetailsRepository>();
-      services.AddScoped<IDeliveryAddressRepository, DeliveryAddressRepository>();
-      services.AddScoped<IItemCatalogRepository, ItemCatalogRepository>();
       services.AddScoped<ICartRepository, CartRepository>();
       services.AddScoped<IFavoritesRepository, FavoritesRepository>();
       services.AddScoped<IOrderRepository, OrderRepository>();

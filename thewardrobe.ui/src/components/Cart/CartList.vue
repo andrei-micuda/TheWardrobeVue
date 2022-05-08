@@ -54,7 +54,7 @@
     },
     methods: {
       deleteItem(itemId) {
-        api.delete(`/api/${store.state.id}/cart`, {
+        api.delete(`/public/api/${store.state.id}/cart`, {
             data: { itemId }
           })
             .then(() => {

@@ -6,10 +6,9 @@ import router from '../router';
 
 Vue.use(Vuex);
 
-function setAccountDetails(state, accountId)
-{
+function setAccountDetails(state, accountId) {
   // retrieve user name and email from db
-  api.get(`/api/${accountId}/accountDetails`)
+  api.get(`/public/api/${accountId}/accountDetails`)
     .then(res => {
       state.email = res.data.email;
       state.firstName = res.data.firstName;
@@ -18,10 +17,10 @@ function setAccountDetails(state, accountId)
 }
 
 const store = new Vuex.Store({
-  
+
   // "State" is the application data your components
   // will subscribe to
-  
+
   state: {
     id: null,
     email: null,
@@ -35,16 +34,15 @@ const store = new Vuex.Store({
     initStore(state) {
       let id = localStorage.getItem('id');
       let jwt = localStorage.getItem('jwt');
-      
+
       state.id = id;
       state.jwt = jwt;
 
-      if (id)
-      {
+      if (id) {
         setAccountDetails(state, id);
-  
+
         // retrieve user items from db
-        api.get('/api/itemCatalog', {
+        api.get('/public/api/itemCatalog', {
           params: { sellerIdInclude: id }
         })
           .then(res => {

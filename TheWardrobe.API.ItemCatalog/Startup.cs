@@ -34,7 +34,6 @@ namespace TheWardrobe.API.ItemCatalog
       // configure DI for application services
       services.AddScoped<IDapperContext, DapperContext>();
       services.AddScoped<IItemCatalogRepository, ItemCatalogRepository>();
-      services.AddScoped<IAccountDetailsRepository, AccountDetailsRepository>();
 
       services.AddControllers();
       services.AddSwaggerGen(c =>

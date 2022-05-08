@@ -3,27 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using TheWardrobe.API.Interfaces;
 using TheWardrobe.API.Models;
 using TheWardrobe.API.Repositories;
-using TheWardrobe.CrossCutting.Helpers;
+using TheWardrobe.Helpers;
 
 namespace TheWardrobe.API.Controllers
 {
   [ApiController]
-  [Route("/api/{accountId}/[controller]")]
+  [Route("/public/api/{accountId}/[controller]")]
   public class CartController : ControllerBase
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<CartController>();
     private readonly ICartRepository _cartRepository;
-    private readonly IItemCatalogRepository _itemCatalogRepository;
-    private readonly IAccountDetailsRepository _accountDetailsRepository;
+    private readonly AccountDetailsInterface _accountDetailsInterface;
+    private readonly ItemCatalogInterface _itemCatalogInterface;
 
-    public CartController(ICartRepository cartRepository, IItemCatalogRepository itemCatalogRepository, IAccountDetailsRepository accountDetailsRepository)
+    public CartController(IConfiguration config, ICartRepository cartRepository)
     {
       _cartRepository = cartRepository;
-      _itemCatalogRepository = itemCatalogRepository;
-      _accountDetailsRepository = accountDetailsRepository;
+      _accountDetailsInterface = new AccountDetailsInterface(config);
+      _itemCatalogInterface = new ItemCatalogInterface(config);
     }
 
     [HttpGet]
@@ -35,18 +37,19 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet]
-    public IActionResult GetCart(Guid accountId, [FromQuery] Guid? sellerId)
+    public async Task<IActionResult> GetCart(Guid accountId, [FromQuery] Guid? sellerId)
     {
       var itemIds = _cartRepository.GetCart(accountId, sellerId);
-      var items = itemIds.Select(id => _itemCatalogRepository.GetItem(id));
 
-      var res = items.Select(i =>
+      var items = await Task.WhenAll(
+        itemIds.Select(async id => await _itemCatalogInterface.GetItem(id)));
+
+      foreach (var item in items)
       {
-        i.Seller = _accountDetailsRepository.GetAccountName(i.SellerId);
-        return i;
-      });
+        item.Seller = await _accountDetailsInterface.GetAccountName(item.SellerId);
+      }
 
-      return Ok(res);
+      return Ok(items);
     }
 
     [HttpPost]

@@ -30,7 +30,7 @@
     },
     methods: {
       fetchItems() {
-        api.get(`/api/${store.state.id}/cart`)
+        api.get(`/public/api/${store.state.id}/cart`)
         .then(res => {
           this.items = res.data;
         });

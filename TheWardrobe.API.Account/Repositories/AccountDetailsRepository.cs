@@ -6,7 +6,6 @@ using AutoMapper;
 using Dapper;
 using TheWardrobe.API.Entities;
 using TheWardrobe.API.Models;
-using TheWardrobe.CrossCutting.Helpers;
 using TheWardrobe.Helpers;
 
 namespace TheWardrobe.API.Repositories

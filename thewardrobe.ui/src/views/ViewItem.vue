@@ -76,19 +76,19 @@
     },
     mounted () {
       console.log(this.$route.params)
-      api.get(`/api/itemCatalog/${this.$route.params.itemId}`)
+      api.get(`/public/api/itemCatalog/${this.$route.params.itemId}`)
         .then(res => {
           console.log(res.data)
           this.item = res.data;
           
           // if user is logged in, get favorite state and cart state
           if(this.accountId) {
-            api.get(`/api/${this.accountId}/favorites/${this.item.id}`)
+            api.get(`/public/api/${this.accountId}/favorites/${this.item.id}`)
             .then(res => {
               this.item.isFavorite = res.data.isFavorite;
             });
 
-            api.get(`/api/${this.accountId}/cart/${this.item.id}`)
+            api.get(`/public/api/${this.accountId}/cart/${this.item.id}`)
             .then(res => {
               this.isInCart = res.data.isInCart;
             });
@@ -98,7 +98,7 @@
     methods: {
       toggleFavorite() {
         if(!this.item.isFavorite) {
-          api.post(`/api/${store.state.id}/favorites`, {
+          api.post(`/public/api/${store.state.id}/favorites`, {
             itemId: this.item.id
           })
             .then(() => {
@@ -107,7 +107,7 @@
         }
         else
         {
-          api.delete(`/api/${store.state.id}/favorites`, {
+          api.delete(`/public/api/${store.state.id}/favorites`, {
             data: {itemId: this.item.id}
           })
             .then(() => {
@@ -117,7 +117,7 @@
       },
       toggleCart() {
         if(!this.isInCart) {
-          api.post(`/api/${store.state.id}/cart`, {
+          api.post(`/public/api/${store.state.id}/cart`, {
             itemId: this.item.id
           })
             .then(() => {
@@ -127,7 +127,7 @@
         }
         else
         {
-          api.delete(`/api/${store.state.id}/cart`, {
+          api.delete(`/public/api/${store.state.id}/cart`, {
             data: {itemId: this.item.id}
           })
             .then(() => {

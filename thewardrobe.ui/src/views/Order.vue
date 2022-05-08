@@ -147,7 +147,7 @@
     },
     methods: {
       fetchOrderData() {
-        api.get(`/api/${this.account}/order/${this.$route.params.orderId}`)
+        api.get(`/public/api/${this.account}/order/${this.$route.params.orderId}`)
         .then(res => {
           this.order = res.data;
           if(this.isBuyer)
@@ -157,7 +157,7 @@
         });
       },
       handleOrderStatusChange(status) {
-        api.patch(`/api/${this.account}/order/${this.order.id}`, { status })
+        api.patch(`/public/api/${this.account}/order/${this.order.id}`, { status })
           .then(() => {
             this.order.status = status;
           })
@@ -167,7 +167,7 @@
           });
       },
       handleRatingChange(orderRating) {
-        api.patch(`/api/${this.account}/order/${this.order.id}/review`, { rating: orderRating })
+        api.patch(`/public/api/${this.account}/order/${this.order.id}/review`, { rating: orderRating })
           .then(() => {
             notifier.success("Successfully reviewed order!");
           });

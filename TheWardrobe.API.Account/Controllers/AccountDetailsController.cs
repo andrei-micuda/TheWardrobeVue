@@ -9,7 +9,7 @@ using TheWardrobe.API.Repositories;
 
 namespace TheWardrobe.API.Controllers
 {
-  [Route("/api/{accountId}/[controller]")]
+  [Route("/public/api/{accountId}/[controller]")]
   public class AccountDetailsController : ControllerBase
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<AccountDetailsController>();
@@ -32,6 +32,15 @@ namespace TheWardrobe.API.Controllers
     {
       model.Id = accountId;
       var res = _repository.UpdateAccountDetails(model);
+      return Ok(res);
+    }
+
+    // internal endpoints
+    [HttpGet]
+    [Route("/api/{accountId}/[controller]/accountName")]
+    public IActionResult GetAccountName(Guid accountId)
+    {
+      var res = _repository.GetAccountName(accountId);
       return Ok(res);
     }
   }

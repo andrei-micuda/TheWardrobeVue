@@ -91,7 +91,7 @@
         //   formData.append("files", file.originFileObj);
         // });
         
-        let res = await axios.post("/api/clothesClassification", reqBody);
+        let res = await axios.post("/public/api/clothesClassification", reqBody);
         
         this.predictions = res.data.predictions.map(pred => {
           pred[1] = `${pred[1].toFixed(1)}%`;

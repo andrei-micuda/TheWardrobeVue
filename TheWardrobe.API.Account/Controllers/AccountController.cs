@@ -18,7 +18,7 @@ namespace TheWardrobe.API.Controllers
 {
 
   [ApiController]
-  [Route("api/[controller]")]
+  [Route("/public/api/[controller]")]
   public class AccountController : BaseController
   {
     private readonly IMapper _mapper;

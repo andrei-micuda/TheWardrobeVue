@@ -66,7 +66,7 @@
     methods: {
       toggleFavorite() {
         if(!this.item.isFavorite) {
-          api.post(`/api/${store.state.id}/favorites`, {
+          api.post(`/public/api/${store.state.id}/favorites`, {
             itemId: this.item.id
           })
             .then(() => {
@@ -75,7 +75,7 @@
         }
         else
         {
-          api.delete(`/api/${store.state.id}/favorites`, {
+          api.delete(`/public/api/${store.state.id}/favorites`, {
             data: {itemId: this.item.id}
           })
             .then(() => {

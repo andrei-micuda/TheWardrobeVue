@@ -52,7 +52,7 @@
       }
     },
     mounted () {
-      api.get(`/api/${store.state.id}/order/ratings`)
+      api.get(`/public/api/${store.state.id}/order/ratings`)
       .then(res => {
         this.buyerRating = res.data.buyerRating;
         this.sellerRating = res.data.sellerRating;
@@ -67,7 +67,7 @@
     computed: {
       ...mapState(['email', 'firstName', 'lastName']),
       profilePicture() {
-        return `https://ui-avatars.com/api/?name=${this.name}&size=128&format=svg`;
+        return `https://ui-avatars.com/public/api/?name=${this.name}&size=128&format=svg`;
       },
       name() {
         if(this.firstName && this.lastName)

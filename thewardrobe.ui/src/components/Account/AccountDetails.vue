@@ -68,7 +68,7 @@
       this.form = this.$form.createForm(this, { name: 'updateDetails' });
     },
     mounted () {
-      api.get(`/api/${store.state.id}/accountDetails`)
+      api.get(`/public/api/${store.state.id}/accountDetails`)
         .then(res => {
           this.accountDetails = res.data;
           this.form.setFieldsValue({
@@ -84,7 +84,7 @@
         e.preventDefault();
         this.form.validateFields(async (err, values) => {
           if (!err) {
-            api.put(`/api/${store.state.id}/accountDetails`, {...values})
+            api.put(`/public/api/${store.state.id}/accountDetails`, {...values})
               .then(res => {
                 this.accountDetails = res.data;
                 store.commit('updateAccountDetails', res.data);

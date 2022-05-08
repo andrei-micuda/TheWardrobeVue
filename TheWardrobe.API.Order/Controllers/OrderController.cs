@@ -3,30 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using TheWardrobe.API.Entities;
+using TheWardrobe.API.Interfaces;
 using TheWardrobe.API.Models;
 using TheWardrobe.API.Repositories;
-using TheWardrobe.CrossCutting.Helpers;
+using TheWardrobe.Helpers;
 
 namespace TheWardrobe.API.Controllers
 {
   [ApiController]
-  [Route("/api/{accountId}/[controller]")]
+  [Route("/public/api/{accountId}/[controller]")]
   public class OrderController : ControllerBase
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<OrderController>();
     private readonly IOrderRepository _orderRepository;
-    private readonly IAccountDetailsRepository _accountDetailsRepository;
-    private readonly IDeliveryAddressRepository _deliveryAddressRepository;
-    private readonly IItemCatalogRepository _itemCatalogRepository;
+    private readonly AccountDetailsInterface _accountDetailsInterface;
+    private readonly DeliveryAddressInterface _deliveryAddressInterface;
+    private readonly ItemCatalogInterface _itemCatalogInterface;
 
-    public OrderController(IOrderRepository orderRepository, IAccountDetailsRepository accountDetailsRepository, IDeliveryAddressRepository deliveryAddressRepository, IItemCatalogRepository itemCatalogRepository)
+    public OrderController(IConfiguration config, IOrderRepository orderRepository)
     {
       _orderRepository = orderRepository;
-      _accountDetailsRepository = accountDetailsRepository;
-      _deliveryAddressRepository = deliveryAddressRepository;
-      _itemCatalogRepository = itemCatalogRepository;
+      _accountDetailsInterface = new AccountDetailsInterface(config);
+      _deliveryAddressInterface = new DeliveryAddressInterface(config);
+      _itemCatalogInterface = new ItemCatalogInterface(config);
     }
 
     [HttpPost]
@@ -37,15 +39,15 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet("{orderId}")]
-    public IActionResult GetOrderById(Guid accountId, Guid orderId)
+    public async Task<IActionResult> GetOrderById(Guid accountId, Guid orderId)
     {
       var order = _orderRepository.GetOrder(accountId, orderId);
-      order.Buyer = _accountDetailsRepository.GetAccountName(order.BuyerId);
-      order.Seller = _accountDetailsRepository.GetAccountName(order.SellerId);
-      order.DeliveryAddress = _deliveryAddressRepository.Get(order.DeliveryAddress.Id);
+      order.Buyer = await _accountDetailsInterface.GetAccountName(order.BuyerId);
+      order.Seller = await _accountDetailsInterface.GetAccountName(order.SellerId);
+      order.DeliveryAddress = await _deliveryAddressInterface.GetDeliveryAddress(order.DeliveryAddress.Id);
 
-      order.OrderItems = _orderRepository.GetOrderItemIds(orderId)
-                                          .Select(itemId => _itemCatalogRepository.GetItem(itemId));
+      order.OrderItems = await Task.WhenAll(_orderRepository.GetOrderItemIds(orderId)
+                                          .Select(itemId => _itemCatalogInterface.GetItem(itemId)));
 
       order.Total = order.OrderItems.Sum(item => item.Price);
       return Ok(order);
@@ -61,13 +63,13 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet]
-    public IActionResult GetRatings(Guid accountId, [FromQuery] OrderQueryFilters filters)
+    public async Task<IActionResult> GetRatings(Guid accountId, [FromQuery] OrderQueryFilters filters)
     {
       var res = _orderRepository.GetOrdersSummary(accountId, filters);
       foreach (var o in res.Orders)
       {
-        o.Buyer = _accountDetailsRepository.GetAccountName(o.BuyerId);
-        o.Seller = _accountDetailsRepository.GetAccountName(o.SellerId);
+        o.Buyer = await _accountDetailsInterface.GetAccountName(o.BuyerId);
+        o.Seller = await _accountDetailsInterface.GetAccountName(o.SellerId);
       }
       return Ok(res);
     }

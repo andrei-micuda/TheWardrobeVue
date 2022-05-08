@@ -8,7 +8,7 @@ using TheWardrobe.API.Repositories;
 
 namespace TheWardrobe.API.Controllers
 {
-  [Route("/api/{accountId}/[controller]")]
+  [Route("/public/api/{accountId}/[controller]")]
   public class DeliveryAddressController : ControllerBase
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<DeliveryAddressController>();
@@ -25,6 +25,7 @@ namespace TheWardrobe.API.Controllers
       var res = _repository.GetAll(accountId);
       return Ok(res);
     }
+
 
     [HttpPost]
     public IActionResult Post(Guid accountId, [FromBody] DeliveryAddressRequestResponse model)
@@ -45,6 +46,14 @@ namespace TheWardrobe.API.Controllers
     {
       _repository.DeleteDeliveryAddress(accountId, deliveryAddressId);
       return Ok();
+    }
+
+    [HttpGet]
+    [Route("/api/deliveryAddress/{deliveryAddressId}")]
+    public IActionResult Get(Guid deliveryAddressId)
+    {
+      var res = _repository.Get(deliveryAddressId);
+      return Ok(res);
     }
   }
 }

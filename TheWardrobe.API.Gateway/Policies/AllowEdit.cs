@@ -11,6 +11,7 @@ namespace TheWardrobe.API.Gateway.Policies
   public class AllowEditHandler : AuthorizationHandler<AllowEditRequirement>
   {
     private readonly HttpContext _httpContext;
+    protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<AllowEditHandler>();
 
     public AllowEditHandler(IHttpContextAccessor httpContextAccessor)
     {
@@ -18,10 +19,17 @@ namespace TheWardrobe.API.Gateway.Policies
     }
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AllowEditRequirement requirement)
     {
-      var pathSellerId = new Url(_httpContext.Request.Path).PathSegments[1];
+      var pathAccountId = new Url(_httpContext.Request.Path).PathSegments[2];
 
-      if (context.User.Claims.Any(c => c.Type == "id" && c.Value == pathSellerId))
+      if (context.User.Claims.Any(c => c.Type == "id" && c.Value == pathAccountId))
+      {
         context.Succeed(requirement);
+        _log.Information("AllowEdit policy succeeded for {accountId}.", pathAccountId);
+      }
+      else
+      {
+        _log.Information("AllowEdit policy FAILED for {accountId}.", pathAccountId);
+      }
       return Task.CompletedTask;
     }
   }

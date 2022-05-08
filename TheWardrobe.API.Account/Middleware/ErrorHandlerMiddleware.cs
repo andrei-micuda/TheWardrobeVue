@@ -6,7 +6,7 @@ using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TheWardrobe.API.Helpers;
-using TheWardrobe.CrossCutting.Helpers;
+using TheWardrobe.Helpers;
 
 namespace TheWardrobe.API.Middleware
 {

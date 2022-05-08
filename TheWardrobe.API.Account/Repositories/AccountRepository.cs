@@ -18,7 +18,6 @@ using MassTransit;
 using TheWardrobe.API.Publishers;
 using System.Threading.Tasks;
 using TheWardrobe.Helpers;
-using TheWardrobe.CrossCutting.Helpers;
 
 namespace TheWardrobe.API.Repositories
 {

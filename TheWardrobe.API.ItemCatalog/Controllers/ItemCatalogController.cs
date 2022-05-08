@@ -3,29 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using TheWardrobe.API.Interfaces;
 using TheWardrobe.API.Models;
 using TheWardrobe.API.Repositories;
-using TheWardrobe.CrossCutting.Helpers;
+using TheWardrobe.Helpers;
 
 namespace TheWardrobe.API.ItemCatalog.Controllers
 {
   [ApiController]
-  // [Route("/api/[controller]/[action]")]
+  // [Route("/public/api/[controller]/[action]")]
   public class ItemCatalogController : ControllerBase
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<ItemCatalogController>();
     private readonly IItemCatalogRepository _itemCatalogRepository;
-    private readonly IAccountDetailsRepository _accountDetailsRepository;
+    private readonly AccountDetailsInterface _accountDetailsInterface;
 
-    public ItemCatalogController(IItemCatalogRepository itemCatalogRepository, IAccountDetailsRepository accountDetailsRepository)
+    public ItemCatalogController(IConfiguration config, IItemCatalogRepository itemCatalogRepository)
     {
       _itemCatalogRepository = itemCatalogRepository;
-      _accountDetailsRepository = accountDetailsRepository;
+      _accountDetailsInterface = new AccountDetailsInterface(config);
     }
 
     [HttpGet]
-    [Route("/api/[controller]")]
+    [Route("/public/api/[controller]")]
     public IActionResult GetItems([FromQuery] ItemQueryFilters filters)
     {
       // sanity check query parameters
@@ -49,7 +51,7 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     }
 
     [HttpPost]
-    [Route("/api/[controller]")]
+    [Route("/public/api/[controller]")]
     public IActionResult Post(ItemRequestResponse model)
     {
       var item = _itemCatalogRepository.InsertItem(model);
@@ -57,17 +59,17 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     }
 
     [HttpGet]
-    [Route("/api/[controller]/{itemId}")]
-    public IActionResult GetItemById(Guid itemId)
+    [Route("/public/api/[controller]/{itemId}")]
+    public async Task<IActionResult> GetItemById(Guid itemId)
     {
       var item = _itemCatalogRepository.GetItem(itemId);
-      item.Seller = _accountDetailsRepository.GetAccountName(item.SellerId);
+      item.Seller = await _accountDetailsInterface.GetAccountName(item.SellerId);
       return Ok(item);
     }
 
 
     [HttpPut]
-    [Route("/api/[controller]/{itemId}")]
+    [Route("/public/api/[controller]/{itemId}")]
     public IActionResult UpdateItemById(Guid itemId, ItemRequestResponse model)
     {
       model.Id = itemId;
@@ -76,7 +78,7 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     }
 
     [HttpDelete]
-    [Route("/api/[controller]/{itemId}")]
+    [Route("/public/api/[controller]/{itemId}")]
     public IActionResult DeleteItemById(Guid itemId)
     {
       _itemCatalogRepository.DeleteItem(itemId);

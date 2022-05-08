@@ -16,8 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TheWardrobe.CrossCutting\TheWardrobe.CrossCutting.csproj" />
-    <ProjectReference Include="..\TheWardrobe.API.Account\TheWardrobe.API.Account.csproj" />
-    <ProjectReference Include="..\TheWardrobe.API.ItemCatalog\TheWardrobe.API.ItemCatalog.csproj" />
   </ItemGroup>
 
 </Project>

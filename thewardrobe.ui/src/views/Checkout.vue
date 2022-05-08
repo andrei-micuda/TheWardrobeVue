@@ -92,7 +92,7 @@
     },
     methods: {
       placeOrder() {
-        api.post(`/api/${store.state.id}/order`, {
+        api.post(`/public/api/${store.state.id}/order`, {
           sellerId: this.sellerId,
           deliveryAddressId: this.deliveryAddress.id,
           items: this.items.map(i => i.id)
@@ -102,13 +102,13 @@
           });
       },
       fetchItems() {
-        api.get(`/api/${store.state.id}/cart`, {params: { sellerId: this.sellerId }})
+        api.get(`/public/api/${store.state.id}/cart`, {params: { sellerId: this.sellerId }})
           .then(res => {
             this.items = res.data;
           });
       },
       deleteItem(itemId) {
-        api.delete(`/api/${store.state.id}/cart`, {
+        api.delete(`/public/api/${store.state.id}/cart`, {
             data: { itemId }
           })
           .then(() => {
