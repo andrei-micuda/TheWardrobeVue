@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import api from '../api';
-import router from '../router';
 
 Vue.use(Vuex);
 
@@ -16,12 +15,9 @@ function setAccountDetails(state, accountId) {
     })
 }
 
-const store = new Vuex.Store({
-
-  // "State" is the application data your components
-  // will subscribe to
-
-  state: {
+const getDefaultState = () => {
+  return {
+    items: [],
     id: null,
     email: null,
     firstName: null,
@@ -29,8 +25,21 @@ const store = new Vuex.Store({
     userItems: null,
     jwt: null,
     isDrawerVisible: false
-  },
+  }
+}
+
+const store = new Vuex.Store({
+
+  // "State" is the application data your components
+  // will subscribe to
+
+  state: getDefaultState(),
   mutations: {
+    resetStore(state) {
+      localStorage.removeItem('id');
+      localStorage.removeItem('jwt');
+      Object.assign(state, getDefaultState());
+    },
     initStore(state) {
       let id = localStorage.getItem('id');
       let jwt = localStorage.getItem('jwt');
@@ -66,16 +75,16 @@ const store = new Vuex.Store({
       localStorage.setItem('id', id);
       localStorage.setItem('jwt', jwt);
     },
-    signOut(state) {
-      console.log("Signing out...");
-      state.id = null;
-      state.jwt = null;
+    // signOut(state) {
+    //   console.log("Signing out...");
+    //   state.id = null;
+    //   state.jwt = null;
 
-      localStorage.removeItem('id');
-      localStorage.removeItem('jwt');
+    //   localStorage.removeItem('id');
+    //   localStorage.removeItem('jwt');
 
-      router.replace('/signIn');
-    },
+    //   router.replace('/signIn');
+    // },
     refreshToken(state, jwt) {
       console.log("Refreshed JWT: ", jwt)
       state.jwt = jwt;

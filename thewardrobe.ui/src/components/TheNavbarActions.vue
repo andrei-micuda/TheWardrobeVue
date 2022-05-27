@@ -29,7 +29,7 @@
             <router-link to="/orders" class="block py-2 text-sm">Orders</router-link>
           </li>
           <li>
-            <a @click="$store.commit('signOut')" class="block py-2 text-sm">Sign out</a>
+            <a @click="handleSignOut" class="block py-2 text-sm">Sign out</a>
           </li>
         </ul>
         <ul v-else>
@@ -49,6 +49,7 @@
   import { Icon } from '@iconify/vue2';
 
   import store from '../store';
+  import router from '../router';
 
   // import CartListOverview from './Cart/CartListOverview.vue';
 
@@ -60,6 +61,12 @@
           cart : "eva:shopping-cart-outline",
           profile : "gg:profile"
         },
+      }
+    },
+    methods: {
+      handleSignOut() {
+        store.commit('resetStore');
+        router.replace('/signIn');
       }
     },
     computed: {

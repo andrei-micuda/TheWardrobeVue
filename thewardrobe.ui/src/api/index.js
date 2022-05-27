@@ -6,11 +6,20 @@ import store from "../store";
 let api = axios.create();
 
 const refreshAccessToken = async () => {
-  var res = await api.post("/public/api/account/refresh-token");
-  var data = res.data;
-  console.log(data);
-  store.commit("refreshToken", data.jwt);
-  return data.jwt;
+  var jwt = null;
+
+  await axios.post("/public/api/account/refresh-token")
+    .then(res => {
+      var data = res.data;
+      jwt = data.jwt;
+      store.commit("refreshToken", jwt);
+    }) 
+    .catch(() => {
+      console.log("Cant get token")
+      store.commit("resetStore");
+    });
+
+  return jwt;
 }
 
 // errorComposer will compose a handleGlobally function

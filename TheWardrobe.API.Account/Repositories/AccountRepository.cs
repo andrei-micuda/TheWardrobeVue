@@ -18,6 +18,8 @@ using MassTransit;
 using TheWardrobe.API.Publishers;
 using System.Threading.Tasks;
 using TheWardrobe.Helpers;
+using Serilog;
+using System.Data.Common;
 
 namespace TheWardrobe.API.Repositories
 {
@@ -25,17 +27,11 @@ namespace TheWardrobe.API.Repositories
   {
     AuthenticateResponse Authenticate(AuthenticateRequest model);
     AuthenticateResponse RefreshToken(string token);
-    void RevokeToken(string token);
+    void RevokeToken(string token, DbTransaction tx);
     Task Register(RegisterRequest model);
-    // void VerifyEmail(string token);
-    void ForgotPassword(ForgotPasswordRequest model);
-    void ValidateResetToken(ValidateResetTokenRequest model);
-    void ResetPassword(ResetPasswordRequest model);
-    // IEnumerable<AccountResponse> GetAll();
-    // AccountResponse GetById(int id);
-    // AccountResponse Create(CreateRequest model);
-    // AccountResponse Update(int id, UpdateRequest model);
-    // void Delete(int id);
+    void VerifyAccount(VerifyAccountRequest model);
+    Task ForgotPassword(ForgotPasswordRequest model);
+    void ChangePassword(ChangePasswordRequest model);
   }
 
   public class AccountRepository : IAccountRepository
@@ -44,6 +40,7 @@ namespace TheWardrobe.API.Repositories
     private readonly AppSettings _appSettings;
     private readonly ISendEmailPublisher _sendEmailPublisher;
     private readonly IDapperContext _dapperContext;
+    protected readonly ILogger _log = Log.ForContext<AccountRepository>();
 
     public AccountRepository(IMapper mapper, IDapperContext dapperContext, IOptions<AppSettings> appSettings, ISendEmailPublisher sendEmailPublisher)
     {
@@ -111,7 +108,7 @@ namespace TheWardrobe.API.Repositories
       return response;
     }
 
-    public void RevokeToken(string token)
+    public void RevokeToken(string token, DbTransaction tx = null)
     {
       using var connection = _dapperContext.GetConnection(); ;
 
@@ -125,7 +122,7 @@ namespace TheWardrobe.API.Repositories
         SET
           when_revoked = @WhenRevoked
         WHERE id = @Id
-        ", refreshToken);
+        ", refreshToken, transaction: tx);
     }
 
     public async Task Register(RegisterRequest model)
@@ -138,6 +135,7 @@ namespace TheWardrobe.API.Repositories
 
       if (!string.IsNullOrEmpty(duplicateEmail))
       {
+        // TODO
         // send already registered error in email to prevent account enumeration
         // sendAlreadyRegisteredEmail(model.Email, origin);
         return;
@@ -155,10 +153,10 @@ namespace TheWardrobe.API.Repositories
 
       connection.Insert<Guid, Account>(account);
 
-      await _sendEmailPublisher.SendVerificationEmail(account.Email, "TOKEN_URL_AICI");
+      await _sendEmailPublisher.SendVerificationEmail(account.Email, account.VerificationToken);
     }
 
-    public void ForgotPassword(ForgotPasswordRequest model)
+    public async Task ForgotPassword(ForgotPasswordRequest model)
     {
       var account = GetAccountByEmail(model.Email);
 
@@ -179,27 +177,10 @@ namespace TheWardrobe.API.Repositories
       WHERE id = @Id", account);
 
       // send email
-      // sendPasswordResetEmail(account, origin);
+      await _sendEmailPublisher.SendForgotPasswordEmail(account.Email, account.ResetToken);
     }
 
-    public void ValidateResetToken(ValidateResetTokenRequest model)
-    {
-      // var account = _context.Accounts.SingleOrDefault(x =>
-      //     x.ResetToken == model.Token &&
-      //     x.ResetTokenExpires > DateTime.UtcNow);
-      using var connection = _dapperContext.GetConnection(); ;
-      var account = connection.QuerySingleOrDefault<Account>(@"
-        SELECT *
-        FROM account
-        WHERE
-          reset_token = @Token AND
-          when_reset_token_expires > @UtcNow", new { Token = model.Token, UtcNow = DateTime.UtcNow });
-
-      if (account == null)
-        throw new AppException("Invalid token");
-    }
-
-    public void ResetPassword(ResetPasswordRequest model)
+    public void ChangePassword(ChangePasswordRequest model)
     {
       using var connection = _dapperContext.GetConnection(); ;
       var account = connection.QuerySingleOrDefault<Account>(@"
@@ -207,10 +188,14 @@ namespace TheWardrobe.API.Repositories
         FROM account
         WHERE
           reset_token = @Token AND
-          when_reset_token_expires > @UtcNow", new { Token = model.Token, UtcNow = DateTime.UtcNow });
+          when_reset_token_expires > now()", new { model.Token });
 
       if (account == null)
         throw new AppException("Invalid token");
+
+      // work within a sql transaction in order to treat password reset & token revocation as a unit
+      connection.Open();
+      var tx = connection.BeginTransaction();
 
       // update password and remove reset token
       account.PasswordHash = BCryptNet.HashPassword(model.Password);
@@ -218,14 +203,42 @@ namespace TheWardrobe.API.Repositories
       account.ResetToken = null;
       account.WhenResetTokenExpires = null;
 
-      connection.Execute(@"
-      UPDATE account
-      SET
-        password_hash = @PasswordHash,
-        when_password_reset = @UtcNow,
-        reset_token = @ResetToken,
-        when_reset_token_expires = @WhenResetTokenExpires
-      WHERE id = @Id", new { account.PasswordHash, DateTime.UtcNow, account.ResetToken, account.WhenResetTokenExpires, account.Id });
+      try
+      {
+        connection.Execute(@"
+          UPDATE account
+          SET
+            password_hash = @PasswordHash,
+            when_password_reset = now(),
+            reset_token = @ResetToken,
+            when_reset_token_expires = @WhenResetTokenExpires
+          WHERE id = @Id", new { account.PasswordHash, account.ResetToken, account.WhenResetTokenExpires, account.Id },
+          transaction: tx);
+
+        // revoke all current refresh tokens
+        var refreshTokensToRevoke = connection.Query<string>(@"
+          SELECT token
+          FROM refresh_token
+          WHERE account_id = @Id
+          AND when_revoked IS NULL", new { account.Id });
+
+        foreach (var refreshToken in refreshTokensToRevoke)
+        {
+          RevokeToken(refreshToken, tx);
+        }
+
+        tx.Commit();
+      }
+      catch (Exception ex)
+      {
+        _log.Error(ex.Message);
+        tx.Rollback();
+      }
+      finally
+      {
+        connection.Close();
+      }
+
     }
 
     private Account GetAccountByEmail(string email)
@@ -321,6 +334,17 @@ namespace TheWardrobe.API.Repositories
       rngCryptoServiceProvider.GetBytes(randomBytes);
       // convert random bytes to hex string
       return BitConverter.ToString(randomBytes).Replace("-", "");
+    }
+
+    public void VerifyAccount(VerifyAccountRequest model)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      connection.Execute(@"
+        UPDATE account
+        SET when_verified = now()
+        WHERE verification_token = @VerificationToken
+      ", new { model.VerificationToken });
     }
   }
 }

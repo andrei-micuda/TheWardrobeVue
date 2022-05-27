@@ -71,8 +71,11 @@ namespace TheWardrobe.API
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
-        app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TheWardrobe.API v1"));
+        app.UseSwagger(c =>
+        {
+          c.RouteTemplate = "public/api/Account/swagger/{documentName}/swagger.json";
+        });
+        // app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TheWardrobe.API v1"));
       }
 
       app.UseHttpsRedirection();

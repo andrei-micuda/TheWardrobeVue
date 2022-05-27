@@ -1,23 +1,17 @@
 <template>
-  <SignInRegisterCard>
+<div class="flex justify-center items-center w-screen" :style="{ height: 'calc(100vh - 66px)' }">
     <SignInForm />
-  </SignInRegisterCard>
+</div>
 </template>
 
 <script>
-    import SignInRegisterCard from "../components/SignInRegisterCard.vue"
     import SignInForm from "../components/SignInForm.vue"
   export default {
     components: {
-        SignInRegisterCard,
         SignInForm
     }
   }
 </script>
 
 <style scoped>
-  .background
-  {
-    background-image: url("../assets/register-2.jpg")
-  }
 </style>

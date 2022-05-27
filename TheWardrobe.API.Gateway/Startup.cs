@@ -106,6 +106,17 @@ namespace TheWardrobe.API.Gateway
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
+
+        var serviceNames = new string[] { "Account", "ItemCatalog", "Order" };
+
+        app.UseSwaggerUI(c =>
+        {
+          foreach (var serviceName in serviceNames)
+          {
+            c.SwaggerEndpoint($"/public/api/{serviceName}/swagger/v1/swagger.json", $"TheWardrobe.API.{serviceName} v1");
+          }
+          c.RoutePrefix = "swagger";
+        });
       }
 
       app.UseHttpsRedirection();

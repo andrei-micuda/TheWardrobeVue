@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TheWardrobe.API.Models.Accounts
 {
-  public class ResetPasswordRequest
+  public class ChangePasswordRequest
   {
     [Required]
     public string Token { get; set; }

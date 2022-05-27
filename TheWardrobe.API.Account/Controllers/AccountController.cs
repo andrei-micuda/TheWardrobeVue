@@ -52,29 +52,18 @@ namespace TheWardrobe.API.Controllers
       return Ok(response);
     }
 
-    [Authorize]
-    [HttpPost("revoke-token")]
-    public IActionResult RevokeToken(RevokeTokenRequest model)
-    {
-      // accept token from request body or cookie
-      var token = model.Token ?? Request.Cookies["refreshToken"];
-
-      if (string.IsNullOrEmpty(token))
-        return BadRequest(new { message = "Token is required" });
-
-      // users can revoke their own tokens and admins can revoke any tokens
-      if (!Account.OwnsToken(token) && Account.Role != Role.Admin)
-        return Unauthorized(new { message = "Unauthorized" });
-
-      _accountService.RevokeToken(token);
-      return Ok(new { message = "Token revoked" });
-    }
-
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest model)
     {
       await _accountService.Register(model);
       return Ok(new { message = "Registration successful, please check your email for verification instructions" });
+    }
+
+    [HttpPost("verify")]
+    public IActionResult VerifyAccount(VerifyAccountRequest model)
+    {
+      _accountService.VerifyAccount(model);
+      return Ok();
     }
 
     [HttpPost("forgot-password")]
@@ -84,18 +73,11 @@ namespace TheWardrobe.API.Controllers
       return Ok(new { message = "Please check your email for password reset instructions" });
     }
 
-    [HttpPost("validate-reset-token")]
-    public IActionResult ValidateResetToken(ValidateResetTokenRequest model)
+    [HttpPost("change-password")]
+    public IActionResult ChangePassword(ChangePasswordRequest model)
     {
-      _accountService.ValidateResetToken(model);
-      return Ok(new { message = "Token is valid" });
-    }
-
-    [HttpPost("reset-password")]
-    public IActionResult ResetPassword(ResetPasswordRequest model)
-    {
-      _accountService.ResetPassword(model);
-      return Ok(new { message = "Password reset successful, you can now login" });
+      _accountService.ChangePassword(model);
+      return Ok(new { message = "Password changed successful, you can now login" });
     }
 
     // helper methods

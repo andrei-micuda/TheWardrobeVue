@@ -312,6 +312,10 @@ export default {
   @apply bg-green-400 border-transparent !important;
 }
 
+.ant-drawer-close {
+    @apply text-gray-100 !important;
+}
+
 .ant-drawer-header {
   @apply bg-gray-700 border-gray-500 !important;
 

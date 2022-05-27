@@ -48,8 +48,10 @@ namespace TheWardrobe.API.ItemCatalog
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
-        app.UseSwagger();
-        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TheWardrobe.API.ItemCatalog v1"));
+        app.UseSwagger(c =>
+        {
+          c.RouteTemplate = "public/api/ItemCatalog/swagger/{documentName}/swagger.json";
+        });
       }
 
       app.UseHttpsRedirection();
