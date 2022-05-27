@@ -12,20 +12,21 @@
         }">{{ tab.tabName }}</button>
     </li>
     </ul>
-    <main>
-      <OrderGroups :isIncoming="currentTab === 'Incoming'" />
+    <main class="bg-gray-800 p-8 w-3/5 mx-auto rounded">
+      <!-- <OrderGroups :isIncoming="" /> -->
+      <OrderList :isIncoming="currentTab === 'Incoming'" />
     </main>
   </section>
 </template>
 
 <script>
 import VPageHeader from '../components/VPageHeader.vue';
-import OrderGroups from '../components/Order/OrderGroups.vue';
+import OrderList from '../components/Order/OrderList.vue';
 
 export default {
   components: {
     VPageHeader,
-    OrderGroups
+    OrderList
   },
   data() {
     return {

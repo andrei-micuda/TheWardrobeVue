@@ -107,14 +107,12 @@ namespace TheWardrobe.API.Repositories
         SELECT *
         FROM ""order""
         WHERE {(filters.Type == OrderType.Incoming ? "buyer_id" : "seller_id")} = @accountId
-        AND status = @Status
         ORDER BY {orderByColumn} {order}
         LIMIT @limit
         OFFSET @offset;
       ", new
       {
         accountId,
-        filters.Status,
         limit = filters.PageSize,
         offset = filters.PageSize * (filters.Page - 1)
       });
@@ -134,11 +132,9 @@ namespace TheWardrobe.API.Repositories
         SELECT COUNT(*)
         FROM ""order""
         WHERE {(filters.Type == OrderType.Incoming ? "buyer_id" : "seller_id")} = @accountId
-        AND status = @Status;
         ", new
       {
         accountId,
-        filters.Status,
       });
 
       return res;

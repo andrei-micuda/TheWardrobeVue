@@ -54,7 +54,7 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet("ratings")]
-    public IActionResult GetOrders(Guid accountId)
+    public IActionResult GetRatings(Guid accountId)
     {
       var buyerRating = _orderRepository.GetBuyerRating(accountId);
       var sellerRating = _orderRepository.GetSellerRating(accountId);
@@ -63,7 +63,7 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetRatings(Guid accountId, [FromQuery] OrderQueryFilters filters)
+    public async Task<IActionResult> GetOrders(Guid accountId, [FromQuery] OrderQueryFilters filters)
     {
       var res = _orderRepository.GetOrdersSummary(accountId, filters);
       foreach (var o in res.Orders)

@@ -96,8 +96,6 @@ router.beforeEach((to, from, next) => {
   // close sidebar if it was previously open
   store.commit('setIsDrawerVisible', false);
 
-  console.log(to.path);
-
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = ['/signIn', '/register', '/verify-account', '/forgot-password', '/change-password'];
   const authRequired = !publicPages.includes(to.path);

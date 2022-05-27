@@ -8,7 +8,6 @@ namespace TheWardrobe.API.Models
 {
   public class OrderQueryFilters : QueryFilters
   {
-    public OrderStatus Status { get; set; }
     public OrderType Type { get; set; }
   }
 

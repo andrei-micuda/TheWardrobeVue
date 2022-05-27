@@ -23,20 +23,9 @@
     </div>
     <VSpinner v-if="orders === null" />
     <p v-else-if="orders.length === 0" class="text-center">No data.</p>
-    <ul v-else class="font-normal space-y-4">
-      <li v-for="order in orders" :key="order.id" class="p-4 bg-gray-700 rounded">
-        <div class="flex justify-between items-center">
-          <div>
-            <p v-if="isIncoming">Order from <span class="font-bold">{{order.seller}}</span></p>
-            <p v-else>Order to <span class="font-bold">{{order.buyer}}</span></p>
-            <p>Placed at: {{order.whenPlaced.format('DD/MM/YYYY HH:mm')}} | Total: <span class="font-bold">{{order.total}} RON</span></p>
-          </div>
-          <div>
-            <router-link :to="{name: 'order', params: {orderId: order.id}}">
-              <a-button>details</a-button>
-            </router-link>
-          </div>
-        </div>
+    <ul v-else class="font-normal space-y-4 mt-4">
+      <li v-for="order in orders" :key="order.id" >
+        <OrderSummary :isIncoming="isIncoming" :order="order" />
       </li>
     </ul>
   </div>
@@ -48,6 +37,7 @@
   import api from '../../api';
   import store from '../../store';
 
+  import OrderSummary from './OrderSummary.vue';
   import VSpinner from '../VSpinner.vue';
 
   export default {
@@ -58,9 +48,6 @@
       isIncoming: {
         type: Boolean,
         default: true
-      },
-      orderStatus: {
-        type: Number
       }
     },
     watch: {
@@ -90,11 +77,9 @@
     },
     methods: {
       fetchData() {
-        console.log(this.params)
         api.get(`/public/api/${store.state.id}/order`, {
         params: {
           ...this.params,
-          status: this.orderStatus
         }
       })
       .then(res => {
@@ -126,6 +111,7 @@
     },
     components: {
       VSpinner,
+      OrderSummary
     },
   }
 </script>
