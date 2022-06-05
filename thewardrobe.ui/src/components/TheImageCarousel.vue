@@ -12,15 +12,13 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      images: {
-        type: Array,
-      },
+export default {
+  props: {
+    images: {
+      type: Array,
     },
-  }
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

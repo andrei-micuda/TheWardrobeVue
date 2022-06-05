@@ -11,9 +11,7 @@
     >
       <div v-if="fileList.length < 8">
         <a-icon type="plus" />
-        <div v-if="size !== 'small'" class="ant-upload-text">
-          Upload
-        </div>
+        <div v-if="size !== 'small'" class="ant-upload-text">Upload</div>
       </div>
     </a-upload>
     <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -27,26 +25,26 @@ function getBase64(file) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 }
 export default {
   props: {
     handleUpload: {
-      type: Function
+      type: Function,
     },
     uploadedImages: {
-      type: Array
+      type: Array,
     },
     size: {
       type: String,
-      default: "default"
-    }
+      default: "default",
+    },
   },
   data() {
     return {
       previewVisible: false,
-      previewImage: '',
+      previewImage: "",
       fileList: [],
     };
   },
@@ -79,7 +77,7 @@ export default {
     @apply text-white;
     font-size: 32px;
   }
-  
+
   & .ant-upload-text {
     @apply text-white;
     margin-top: 8px;
@@ -104,5 +102,4 @@ export default {
   width: 100% !important;
   height: 100% !important;
 } */
-
 </style>

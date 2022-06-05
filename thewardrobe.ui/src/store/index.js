@@ -1,18 +1,29 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-import api from '../api';
+import api from "../api";
 
 Vue.use(Vuex);
 
 function setAccountDetails(state, accountId) {
   // retrieve user name and email from db
-  api.get(`/public/api/${accountId}/accountDetails`)
-    .then(res => {
-      state.email = res.data.email;
-      state.firstName = res.data.firstName;
-      state.lastName = res.data.lastName;
+  api.get(`/public/api/${accountId}/accountDetails`).then((res) => {
+    state.email = res.data.email;
+    state.firstName = res.data.firstName;
+    state.lastName = res.data.lastName;
+  });
+}
+
+function setUserItems(state, accountId) {
+  // retrieve user items from db
+  api
+    .get("/public/api/itemCatalog", {
+      params: { sellerIdInclude: accountId },
     })
+    .then((res) => {
+      var itemIds = res.data.items.map((i) => i.id);
+      state.userItems = itemIds;
+    });
 }
 
 const getDefaultState = () => {
@@ -24,25 +35,25 @@ const getDefaultState = () => {
     lastName: null,
     userItems: null,
     jwt: null,
-    isDrawerVisible: false
-  }
-}
+    isDrawerVisible: false,
+    warningMsg: null,
+  };
+};
 
 const store = new Vuex.Store({
-
   // "State" is the application data your components
   // will subscribe to
 
   state: getDefaultState(),
   mutations: {
     resetStore(state) {
-      localStorage.removeItem('id');
-      localStorage.removeItem('jwt');
+      localStorage.removeItem("id");
+      localStorage.removeItem("jwt");
       Object.assign(state, getDefaultState());
     },
-    initStore(state) {
-      let id = localStorage.getItem('id');
-      let jwt = localStorage.getItem('jwt');
+    getUserData(state) {
+      let id = localStorage.getItem("id");
+      let jwt = localStorage.getItem("jwt");
 
       state.id = id;
       state.jwt = jwt;
@@ -50,18 +61,13 @@ const store = new Vuex.Store({
       if (id) {
         setAccountDetails(state, id);
 
-        // retrieve user items from db
-        api.get('/public/api/itemCatalog', {
-          params: { sellerIdInclude: id }
-        })
-          .then(res => {
-            var itemIds = res.data.items.map(i => i.id);
-            state.userItems = itemIds;
-          });
+        setUserItems(state, id);
       }
     },
+    addUserItem(state, itemId) {
+      state.userItems.push(itemId);
+    },
     updateAccountDetails(state, { email, firstName, lastName }) {
-      console.log("updateAccountDetails")
       state.email = email;
       state.firstName = firstName;
       state.lastName = lastName;
@@ -70,10 +76,11 @@ const store = new Vuex.Store({
       state.id = id;
       state.jwt = jwt;
 
+      setUserItems(state, id);
       setAccountDetails(state, id);
 
-      localStorage.setItem('id', id);
-      localStorage.setItem('jwt', jwt);
+      localStorage.setItem("id", id);
+      localStorage.setItem("jwt", jwt);
     },
     // signOut(state) {
     //   console.log("Signing out...");
@@ -86,15 +93,18 @@ const store = new Vuex.Store({
     //   router.replace('/signIn');
     // },
     refreshToken(state, jwt) {
-      console.log("Refreshed JWT: ", jwt)
+      console.log("Refreshed JWT: ", jwt);
       state.jwt = jwt;
 
       localStorage.setItem("jwt", jwt);
     },
     setIsDrawerVisible(state, val) {
       state.isDrawerVisible = val;
-    }
-  }
+    },
+    setWarningMsg(state, val) {
+      state.warningMsg = val;
+    },
+  },
 });
 
 export default store;

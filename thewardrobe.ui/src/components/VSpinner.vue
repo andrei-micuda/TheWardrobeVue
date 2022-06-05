@@ -3,15 +3,13 @@
 </template>
 
 <script>
-  import { Icon } from '@iconify/vue2';
+import { Icon } from "@iconify/vue2";
 
-  export default {
-    components: {
-      Icon,
-    },
-  }
+export default {
+  components: {
+    Icon,
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

@@ -1,6 +1,4 @@
-import { message } from 'ant-design-vue';
-
-// TODO no colors on messages icons
+import { message } from "ant-design-vue";
 
 const notifier = {
   success: function (msg) {
@@ -11,7 +9,7 @@ const notifier = {
       content: () => msg,
       duration: 5,
     });
-  }
-}
+  },
+};
 
 export default notifier;

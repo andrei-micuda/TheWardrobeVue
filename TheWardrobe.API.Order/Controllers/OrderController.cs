@@ -19,13 +19,15 @@ namespace TheWardrobe.API.Controllers
   {
     protected readonly Serilog.ILogger _log = Serilog.Log.ForContext<OrderController>();
     private readonly IOrderRepository _orderRepository;
+    private readonly ICartRepository _cartRepository;
     private readonly AccountDetailsInterface _accountDetailsInterface;
     private readonly DeliveryAddressInterface _deliveryAddressInterface;
     private readonly ItemCatalogInterface _itemCatalogInterface;
 
-    public OrderController(IConfiguration config, IOrderRepository orderRepository)
+    public OrderController(IConfiguration config, IOrderRepository orderRepository, ICartRepository cartRepository)
     {
       _orderRepository = orderRepository;
+      _cartRepository = cartRepository;
       _accountDetailsInterface = new AccountDetailsInterface(config);
       _deliveryAddressInterface = new DeliveryAddressInterface(config);
       _itemCatalogInterface = new ItemCatalogInterface(config);
@@ -34,7 +36,7 @@ namespace TheWardrobe.API.Controllers
     [HttpPost]
     public IActionResult PlaceOrder(Guid accountId, OrderRequest model)
     {
-      // TODO items from the current user cart
+      _cartRepository.RemoveBulk(accountId, model.Items);
       _orderRepository.PlaceOrder(accountId, model);
       return Ok();
     }

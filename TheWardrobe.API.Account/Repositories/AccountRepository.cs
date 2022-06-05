@@ -135,9 +135,7 @@ namespace TheWardrobe.API.Repositories
 
       if (!string.IsNullOrEmpty(duplicateEmail))
       {
-        // TODO
-        // send already registered error in email to prevent account enumeration
-        // sendAlreadyRegisteredEmail(model.Email, origin);
+        // don't throw error to prevent account enumeration
         return;
       }
 

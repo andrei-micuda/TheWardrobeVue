@@ -1,28 +1,24 @@
 <template>
   <div>
-    <ItemGrid
-      source="/public/api/itemCatalog"
-      :params="params" />
+    <ItemGrid source="/public/api/itemCatalog" :params="params" />
   </div>
 </template>
 
 <script>
-  import store from '../store';
+import store from "../store";
 
-  import ItemGrid from './Item/ItemGrid.vue';
+import ItemGrid from "./Item/ItemGrid.vue";
 
-  export default {
-   components: {
-     ItemGrid,
-   },
-   data() {
-     return {
-       params: { sellerIdExclude: store.state.id }, 
-     }
-   },
-  }
+export default {
+  components: {
+    ItemGrid,
+  },
+  data() {
+    return {
+      params: { sellerIdExclude: store.state.id },
+    };
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

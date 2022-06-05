@@ -11,9 +11,7 @@
     >
       <div v-if="fileList.length < 8">
         <a-icon type="plus" />
-        <div v-if="size !== 'small'" class="ant-upload-text">
-          Upload
-        </div>
+        <div v-if="size !== 'small'" class="ant-upload-text">Upload</div>
       </div>
     </a-upload>
     <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -22,33 +20,33 @@
   </div>
 </template>
 <script>
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
+    reader.onerror = (error) => reject(error);
   });
 }
 export default {
   props: {
     handleUpload: {
-      type: Function
+      type: Function,
     },
     uploadedImages: {
-      type: Array
+      type: Array,
     },
     size: {
       type: String,
-      default: "default"
-    }
+      default: "default",
+    },
   },
   data() {
     return {
       previewVisible: false,
-      previewImage: '',
+      previewImage: "",
       fileList: [],
     };
   },
@@ -67,15 +65,15 @@ export default {
       this.previewVisible = true;
     },
     handleChange({ fileList }) {
-      this.fileList = fileList.map(file => {
+      this.fileList = fileList.map((file) => {
         const uuid = uuidv4();
-        const fileExtention = file.name.split('.').pop();
+        const fileExtention = file.name.split(".").pop();
         file.uploadName = `${uuid}.${fileExtention}`;
         return file;
-      })
-      
+      });
+
       this.handleUpload(fileList);
-    }
+    },
   },
 };
 </script>
@@ -87,7 +85,7 @@ export default {
     @apply text-white;
     font-size: 32px;
   }
-  
+
   & .ant-upload-text {
     @apply text-white;
     margin-top: 8px;
@@ -107,5 +105,4 @@ export default {
     @apply w-10 h-10 p-0;
   }
 }
-
 </style>

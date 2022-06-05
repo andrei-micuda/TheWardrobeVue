@@ -11,28 +11,25 @@
 </template>
 
 <script>
-  import api from '../../api';
-  import store from '../../store';
+import api from "../../api";
+import store from "../../store";
 
-  import { Icon } from '@iconify/vue2';
-  export default {
-    data() {
-      return {
-        items: null
-      }
-    },
-    mounted () {
-      api.get(`/public/api/${store.state.id}/cart`)
-        .then(res => {
-          this.items = res.data;
-        })
-    },
-    components: {
-      Icon
-    }
-  }
+import { Icon } from "@iconify/vue2";
+export default {
+  data() {
+    return {
+      items: null,
+    };
+  },
+  mounted() {
+    api.get(`/public/api/${store.state.id}/cart`).then((res) => {
+      this.items = res.data;
+    });
+  },
+  components: {
+    Icon,
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

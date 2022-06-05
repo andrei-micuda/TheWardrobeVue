@@ -64,6 +64,8 @@ namespace TheWardrobe.API.Gateway
       // Instantiate the runner
       var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
 
+      // runner.MigrateDown(0);
+
       // revert before Order migration
       // runner.MigrateDown(202204200000);
 

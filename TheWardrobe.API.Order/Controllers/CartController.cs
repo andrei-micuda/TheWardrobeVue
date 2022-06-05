@@ -62,7 +62,7 @@ namespace TheWardrobe.API.Controllers
     [HttpDelete]
     public IActionResult Delete(Guid accountId, CartRequest model)
     {
-      _cartRepository.Remove(accountId, model);
+      _cartRepository.Remove(accountId, model.ItemId);
       return Ok();
     }
   }

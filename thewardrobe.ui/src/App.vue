@@ -1,21 +1,21 @@
 <template>
   <div id="app" class="min-h-screen flex flex-col bg-gray-700">
     <TheNavbar />
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
-import TheNavbar from "./components/TheNavbar.vue"
+import TheNavbar from "./components/TheNavbar.vue";
 export default {
   components: {
-        TheNavbar
-    }
-}
+    TheNavbar,
+  },
+};
 </script>
 
 <style lang="postcss">
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 * {
   box-sizing: border-box;
 }
@@ -50,7 +50,7 @@ export default {
 
   &:hover {
     @apply border-green-400 !important;
-  }  
+  }
 }
 
 .ant-btn-default {
@@ -93,7 +93,8 @@ export default {
   }
 }
 
-.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+.ant-radio-group-solid
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
   @apply bg-green-400 border-green-400 text-gray-600 !important;
 
   &::before {
@@ -275,7 +276,10 @@ export default {
 .ant-select-selection {
   @apply bg-transparent text-gray-100 !important;
 
-  &:hover, &:focus, &:focus-visible, &:active {
+  &:hover,
+  &:focus,
+  &:focus-visible,
+  &:active {
     @apply border-green-400 !important;
     box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.2) !important;
     outline: none !important;
@@ -289,8 +293,6 @@ export default {
 .ant-select-dropdown {
   @apply bg-gray-700 border-2 border-gray-800 !important;
 }
-
-
 
 .ant-select-dropdown-menu-item {
   @apply bg-gray-700 text-gray-100 !important;
@@ -313,7 +315,7 @@ export default {
 }
 
 .ant-drawer-close {
-    @apply text-gray-100 !important;
+  @apply text-gray-100 !important;
 }
 
 .ant-drawer-header {
@@ -339,7 +341,8 @@ export default {
   @apply bg-gray-600 border-gray-500 text-gray-100 !important;
 }
 
-.ant-collapse, .ant-collapse-content {
+.ant-collapse,
+.ant-collapse-content {
   @apply bg-transparent text-gray-100 !important;
 }
 
@@ -415,6 +418,18 @@ export default {
   & .ant-rate-star-first,
   & .ant-rate-star-second {
     @apply text-gray-400 !important;
+  }
+}
+
+.ant-alert {
+  & .ant-alert-message {
+    @apply relative;
+    top: 2px;
+  }
+
+  & .anticon-close {
+    @apply relative;
+    top: -1px;
   }
 }
 

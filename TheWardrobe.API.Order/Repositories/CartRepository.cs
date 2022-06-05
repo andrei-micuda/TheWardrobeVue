@@ -18,7 +18,8 @@ namespace TheWardrobe.API.Repositories
   public interface ICartRepository
   {
     void Add(Guid accountId, CartRequest model);
-    void Remove(Guid accountId, CartRequest model);
+    void Remove(Guid accountId, Guid itemId);
+    void RemoveBulk(Guid accountId, IEnumerable<Guid> itemIds);
     bool CheckIsInCart(Guid accountId, Guid itemId);
     IEnumerable<Guid> GetCart(Guid accountId, Guid? sellerId);
   }
@@ -80,16 +81,25 @@ namespace TheWardrobe.API.Repositories
       return connection.Query<Guid>(sql, new { accountId, sellerId });
     }
 
-    public void Remove(Guid accountId, CartRequest model)
+    public void Remove(Guid accountId, Guid itemId)
     {
-      var cart = _mapper.Map<Cart>(model);
-      cart.AccountId = accountId;
+      var cart = new Cart { ItemId = itemId, AccountId = accountId };
       using var connection = _dapperContext.GetConnection();
 
       connection.Execute(@"
         DELETE FROM cart
         WHERE account_id = @accountId
         AND item_id = @itemId;", cart);
+    }
+
+    public void RemoveBulk(Guid accountId, IEnumerable<Guid> itemIds)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      connection.Execute(@"
+        DELETE FROM cart
+        WHERE account_id = @accountId
+        AND item_id = ANY(@itemIds);", new { accountId, itemIds });
     }
   }
 }
