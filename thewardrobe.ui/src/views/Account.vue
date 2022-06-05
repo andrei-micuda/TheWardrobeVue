@@ -1,12 +1,12 @@
 <template>
   <div>
     <VPageHeader title="My Account" @back="$router.back()" />
-    <a-row class="w-3/5 mx-auto">
-      <a-col :span="6">
-        <div class="rounded border-gray-500 w-4/5 mx-auto">
-          <img :src="profilePicture" alt="Account Profile Picture" class="rounded-full mx-auto">
+    <a-row class="lg:w-3/5 md:w-5/6 w-11/12 mx-auto">
+      <a-col :span="24" :md="{ span: 6 }">
+        <div class="rounded border-gray-500 md:w-4/5 mb-6 md:mb-0 flex md:block items-center justify-between sm:justify-center mx-auto">
+          <img :src="profilePicture" alt="Account Profile Picture" class="rounded-full mr-6 md:mr-0 md:mx-auto">
 
-          <div class="bg-gray-800 mt-4 rounded p-4 space-y-2">
+          <div class="bg-gray-800 md:mt-4 rounded p-4 space-y-2 w-64 sm:w-auto">
             <p class="text-center font-bold">Ratings</p>
             <div class="flex items-center space-x-2 justify-center">
               <p>Buyer:</p>
@@ -25,7 +25,7 @@
           </div>
         </div>
       </a-col>
-      <a-col :span="18" class="p-4 bg-gray-800 rounded">
+      <a-col :span="24" :md="{ span: 18 }" class="p-4 bg-gray-800 rounded">
         <AccountDetails />
         <DeliveryAddressList />
       </a-col>
@@ -48,7 +48,7 @@
     data() {
       return {
         buyerRating: null,
-        sellerRating: null
+        sellerRating: null,
       }
     },
     mounted () {
@@ -67,7 +67,7 @@
     computed: {
       ...mapState(['email', 'firstName', 'lastName']),
       profilePicture() {
-        return `https://ui-avatars.com/public/api/?name=${this.name}&size=128&format=svg`;
+        return `https://eu.ui-avatars.com/api/?name=${this.name}&size=128&format=svg`;
       },
       name() {
         if(this.firstName && this.lastName)

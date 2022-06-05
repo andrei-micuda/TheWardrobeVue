@@ -1,5 +1,5 @@
 <template>
-  <div class="hidden xl:flex items-center space-x-5">
+  <div class="flex items-center space-x-5">
     <!-- <CartListOverview /> -->
     <router-link to="/cart" class="flex items-center text-gray-100 hover:text-gray-200">
       <Icon icon="eva:shopping-cart-outline" class="h-6 w-6" />
@@ -9,19 +9,18 @@
     <div class="relative inline-block text-left">
       <button class="flex items-center hover:text-gray-200" @click="() => $store.commit('setIsDrawerVisible', true)">
           <Icon :icon="icons.profile" class="h-6 w-6" />
-          <span class="flex absolute -mt-5 mr-6">
+          <!-- <span class="flex absolute -mt-5 mr-6">
             <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-green-400 opacity-75"></span>
             <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-          </span>
+          </span> -->
       </button>
       <a-drawer
-      :title="email"
       placement="right"
       :closable="true"
       :visible="$store.state.isDrawerVisible"
       @close="() => $store.commit('setIsDrawerVisible', false)"
       >
-        <ul v-if="email">
+        <ul v-if="id">
           <li>
             <router-link to="/account" class="block py-2 text-sm">My Account</router-link>
           </li>
@@ -70,8 +69,8 @@
       }
     },
     computed: {
-      email() {
-        return store.state.email;
+      id() {
+        return store.state.id;
       }
     },
     components: {

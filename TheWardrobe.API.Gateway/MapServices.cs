@@ -17,9 +17,6 @@ namespace TheWardrobe.Helpers
       Configuration = configuration;
     }
 
-    // This sample looks at the destination addresses and any of the form {{key}} will be modified, looking up the key
-    // as an environment variable. This is useful when hosted in Azure etc, as it enables a simple way to replace
-    // destination addresses via the management console
     public ValueTask<ClusterConfig> ConfigureClusterAsync(ClusterConfig origCluster, CancellationToken cancel)
     {
       // Each cluster has a dictionary of destinations, which is read-only, so we'll create a new one with our updates 
@@ -38,7 +35,6 @@ namespace TheWardrobe.Helpers
           throw new ArgumentException($"Configuration Filter Error: Substitution for service name '{serviceName}' in cluster '{d.Key}' not found in tye service discovery.");
         }
 
-        // using c# 9 "with" to clone and initialize a new record
         var modifiedDest = d.Value with { Address = newAddress };
         newDests.Add(d.Key, modifiedDest);
       }

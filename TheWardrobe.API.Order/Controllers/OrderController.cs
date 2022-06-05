@@ -34,6 +34,7 @@ namespace TheWardrobe.API.Controllers
     [HttpPost]
     public IActionResult PlaceOrder(Guid accountId, OrderRequest model)
     {
+      // TODO items from the current user cart
       _orderRepository.PlaceOrder(accountId, model);
       return Ok();
     }

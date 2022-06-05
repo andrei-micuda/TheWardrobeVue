@@ -1,14 +1,14 @@
 <template>
   <div class="text-center">
-    <VButton @click="toggleNewItemModal()" class="mb-10">New Item</VButton>
+    <a-button type="primary" @click="toggleNewItemModal()" class="mb-10">List Item</a-button>
     <a-modal
       id="TheSellingModal"
       v-model="showModal"
-      title="Add An Item"
+      title="List a new item"
       :footer="null"
       @ok="$emit('ok')"
       @cancel="$emit('cancel')">
-      <a-steps :current="current">
+      <a-steps :current="current" labelPlacement="vertical" >
         <a-step v-for="item in steps" :key="item.title" :title="item.title">
          <Icon :icon="item.icon" slot="icon" width="20" /> 
         </a-step>
@@ -44,7 +44,7 @@
 
 <script>
   import $ from "cash-dom";
-  import VButton from '../VButton.vue';
+  // import VButton from '../VButton.vue';
   import TheImageUploadStep from './TheImageUploadStep.vue';
   import TheImageClassificationStep from './TheImageClassificationStep.vue';
   import TheAddDetailsStep from './TheAddDetailsStep.vue';
@@ -94,7 +94,7 @@
       }
    },
    components: {
-     VButton,
+    //  VButton,
      Icon,
      TheImageUploadStep,
      TheImageClassificationStep,

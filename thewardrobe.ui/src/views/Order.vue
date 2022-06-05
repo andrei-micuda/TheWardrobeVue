@@ -1,8 +1,8 @@
 <template>
   <div>
     <VPageHeader title="Order Details" @back="$router.back()" />
-    <a-row v-if="order" class="w-3/5 mx-auto">
-      <a-col :span="16" class="space-y-5">
+    <a-row v-if="order" class="w-11/12 md:w-3/5 mx-auto">
+      <a-col :span="24" :xxl="{ span: 16 }" class="space-y-5">
         <div v-if="order.status === orderStatuses.cancelled || order.status === orderStatuses.declined" class="bg-gray-800 rounded p-4">
           <a-steps id="CancelledSteps" :current="-1" class="mb-4">
             <a-step title="Pending" />
@@ -50,8 +50,8 @@
           </div>
         </div>
       </a-col>
-      <a-col :span="8">
-        <div class="bg-gray-800 ml-10 p-4 rounded space-y-6">
+      <a-col :span="24" :xxl="{ span: 8 }">
+        <div class="bg-gray-800 mt-6 2xl:mt-0 2xl:ml-10 p-4 rounded space-y-6">
           <div class="space-y-1">
             <p class="text-lg">Order {{isBuyer ? 'from': 'to'}}:</p>
             <div class="flex items-center space-x-2">
@@ -65,15 +65,10 @@
 
           <a-divider />
 
-          <div class="space-y-1">
+          <div class="space-y-2">
             <p class="text-lg">Items:</p>
-            <ul class="space-y-2 pb-4">
-              <li v-for="item in order.orderItems" :key="item.id" class="flex justify-between items-center">
-                <img :src="item.images[0]" alt="" class="w-16">
-                <span>{{item.price}} RON</span>
-              </li>
-            </ul>
-            <div class="flex justify-between">
+            <ItemList :items="order.orderItems" />
+            <div class="flex justify-between text-lg">
               <span>Total:</span>
               <span class="font-bold">{{total}} RON</span>
             </div>
@@ -94,6 +89,7 @@
 
 <script>
   import VPageHeader from '../components/VPageHeader.vue';
+  import ItemList from '../components/Item/ItemList.vue';
   import { Icon } from "@iconify/vue2";
 
   import api from '../api';
@@ -175,6 +171,7 @@
     },
     components: {
       VPageHeader,
+      ItemList,
       Icon
     }
   }

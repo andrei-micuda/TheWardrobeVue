@@ -1,7 +1,10 @@
 <template>
   <section id="AccountDetailsSection">
-    <p class="text-xl mb-2">Account Details</p>
-    <a-form :form="form" @submit="handleSubmit" hideRequiredMark class="bg-gray-700 p-4 mb-5">
+    <div class="flex items-center cursor-pointer mb-2" :class="{ collapsed: isCollapsed }" @click="toggleCollapse">
+      <Icon icon="dashicons:arrow-down-alt2" width="20" class="mr-2 transition-all"  />
+      <p class="text-xl">Account Details</p>
+    </div>
+    <a-form :form="form" @submit="handleSubmit" hideRequiredMark class="bg-gray-700 p-4 mb-5" :class="{ hidden: isCollapsed }">
       <a-form-item label="First Name" class="mr-6" :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
         <a-input
           v-decorator="[
@@ -55,13 +58,16 @@
 </template>
 
 <script>
+  import { Icon } from '@iconify/vue2';
+
   import api from '../../api'
   import store from '../../store';
 
   export default {
     data() {
       return {
-        accountDetails: null
+        accountDetails: null,
+        isCollapsed: false
       }
     },
     beforeCreate () {
@@ -80,6 +86,9 @@
         })
     },
     methods: {
+      toggleCollapse() {
+        this.isCollapsed = !this.isCollapsed;
+      },
       async handleSubmit(e) {
         e.preventDefault();
         this.form.validateFields(async (err, values) => {
@@ -99,9 +108,14 @@
         });
       }
     },
+    components: {
+      Icon
+    }
   }
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="postcss">
+.collapsed svg {
+  rotate: -90deg;
+}
 </style>

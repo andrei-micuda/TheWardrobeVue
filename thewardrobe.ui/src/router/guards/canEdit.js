@@ -1,5 +1,5 @@
 import store from "../../store";
-
+// TODO add guard for 403 error code
 function canEdit(itemId, next) {
   console.log("In canEdit guard.")
   var userItems = store.state.userItems;

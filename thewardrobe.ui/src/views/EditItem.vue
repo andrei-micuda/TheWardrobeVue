@@ -1,7 +1,7 @@
 <template>
   <a-form :form="form" v-bind="formItemLayout" @submit="handleSubmit" >
     <VPageHeader @back="$router.back()" @apply="handleApply" @delete="handleDelete" :showEditActions="true" title="Edit Item" />
-    <div class="w-8/12 mx-auto bg-gray-800 px-10 py-8">
+    <div class="w-11/12 md:w-8/12 mx-auto bg-gray-800 px-10 py-8">
       <a-form-item label="Product Name">
         <a-input
           v-decorator="[
@@ -94,7 +94,6 @@
             ]
           }
           ]"
-          @change="val => {selectedBrand = val;}"
           style="width: 100%"
           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
           :options="brandData"
@@ -117,7 +116,6 @@
             ]
           }
           ]"
-          @change="val => {selectedSize = val;}"
           style="width: 100%"
           :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
           :options="sizeData"
@@ -213,8 +211,6 @@
         categoryData,
         brandData,
         selectedCategory: null,
-        selectedSize: null,
-        selectedBrand: null,
         formItemLayout: {
           labelCol: { span: 6 },
           wrapperCol: { span: 18 },
@@ -236,6 +232,7 @@
         var { productName, price, gender, category, size, brand, images } = res.data;
 
         this.form.setFieldsValue({ productName, price, gender, category, size, brand });
+        this.selectedCategory = category;
         this.images = images.map((url, i) => {
           return {
             uid: i,

@@ -1,11 +1,12 @@
 <template>
   <div>
     <VPageHeader title="Checkout" @back="$router.back()" />
-    <a-row class="w-3/5 mx-auto">
-      <a-col :span="12" class="space-y-5">
+    <a-row v-if="items" class="w-11/12 md:w-3/5 mx-auto">
+      <a-col :span="24" :md="{ span: 12 }" class="space-y-6 mb-6 md:mb-0">
         <div class="bg-gray-800 rounded p-4">
           <p class="text-lg pb-4">Items</p>
-          <ul class="bg-gray-700 p-4">
+          <ItemList :items="items" :isDeletable="true" @deleteItem="itemId => deleteItem(itemId)" />
+          <!-- <ul class="bg-gray-700 p-4">
             <li class="item" v-for="item in items" :key="item.id">
               <a-row type="flex">
                 <a-col :span="5">
@@ -22,13 +23,13 @@
                 </a-col>
               </a-row>
             </li>
-          </ul>
+          </ul> -->
         </div>
 
         <DeliveryAddressRadio @deliveryAddressChange="handleDeliveryAddressChange" />
       </a-col>
-      <a-col :span="12">
-        <div class="bg-gray-800 ml-10 p-4 rounded text-lg space-y-6">
+      <a-col :span="24" :md="{ span: 12 }">
+        <div class="bg-gray-800 md:ml-10 p-4 rounded text-lg space-y-6">
           <p class="font-bold text-xl mb-6">Order Summary</p>
           
           <div>
@@ -62,6 +63,7 @@
 <script>
   import VPageHeader from '../components/VPageHeader.vue';
   import DeliveryAddressRadio from '../components/Checkout/DeliveryAddressRadio.vue';
+  import ItemList from '../components/Item/ItemList.vue';
   import { Icon } from '@iconify/vue2';
 
   import api from '../api';
@@ -123,7 +125,8 @@
     components: {
       VPageHeader,
       Icon,
-      DeliveryAddressRadio
+      DeliveryAddressRadio,
+      ItemList
     },
   }
 </script>

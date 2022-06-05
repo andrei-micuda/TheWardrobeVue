@@ -1,7 +1,6 @@
 <template>
   <div>
     <TheSellingModal @refreshGrid="handleRefreshGrid" />
-    <!-- {{test}} -->
     <ItemGrid
       source="/public/api/itemCatalog"
       :params="params"

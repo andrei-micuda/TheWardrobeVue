@@ -1,11 +1,12 @@
 <template>
   <div>
     <VPageHeader title="My Cart" @back="$router.back()" />
-    <ul v-if="items" class="w-3/5 mx-auto space-y-10">
+    <ul v-if="items && items.length > 0" class="w-11/12 md:w-3/5 mx-auto space-y-10">
       <li v-for="group in itemGroups.keys()" :key="group">
         <CartList :itemGroup="itemGroups.get(group)" @updateItems="fetchItems" />
       </li>
     </ul>
+    <p v-else class="text-xl text-center mt-6">No items in cart.</p>
   </div>
 </template>
 

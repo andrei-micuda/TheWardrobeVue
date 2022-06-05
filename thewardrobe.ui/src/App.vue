@@ -94,7 +94,7 @@ export default {
 }
 
 .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-  @apply bg-green-400 border-green-400 !important;
+  @apply bg-green-400 border-green-400 text-gray-600 !important;
 
   &::before {
     @apply bg-green-400 !important;
@@ -324,7 +324,7 @@ export default {
   }
 
   & .ant-drawer-title {
-    @apply text-gray-100 !important;
+    @apply text-gray-100 text-sm !important;
   }
 }
 
@@ -345,6 +345,10 @@ export default {
 
 .ant-collapse-header {
   @apply text-gray-100 !important;
+}
+
+.ant-steps-label-vertical .ant-steps-item-content {
+  @apply mt-0 !important;
 }
 
 .ant-steps-item-finish {

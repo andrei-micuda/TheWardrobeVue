@@ -1,14 +1,17 @@
 <template>
   <section class="DeliveryAddressesSection">
-    <p class="text-xl mb-2">Delivery addresses</p>
-    <ul class="bg-gray-700 p-4">
+    <div class="flex items-center cursor-pointer collapse-btn" :class="{ collapsed: isCollapsed }" @click="toggleCollapse">
+      <Icon icon="dashicons:arrow-down-alt2" width="20" class="mr-2 transition-all"  />
+      <p class="text-xl">Delivery Addresses</p>
+    </div>
+    <ul class="bg-gray-700 p-4" :class="{ hidden: isCollapsed }">
       <li v-for="addr in deliveryAddresses" :key="addr.id" class="p-2">
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
           <div>
             <p class="font-bold">{{addr.address}}</p>
             <p>{{addr.city}}, {{addr.country}}, {{addr.postalCode}}</p>
           </div>
-          <div class="space-x-2">
+          <div class="flex sm:block flex-col items-center justify-center space-y-2 sm:space-y-0 sm:space-x-2">
             <a-button @click="() => handleModifyAddress(addr)">modify</a-button>
             <a-button type="danger" @click="() => handleDeleteAddress(addr.id)" >delete</a-button>
           </div>
@@ -17,7 +20,7 @@
       </li>
       <a-button type="primary" @click="showModal">Add address</a-button>
     </ul>
-    <a-modal v-model="modalVisible" title="Add new delivery address" @ok="handleOk">
+    <a-modal v-model="modalVisible" :title="modalTitle" @ok="handleOk">
       <a-form :form="form" @submit="handleSubmit" hideRequiredMark>
         <a-form-item label="Address">
           <a-input
@@ -91,6 +94,7 @@
 
 <script>
   import $ from 'cash-dom';
+  import { Icon } from '@iconify/vue2';
 
   import api from '../../api';
   import notifier from '../../notifier';
@@ -101,7 +105,9 @@
       return {
         deliveryAddresses: [],
         modalVisible: false,
-        updatingAddressId: null
+        updatingAddressId: null,
+        isCollapsed: false,
+        modalTitle: null
       }
     },
     methods: {
@@ -110,8 +116,12 @@
         this.form.getFieldDecorator('city', {initialValue: null});
         this.form.getFieldDecorator('country', {initialValue: null});
         this.form.getFieldDecorator('postalCode', {initialValue: null});
+        this.modalTitle = 'Add a new delivery address';
         this.modalVisible = true;
         this.updatingAddressId = null;
+      },
+      toggleCollapse() {
+        this.isCollapsed = !this.isCollapsed;
       },
       handleOk() {
         $('#AddAddressBtn').trigger('click');
@@ -121,6 +131,7 @@
         this.form.getFieldDecorator('city', {initialValue: city});
         this.form.getFieldDecorator('country', {initialValue: country});
         this.form.getFieldDecorator('postalCode', {initialValue: postalCode});
+        this.modalTitle = 'Modify delivery address';
         this.modalVisible = true;
         this.updatingAddressId = id;
       },
@@ -166,9 +177,18 @@
           this.deliveryAddresses = res.data;
         })
     },
+    components: {
+      Icon,
+    },
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss">
+.collapse-btn:not(.collapsed) {
+  @apply mb-2;
+}
 
+.collapsed svg {
+  rotate: -90deg;
+}
 </style>

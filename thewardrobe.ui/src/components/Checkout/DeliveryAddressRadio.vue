@@ -10,6 +10,7 @@
           </div>
         </div>
       </a-radio>
+      <p v-if="deliveryAddresses && deliveryAddresses.length == 0" class="text-gray-100 text-lg">Please provide a delivery address.</p>
       <a-button @click="showModal" class="mt-6">Add address</a-button>
     </a-radio-group>
     <a-modal v-model="modalVisible" title="Add new delivery address" @ok="handleOk">

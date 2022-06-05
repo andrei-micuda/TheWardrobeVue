@@ -1,9 +1,9 @@
 <template>
   <div> 
     <VPageHeader @back="$router.back()" title="View Item" />
-    <a-row v-if="item" class="w-8/12 mx-auto px-10 py-8">
-      <a-col :span="12">
-        <a-carousel arrows class="bg-gray-800">
+    <a-row v-if="item" class="w-11/12 md:w-8/12 mx-auto py-2 md:px-10 md:py-8">
+      <a-col :span="24" :md="{ span: 12 }">   
+        <a-carousel arrows class="bg-gray-800 mb-4 md:mb-0">
           <template #prevArrow>
             <div class="custom-slick-arrow" style="left: 10px; z-index: 10">
               <Icon icon="bi:arrow-left-circle-fill" width="20" height="20" class="text-gray-600" />
@@ -20,7 +20,7 @@
         </a-carousel>
       </a-col>
 
-      <a-col :span="12" class="pl-6 text-lg">
+      <a-col :span="24" :md="{ span: 12 }" class="md:pl-6 text-lg">
         <p class="text-2xl font-bold">{{item.productName}}</p>
         <p class="text-lg">Brand: {{item.brand}}</p>
         <p class="text-lg">Category: {{item.category}}</p>

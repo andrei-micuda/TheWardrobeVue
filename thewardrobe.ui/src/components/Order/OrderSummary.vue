@@ -3,10 +3,14 @@
     <div>
       <p v-if="isIncoming">Order from <span class="font-bold">{{order.seller}}</span></p>
       <p v-else>Order to <span class="font-bold">{{order.buyer}}</span></p>
-      <p>Placed at: {{order.whenPlaced.format('DD/MM/YYYY HH:mm')}} | Total: <span class="font-bold">{{order.total}} RON</span></p>
+      <div class="flex flex-col md:flex-row">
+        <p>Placed at: {{order.whenPlaced.format('DD/MM/YYYY HH:mm')}}</p>
+        <p class="mx-2 hidden md:block">|</p>
+        <p>Total: <span class="font-bold">{{order.total}} RON</span></p>
+      </div>
     </div>
-    <div class="flex">
-      <div class="mr-6 flex items-center p-2 w-36">
+    <div class="flex flex-col items-end md:flex-row">
+      <div class="md:mr-6 flex justify-end md:items-center py-2 md:p-2 w-36">
         <p>Status: <span :class="orderStatusClass[order.status]">{{orderStatus[order.status]}}</span></p>
       </div>
       <router-link :to="{name: 'order', params: {orderId: order.id}}">

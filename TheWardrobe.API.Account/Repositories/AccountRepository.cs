@@ -56,7 +56,7 @@ namespace TheWardrobe.API.Repositories
       var account = GetAccountByEmail(model.Email);
 
       if (account == null || !account.IsVerified || !BCryptNet.Verify(model.Password, account.PasswordHash))
-        throw new AppException("Email or password is incorrect");
+        throw new AppException("Email or password is incorrect.");
 
       account.RefreshTokens = connection.Query<RefreshToken>(@"
         SELECT *

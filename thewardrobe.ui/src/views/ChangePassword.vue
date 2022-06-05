@@ -1,6 +1,6 @@
 <template>
 <div class="flex justify-center items-center w-screen" :style="{ height: 'calc(100vh - 66px)' }">
-  <div class="bg-gray-800 w-1/3 rounded">
+  <div class="bg-gray-800 xl:w-1/4 sm:w-96 w-11/12 rounded">
     <div>
       <h1 class="text-gray-100 text-xl my-6 text-center">Change password</h1>
       <p class="mx-4">Please confirm your new password below.</p>
@@ -56,7 +56,7 @@
                 <Icon slot="prefix" icon="codicon:lock" class="text-gray-100" />
             </a-input>
         </a-form-item>
-        <a-button type="primary" html-type="submit" class="mx-auto block w-1/3" size="large" :disabled="isChanging">
+        <a-button type="primary" html-type="submit" class="mx-auto block w-48" size="large" :disabled="isChanging">
             <Icon v-if="isChanging" icon="gg:spinner-two-alt" class="animate-spin h-6 w-6 mx-auto" />
             <span v-else>Change Password</span>
         </a-button>

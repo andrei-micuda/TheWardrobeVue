@@ -12,8 +12,7 @@
         }">{{ tab.tabName }}</button>
     </li>
     </ul>
-    <main class="bg-gray-800 p-8 w-3/5 mx-auto rounded">
-      <!-- <OrderGroups :isIncoming="" /> -->
+    <main class="bg-gray-800 px-2 py-4 md:p-8 w-11/12 lg:w-3/5 mx-auto rounded">
       <OrderList :isIncoming="currentTab === 'Incoming'" />
     </main>
   </section>

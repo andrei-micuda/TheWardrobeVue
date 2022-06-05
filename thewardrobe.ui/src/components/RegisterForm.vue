@@ -1,5 +1,5 @@
 <template>
-<div class="bg-gray-800 w-1/4 rounded" id="RegisterCard">
+<div class="bg-gray-800 xl:w-1/4 sm:w-96 w-11/12 rounded" id="RegisterCard">
     <RegisterSuccess v-if="isRegistered" />
     <div v-else>
         <h1 class="text-gray-100 text-xl mt-6 text-center">Register</h1>
@@ -12,7 +12,7 @@
                     rules: [
                     {
                         type: 'email',
-                        message: 'The input is not valid email!',
+                        message: 'The input is not a valid email!',
                     },
                     {
                         required: true,
@@ -34,7 +34,11 @@
                         rules: [
                             {
                                 required: true,
-                                message: 'Please input your Password!'
+                                message: 'Please input your password!'
+                            },
+                            {
+                                min: 6,
+                                message: 'Password must be at least 6 characters long!'
                             },
                             {
                                 validator: validateToNextPassword,
@@ -69,7 +73,7 @@
                     <Icon slot="prefix" icon="codicon:lock" class="text-gray-100"/>
                 </a-input>
             </a-form-item>
-            <a-button type="primary" html-type="submit" class="mx-auto block w-1/4" size="large" :disabled="isRegistering">
+            <a-button type="primary" html-type="submit" class="mx-auto block w-32" size="large" :disabled="isRegistering">
                 <Icon v-if="isRegistering" icon="gg:spinner-two-alt" class="animate-spin h-6 w-6 mx-auto" />
                 <span v-else>Register</span>
             </a-button>
@@ -90,7 +94,7 @@
     data() {
       return {
         isRegistering: false,
-        isRegistered: false
+        isRegistered: true
       }
     },
     beforeCreate () {

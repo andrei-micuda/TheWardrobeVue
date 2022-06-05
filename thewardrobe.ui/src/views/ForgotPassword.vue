@@ -1,10 +1,10 @@
 <template>
 <div class="flex justify-center items-center w-screen" :style="{ height: 'calc(100vh - 66px)' }">
-  <div class="bg-gray-800 w-1/4 rounded">
+  <div class="bg-gray-800 xl:w-1/4 sm:w-96 w-11/12 rounded">
     <div class="my-12 mx-6" v-if="isSent">
       <Icon icon='carbon:checkmark-outline' class="w-24 h-24 text-green-400 mx-auto mb-6" />
       <h1 class="text-2xl mb-2 text-gray-100 text-center">Reset email sent!</h1>
-      <p class="text-lg text-center">Please verify your inbox and follow the instructions in order reset your password.</p>
+      <p class="text-lg text-center">Please check your inbox and follow the instructions in order reset your password.</p>
     </div>
     <div v-else>
       <h1 class="text-gray-100 text-xl my-6 text-center">Forgot password</h1>
@@ -31,7 +31,7 @@
                 <Icon slot="prefix" icon="codicon:mail" class="text-gray-100" />
             </a-input>
         </a-form-item>
-        <a-button type="primary" html-type="submit" class="mx-auto block w-1/4" size="large" :disabled="isSending">
+        <a-button type="primary" html-type="submit" class="mx-auto block w-32" size="large" :disabled="isSending">
             <Icon v-if="isSending" icon="gg:spinner-two-alt" class="animate-spin h-6 w-6 mx-auto" />
             <span v-else>Reset</span>
         </a-button>

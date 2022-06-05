@@ -7,14 +7,16 @@
         <Icon icon="ant-design:star-filled" width="16" />
       </div>
     </div>
+
+    <ItemList :items="itemGroup" :isDeletable="true" @deleteItem="itemId => deleteItem(itemId)" />
       
-    <ul class="space-y-5">
+    <!-- <ul class="space-y-5">
       <li v-for="item in itemGroup" :key="item.id" class="bg-gray-700">
-        <a-row type="flex" class="p-4">
+        <a-row type="flex" class="p-2 md:p-4 items-center md:items-start">
           <a-col :span="5">
             <img :src="item.images[0]" class="w-full" />
           </a-col>
-          <a-col :span="10" class="p-4">
+          <a-col :span="10" class="pl-4 md:p-4">
             <p class="font-semibold text-lg">{{item.productName}}</p>
           </a-col>
           <a-col :span="9" class="flex flex-col justify-between">
@@ -25,7 +27,7 @@
           </a-col>
         </a-row>
       </li>
-    </ul>
+    </ul> -->
     <div class="flex justify-between items-center mt-10 text-xl">
       <p>Total: <span class="font-bold">{{total}} RON</span></p>
       <router-link :to="{name: 'checkout', params: {sellerId: this.itemGroup[0].sellerId}}">
@@ -37,6 +39,7 @@
 
 <script>
   import { Icon } from '@iconify/vue2';
+  import ItemList from '../Item/ItemList.vue';
 
   import api from '../../api';
   import store from '../../store';
@@ -64,6 +67,7 @@
     },
     components: {
       Icon,
+      ItemList
     },
   }
 </script>

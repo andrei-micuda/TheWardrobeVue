@@ -1,5 +1,5 @@
 <template>
-<div class="bg-gray-800 w-1/4 rounded">
+<div class="bg-gray-800 xl:w-1/4 sm:w-96 w-11/12 rounded">
     <h1 class="text-gray-100 text-xl mt-6 text-center">Sign in</h1>
     <a-form :form="form" @submit="handleSubmit" hideRequiredMark class="p-4 mx-auto">
         <a-form-item label="Email" class="mb-3">
@@ -31,8 +31,8 @@
                     rules: [
                         {
                             required: true,
-                            message: 'Please input your Password!'
-                        },
+                            message: 'Please input your password!'
+                        }
                     ]
                 },
             ]"
@@ -41,7 +41,7 @@
                 <Icon slot="prefix" icon="codicon:lock" class="text-gray-100" />
             </a-input>
         </a-form-item>
-        <a-button type="primary" html-type="submit" class="mx-auto block w-1/4" size="large" :disabled="isAuthenticating">
+        <a-button type="primary" html-type="submit" class="mx-auto block w-24" size="large" :disabled="isAuthenticating">
             <Icon v-if="isAuthenticating" icon="gg:spinner-two-alt" class="animate-spin h-6 w-6 mx-auto" />
             <span v-else>Sign in</span>
         </a-button>

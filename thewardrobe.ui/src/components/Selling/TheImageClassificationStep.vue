@@ -6,7 +6,7 @@
     <div v-else class="text-center flex flex-col h-full">
       <h2 class="text-gray-100">The predicted category based on your images is:</h2>
       <div class="flex-1 flex flex-col justify-center">
-        <a-tooltip id="PredictedCategory" class="cursor-default mx-auto inline-block rounded-md uppercase text-white border-2 border-gray-600 px-4 py-2">
+        <a-tooltip id="PredictedCategory" class="cursor-default mx-auto inline-block rounded-md uppercase text-white border-2 border-gray-700 px-4 py-1">
           <template slot="title">
             {{predictions[0][1]}}
           </template>
@@ -17,7 +17,7 @@
         <p>Other predictions: </p>
         <ul class="space-x-2 mt-2">
           <li v-for="pred in predictions.slice(1)" :key="pred[0]" class="inline">
-            <a-tooltip class="cursor-default mx-auto inline-block rounded-md uppercase text-white border border-gray-600 px-2 py-1">
+            <a-tooltip class="cursor-default mx-auto inline-block rounded-md uppercase text-white border border-gray-700 px-2 py-1">
               <template slot="title">
                 {{pred[1]}}
               </template>

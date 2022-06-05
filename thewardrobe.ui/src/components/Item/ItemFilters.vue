@@ -1,13 +1,16 @@
 <template>
   <div class="bg-gray-800 border border-gray-500 p-5 rounded">
     <div class="flex justify-between items-center">
-      <span>FILTERS</span>
+      <div class="flex items-center cursor-pointer" :class="{ collapsed: isCollapsed }" @click="toggleCollapse">
+        <Icon icon="dashicons:arrow-down-alt2" width="20" class="mr-2 transition-all"  />
+        <span>FILTERS</span>
+      </div>
       <a-button @click="getFilteredData" id="ApplyFiltersBtn" type="primary">Apply</a-button>
     </div>
 
-    <a-divider class="bg-gray-500 my-4" />
+    <a-divider class="bg-gray-500 my-4" :class="{ hidden: isCollapsed }" />
 
-    <a-form class="text-left" >
+    <a-form class="text-left" :class="{ hidden: isCollapsed }" >
       <a-form-item label="Gender">
         <a-radio-group v-model="selectedGender" class="flex justify-center" button-style="solid">
           <a-radio-button value="all">
@@ -95,6 +98,7 @@
 <script>
   /* eslint-disable no-unused-vars */
   import {TreeSelect} from "ant-design-vue";
+  import {Icon} from "@iconify/vue2";
 
   import constData from '../../const';
   import { haveCommonElements } from '../../helpers/arrayHelpers';
@@ -155,6 +159,7 @@
     },
     data() {
       return {
+        isCollapsed: false,
         brandData,
         categoryData,
         SHOW_PARENT,
@@ -211,6 +216,9 @@
       }
     },
     methods: {
+      toggleCollapse() {
+        this.isCollapsed = !this.isCollapsed;
+      },
       onMinPriceChange(e) {
         const { value } = e.target;
         const reg = /^[0-9]*(\.[0-9]*)?$/;
@@ -244,6 +252,9 @@
 
         this.$emit("filterData", params);
       }
+    },
+    components: {
+      Icon,
     },
   }
 </script>
