@@ -90,6 +90,7 @@ import { Icon } from "@iconify/vue2";
 import VPageHeader from "../components/VPageHeader.vue";
 
 import api from "../api";
+import router from "../router";
 import store from "../store";
 
 export default {
@@ -101,11 +102,9 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route.params);
     api
       .get(`/public/api/itemCatalog/${this.$route.params.itemId}`)
       .then((res) => {
-        console.log(res.data);
         this.item = res.data;
 
         // if user is logged in, get favorite state and cart state
@@ -126,6 +125,17 @@ export default {
   },
   methods: {
     toggleFavorite() {
+      // if user is not signed in, redirect
+      if (this.accountId === null) {
+        store.commit(
+          "setWarningMsg",
+          "The action you are trying to perform requires you to sign in first."
+        );
+        router.push("/signIn");
+
+        return;
+      }
+
       if (!this.item.isFavorite) {
         api
           .post(`/public/api/${store.state.id}/favorites`, {
@@ -145,6 +155,17 @@ export default {
       }
     },
     toggleCart() {
+      // if user is not signed in, redirect
+      if (this.accountId === null) {
+        store.commit(
+          "setWarningMsg",
+          "The action you are trying to perform requires you to sign in first."
+        );
+        router.push("/signIn");
+
+        return;
+      }
+
       if (!this.isInCart) {
         api
           .post(`/public/api/${store.state.id}/cart`, {

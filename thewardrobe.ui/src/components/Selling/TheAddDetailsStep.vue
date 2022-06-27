@@ -32,6 +32,10 @@
                   required: true,
                   message: 'Please provide a price!',
                 },
+                {
+                  pattern: /^[1-9]+\d*$/,
+                  message: 'Please provide a valid price!',
+                },
               ],
             },
           ]"
@@ -255,10 +259,11 @@ export default {
             .then(function (res) {
               var item = res.data;
               item.images = that.uploadedImages;
-              console.log(item);
+
               notifier.success("Successfully listed product.");
               store.commit("addUserItem", item.id);
-              that.$emit("toggleModal");
+
+              that.$emit("resetModal");
               that.$emit("refreshGrid");
             })
             .catch((error) => {

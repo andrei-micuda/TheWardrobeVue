@@ -6,6 +6,7 @@
     <a-alert
       v-if="warningMsg"
       :message="warningMsg"
+      closable
       class="absolute top-24"
       banner
     />

@@ -35,6 +35,10 @@
                     required: true,
                     message: 'Please provide a price!',
                   },
+                  {
+                    pattern: /^[1-9]+\d*$/,
+                    message: 'Please provide a valid price!',
+                  },
                 ],
               },
             ]"
@@ -159,8 +163,6 @@
 </template>
 
 <script>
-// /* eslint-disable no-unused-vars */
-// import $ from "cash-dom";
 import { v4 as uuidv4 } from "uuid";
 import $ from "cash-dom";
 
@@ -168,7 +170,6 @@ import VPageHeader from "../components/VPageHeader.vue";
 
 import constData from "../const";
 import api from "../api";
-import getS3Client from "../aws";
 import router from "../router";
 import canEdit from "../router/guards/canEdit";
 import notifier from "../notifier";
@@ -298,21 +299,27 @@ export default {
     async handleSubmit(e) {
       e.preventDefault();
 
-      // Uploading new Images
-      var s3Client = getS3Client();
-
       await Promise.all(
         this.images.map(async (image) => {
           if (image.url === undefined) {
             const uuid = uuidv4();
             const fileExtention = image.initialName.split(".").pop();
             image.uploadName = `${uuid}.${fileExtention}`;
-            image.url = await s3Client.uploadFileToBucket(image);
+
+            let formData = new FormData();
+            formData.set("file", image.originFileObj);
+            formData.set("uploadName", image.uploadName);
+
+            const res = await api.post(`/public/api/imageUpload`, formData, {
+              headers: {
+                "content-type": "multipart/form-data",
+              },
+            });
+            image.url = res.data;
           }
         })
       );
 
-      console.log("Submitting...");
       this.form.validateFields(async (err, values) => {
         if (!err) {
           var imagesUrls = this.images.map((img) => img.url);

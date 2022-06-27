@@ -34,27 +34,32 @@
           :handleUpload="handleUpload"
           :uploadedImages="uploadedImages"
           @refreshGrid="() => $emit('refreshGrid')"
-          @toggleModal="toggleNewItemModal()"
+          @resetModal="handleResetModal"
         />
       </div>
-      <div class="steps-action">
-        <a-button
-          v-if="current < steps.length - 1"
-          type="primary"
-          @click="next"
+      <div class="flex justify-between">
+        <div class="steps-action">
+          <a-button
+            v-if="current < steps.length - 1"
+            type="primary"
+            @click="next"
+          >
+            Next
+          </a-button>
+          <a-button
+            v-if="current == steps.length - 1"
+            type="primary"
+            @click="handleDone"
+          >
+            Done
+          </a-button>
+          <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
+            Previous
+          </a-button>
+        </div>
+        <a-button v-if="current === 2" type="danger" @click="handleResetModal"
+          >Discard</a-button
         >
-          Next
-        </a-button>
-        <a-button
-          v-if="current == steps.length - 1"
-          type="primary"
-          @click="handleDone"
-        >
-          Done
-        </a-button>
-        <a-button v-if="current > 0" style="margin-left: 8px" @click="prev">
-          Previous
-        </a-button>
       </div>
     </a-modal>
   </div>
@@ -62,7 +67,6 @@
 
 <script>
 import $ from "cash-dom";
-// import VButton from '../VButton.vue';
 import TheImageUploadStep from "./TheImageUploadStep.vue";
 import TheImageClassificationStep from "./TheImageClassificationStep.vue";
 import TheAddDetailsStep from "./TheAddDetailsStep.vue";
@@ -92,6 +96,11 @@ export default {
     };
   },
   methods: {
+    handleResetModal() {
+      this.current = 0;
+      this.uploadedImages = [];
+      this.toggleNewItemModal();
+    },
     toggleNewItemModal() {
       this.showModal = !this.showModal;
     },
@@ -100,12 +109,16 @@ export default {
 
       // if no images have been uploaded and current step is classifciation, skip
       if (this.current === 1 && this.uploadedImages.length <= 0) {
-        console.log("Skipping classification");
         this.current++;
       }
     },
     prev() {
-      this.current--;
+      // skip image classification if going back
+      if (this.current === 2) {
+        this.current = 0;
+      } else {
+        this.current--;
+      }
     },
     handleUpload(images) {
       this.uploadedImages = images;

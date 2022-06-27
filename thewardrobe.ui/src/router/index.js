@@ -96,6 +96,9 @@ router.beforeEach((to, from, next) => {
   // close sidebar if it was previously open
   store.commit("setIsDrawerVisible", false);
 
+  // clear warning message if present
+  if (to.path !== "/signIn") store.commit("setWarningMsg", null);
+
   // redirect to login page if not logged in and trying to access a restricted page
   const publicPages = [
     "/",
@@ -106,11 +109,14 @@ router.beforeEach((to, from, next) => {
     "/forgot-password",
     "/change-password",
   ];
-  const authRequired = !publicPages.includes(to.path);
+
+  const authRequired =
+    !publicPages.includes(to.path) && !to.path.startsWith("/item");
   const loggedIn = localStorage.getItem("jwt");
 
   if (authRequired && !loggedIn) {
     console.log("Redirect to login");
+
     store.commit(
       "setWarningMsg",
       "The action you are trying to perform requires you to sign in first."

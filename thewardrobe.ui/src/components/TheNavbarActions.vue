@@ -79,7 +79,7 @@ export default {
   methods: {
     handleSignOut() {
       store.commit("resetStore");
-      router.replace("/signIn");
+      router.replace("/");
     },
   },
   computed: {
@@ -89,7 +89,6 @@ export default {
   },
   components: {
     Icon,
-    // CartListOverview
   },
 };
 </script>

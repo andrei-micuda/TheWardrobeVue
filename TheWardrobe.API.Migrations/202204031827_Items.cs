@@ -28,6 +28,7 @@ namespace TheWardrobe.API.Migrations
       Insert.IntoTable("brand").Row(new { name = "New Balance" });
       Insert.IntoTable("brand").Row(new { name = "Puma" });
       Insert.IntoTable("brand").Row(new { name = "Calvin Klein" });
+      Insert.IntoTable("brand").Row(new { name = "Other" });
 
       Create.Table("gender")
         .WithColumn("id").AsInt64().PrimaryKey().Identity()
@@ -111,6 +112,7 @@ namespace TheWardrobe.API.Migrations
       Insert.IntoTable("size").Row(new { name = "44" });
       Insert.IntoTable("size").Row(new { name = "45" });
       Insert.IntoTable("size").Row(new { name = "46" });
+      Insert.IntoTable("size").Row(new { name = "Other" });
 
       Create.Table("item")
         .WithColumn("id").AsGuid().PrimaryKey().WithDefaultValue(SystemMethods.NewGuid)

@@ -51,7 +51,7 @@ const clothingCategories = [
   "Sundress",
 ];
 
-const clothingSizes = ["XS", "S", "M", "L", "XL", "one-size"];
+const clothingSizes = ["XS", "S", "M", "L", "XL", "one-size", "Other"];
 
 const footwearSizes = [
   "37",
@@ -64,6 +64,7 @@ const footwearSizes = [
   "44",
   "45",
   "46",
+  "Other",
 ];
 
 const brands = [
@@ -83,6 +84,9 @@ const brands = [
   "Superdry",
   "Lacoste",
   "New Balance",
+  "Puma",
+  "Calvin Klein",
+  "Other",
 ];
 
 export default { clothingCategories, clothingSizes, footwearSizes, brands };

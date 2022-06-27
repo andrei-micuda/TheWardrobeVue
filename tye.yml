@@ -10,26 +10,30 @@ services:
   - name: thewardrobe-gateway
     project: TheWardrobe.API.Gateway/TheWardrobe.API.Gateway.csproj
     bindings:
-    - port: 5050
+      - port: 5050
   - name: thewardrobe-account
     project: TheWardrobe.API.Account/TheWardrobe.API.Account.csproj
     bindings:
-    - port: 5070
+      - port: 5070
   - name: thewardrobe-item-catalog
     project: TheWardrobe.API.ItemCatalog/TheWardrobe.API.ItemCatalog.csproj
     bindings:
-    - port: 5071
+      - port: 5071
   - name: thewardrobe-clothes-classification
     image: clothes_classification_api
     bindings:
-    - port: 5072
-      containerPort: 5000
-      protocol: http
+      - port: 5072
+        containerPort: 5000
+        protocol: http
   - name: thewardrobe-order
     project: TheWardrobe.API.Order/TheWardrobe.API.Order.csproj
     bindings:
-    - port: 5073
+      - port: 5073
   - name: thewardrobe-email-svc
     project: TheWardrobe.EmailSvc/TheWardrobe.EmailSvc.csproj
     bindings:
-    - port: 5074
+      - port: 5074
+  - name: thewardrobe-image-upload
+    project: TheWardrobe.API.ImageUpload/TheWardrobe.API.ImageUpload.csproj
+    bindings:
+      - port: 5075

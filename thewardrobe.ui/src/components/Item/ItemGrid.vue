@@ -1,16 +1,22 @@
 <template>
   <div class="text-center">
-    <a-spin v-if="items === null" class="mt-24" />
     <a-row class="w-5/6 mx-auto">
       <a-col :span="24" :xl="{ span: 6 }" class="mb-6">
         <ItemFilters
+          ref="itemFilters"
           :initialMinPrice="minPrice"
           :initialMaxPrice="maxPrice"
           @filterData="fetchFilteredItems"
+          @filtersCleared="fetchItems"
         />
       </a-col>
       <a-col :span="24" :xl="{ span: 18 }">
-        <a-row class="w-5/6 mx-auto" type="flex" justify="space-between">
+        <a-row
+          v-if="items"
+          class="w-5/6 mx-auto"
+          type="flex"
+          justify="space-between"
+        >
           <a-col>
             <a-pagination
               class="mb-4 text-gray-100"
@@ -38,8 +44,10 @@
           </a-col>
         </a-row>
 
+        <VSpinner v-if="!items" class="mt-12" />
+
         <a-list
-          v-if="items && items.length > 0"
+          v-else-if="items.length > 0"
           class="w-5/6 mx-auto mt-6"
           :grid="{ gutter: 32, xs: 1, sm: 2, lg: 3 }"
           :data-source="items"
@@ -61,6 +69,7 @@ import $ from "cash-dom";
 
 import ItemCard from "./ItemCard.vue";
 import ItemFilters from "./ItemFilters.vue";
+import VSpinner from "../VSpinner.vue";
 
 import api from "../../api";
 import store from "../../store";
@@ -69,6 +78,7 @@ export default {
   components: {
     ItemCard,
     ItemFilters,
+    VSpinner,
   },
   props: {
     source: {
@@ -127,7 +137,7 @@ export default {
       this.currentPage = page;
       this.itemsPerPage = pageSize;
 
-      $("#ApplyFiltersBtn").trigger("click");
+      this.$refs.itemFilters.getFilteredData(page);
     },
     handleOrderChange(orderVal) {
       this.order = orderVal;
@@ -161,8 +171,6 @@ export default {
         ...otherParams,
       };
       finalParams = this.setOrderParams(finalParams);
-
-      console.log(finalParams);
 
       api
         .get(this.source, {

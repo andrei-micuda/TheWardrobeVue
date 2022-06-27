@@ -13,9 +13,17 @@
         />
         <span>FILTERS</span>
       </div>
-      <a-button @click="getFilteredData" id="ApplyFiltersBtn" type="primary"
-        >Apply</a-button
-      >
+      <div>
+        <a-button @click="handleClearFilters" class="border-0 text-gray-300"
+          >Clear</a-button
+        >
+        <a-button
+          @click="getFilteredData(1)"
+          id="ApplyFiltersBtn"
+          type="primary"
+          >Apply</a-button
+        >
+      </div>
     </div>
 
     <a-divider class="bg-gray-500 my-4" :class="{ hidden: isCollapsed }" />
@@ -210,20 +218,36 @@ export default {
     },
     includesClothing() {
       // check if all clothing categories have been selected
-      if (this.selectedCategories.includes("Clothing")) return true;
+      if (
+        this.selectedCategories.length === 0 ||
+        this.selectedCategories.includes("Clothing")
+      )
+        return true;
       return haveCommonElements(
         categories["clothing"],
         this.selectedCategories
       );
     },
     includesFootwear() {
-      return this.selectedCategories.includes("Footwear");
+      return (
+        this.selectedCategories.length === 0 ||
+        this.selectedCategories.includes("Footwear")
+      );
     },
     includesAccessory() {
-      return this.selectedCategories.includes("Accessories");
+      return (
+        this.selectedCategories.length === 0 ||
+        this.selectedCategories.includes("Accessories")
+      );
     },
     sizeData() {
-      let res = [];
+      let res = [
+        {
+          title: "Other",
+          value: "Other",
+          key: "Other",
+        },
+      ];
       if (this.includesClothing || this.includesAccessory) {
         res = res.concat(sizes["clothing&acc"]);
       }
@@ -231,7 +255,11 @@ export default {
       if (this.includesFootwear) {
         res = res.concat(sizes["footwear"]);
       }
-      return res;
+
+      // to remove possible "Other" duplicates
+      return [...new Set(res.map((obj) => JSON.stringify(obj)))].map((str) =>
+        JSON.parse(str)
+      );
     },
   },
   methods: {
@@ -254,9 +282,8 @@ export default {
         this.selectedPriceRange[1] = parseInt(value);
       }
     },
-    getFilteredData() {
+    getFilteredData(page = null) {
       const params = {
-        // page: 1,
         brands: this.selectedBrands,
         categories: this.selectedCategories,
         sizes: this.selectedSizes,
@@ -266,9 +293,23 @@ export default {
         onlyAvailable: this.onlyAvailable,
       };
 
+      if (page !== null) params.page = page;
+
       if (this.selectedGender !== "all") params.genders = this.selectedGender;
 
       this.$emit("filterData", params);
+    },
+    handleClearFilters() {
+      this.selectedBrands = [];
+      this.selectedCategories = [];
+      this.selectedGender = "all";
+      this.selectedSizes = [];
+      this.selectedMinPrice = this.initialMinPrice;
+      this.selectedMaxPrice = this.initialMaxPrice;
+      this.onlyFavorites = false;
+      this.onlyAvailable = true;
+
+      this.$emit("filtersCleared");
     },
   },
   components: {

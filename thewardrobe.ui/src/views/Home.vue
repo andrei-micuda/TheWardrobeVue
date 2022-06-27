@@ -13,6 +13,9 @@
           class="hover:text-green-400"
           @click="
             () => {
+              if (tab.tabName === 'Selling' && $store.state.id === null) {
+                $router.push('/signIn');
+              }
               currentTab = tab.tabName;
               $router.push(tab.path).catch((err) => {});
             }
@@ -51,7 +54,6 @@ export default {
     if (this.$route.path === "/sell") {
       this.currentTab = "Selling";
     }
-    console.log("Mounting home...");
   },
 };
 </script>
