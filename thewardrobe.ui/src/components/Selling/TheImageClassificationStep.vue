@@ -100,9 +100,6 @@
     mounted() {
       this.uploadFilesToAws()
         .then(() => {
-          console.log("Done uploading");
-          console.log(this.predictions)
-
           this.initializeClassification();
         });
     },

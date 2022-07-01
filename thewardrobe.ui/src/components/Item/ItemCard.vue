@@ -1,7 +1,29 @@
 <template>
   <li>
     <router-link :to="itemLink">
-      <div class="card w-full rounded bg-gray-800 transition ease-in-out">
+      <div
+        class="card w-full rounded bg-gray-800 transition ease-in-out relative"
+        :class="{ 'opacity-70': !item.isAvailable }"
+      >
+        <p
+          v-if="!item.isAvailable"
+          class="
+            absolute
+            flex
+            justify-center
+            items-center
+            px-2
+            py-1
+            rounded
+            top-5
+            left-5
+            bg-yellow-400
+            text-black
+            z-50
+          "
+        >
+          SOLD
+        </p>
         <a-carousel arrows>
           <template #prevArrow>
             <div class="custom-slick-arrow z-10" style="left: 10px">
@@ -54,6 +76,7 @@ import { Icon } from "@iconify/vue2";
 
 import api from "../../api";
 import store from "../../store";
+import router from "../../router";
 
 export default {
   props: {
@@ -74,6 +97,15 @@ export default {
   },
   methods: {
     toggleFavorite() {
+      if (!store.state.id) {
+        store.commit(
+          "setWarningMsg",
+          "The action you are trying to perform requires you to sign in first."
+        );
+        router.push("/signIn");
+        return;
+      }
+
       if (!this.item.isFavorite) {
         api
           .post(`/public/api/${store.state.id}/favorites`, {

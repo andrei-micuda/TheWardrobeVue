@@ -27,6 +27,14 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     }
 
     [HttpGet]
+    [Route("/public/api/[controller]/{userId}/ids")]
+    public IActionResult GetAllItemIds(Guid userId)
+    {
+      var itemIds = _itemCatalogRepository.GetAllItemIds(userId);
+      return Ok(itemIds);
+    }
+
+    [HttpGet]
     [Route("/public/api/[controller]")]
     public IActionResult GetItems([FromQuery] ItemQueryFilters filters)
     {
@@ -82,6 +90,14 @@ namespace TheWardrobe.API.ItemCatalog.Controllers
     public IActionResult DeleteItemById(Guid itemId)
     {
       _itemCatalogRepository.DeleteItem(itemId);
+      return Ok();
+    }
+
+    [HttpPatch]
+    [Route("/public/api/[controller]/{itemId}/unavailable")]
+    public IActionResult MarkItemAsUnavailable(Guid itemId)
+    {
+      _itemCatalogRepository.MarkItemAsUnavailable(itemId);
       return Ok();
     }
   }

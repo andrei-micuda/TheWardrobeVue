@@ -78,9 +78,18 @@ namespace TheWardrobe.API.Controllers
     }
 
     [HttpPatch("{orderId}")]
-    public IActionResult UpdateOrderStatus(Guid accountId, Guid orderId, [FromBody] OrderStatusChangeRequest model)
+    public async Task<IActionResult> UpdateOrderStatus(Guid accountId, Guid orderId, [FromBody] OrderStatusChangeRequest model)
     {
       var wasUpdated = _orderRepository.UpdateOrderStatus(accountId, orderId, model.Status);
+
+      // if order was succesfully updated and it was set to in progress, mark items as unavailable
+      if (wasUpdated && model.Status == OrderStatus.InProgress)
+      {
+        foreach (var itemId in _orderRepository.GetOrderItemIds(orderId))
+        {
+          await _itemCatalogInterface.MarkItemAsUnavailable(itemId);
+        }
+      }
 
       if (wasUpdated)
         return Ok();

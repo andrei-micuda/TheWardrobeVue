@@ -4,13 +4,14 @@
       @back="() => $router.back()"
       @apply="handleApply"
       @delete="handleDelete"
-      :showEditActions="true"
+      :showEditActions="isEditable"
       title="Edit Item"
     />
     <a-form :form="form" v-bind="formItemLayout" @submit="handleSubmit">
       <div class="w-11/12 md:w-8/12 mx-auto bg-gray-800 px-10 py-8">
         <a-form-item label="Product Name">
           <a-input
+            :disabled="!isEditable"
             v-decorator="[
               'productName',
               {
@@ -26,6 +27,7 @@
         </a-form-item>
         <a-form-item label="Price" name="price">
           <a-input
+            :disabled="!isEditable"
             suffix="RON"
             v-decorator="[
               'price',
@@ -46,6 +48,7 @@
         </a-form-item>
         <a-form-item label="Gender">
           <a-radio-group
+            :disabled="!isEditable"
             class="flex"
             v-decorator="[
               'gender',
@@ -68,6 +71,7 @@
         </a-form-item>
         <a-form-item label="Category">
           <a-tree-select
+            :disabled="!isEditable"
             v-decorator="[
               'category',
               {
@@ -96,6 +100,7 @@
         </a-form-item>
         <a-form-item label="Brand">
           <a-select
+            :disabled="!isEditable"
             v-decorator="[
               'brand',
               {
@@ -118,6 +123,7 @@
         </a-form-item>
         <a-form-item label="Size">
           <a-select
+            :disabled="!isEditable"
             v-decorator="[
               'size',
               {
@@ -140,6 +146,7 @@
         </a-form-item>
         <a-form-item label="Images" name="images" class="mb-0">
           <a-upload
+            :disabled="!isEditable"
             list-type="picture"
             :file-list="images"
             :before-upload="() => false"
@@ -225,6 +232,7 @@ export default {
   data() {
     return {
       images: null,
+      isEditable: false,
       categoryData,
       brandData,
       selectedCategory: null,
@@ -247,8 +255,16 @@ export default {
     api
       .get(`/public/api/itemCatalog/${this.$route.params.itemId}`)
       .then((res) => {
-        var { productName, price, gender, category, size, brand, images } =
-          res.data;
+        var {
+          productName,
+          price,
+          gender,
+          category,
+          size,
+          brand,
+          images,
+          isAvailable,
+        } = res.data;
 
         this.form.setFieldsValue({
           productName,
@@ -267,6 +283,7 @@ export default {
             thumbUrl: url,
           };
         });
+        this.isEditable = isAvailable;
       });
   },
   methods: {

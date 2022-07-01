@@ -1,8 +1,9 @@
 <template>
   <div>
     <VPageHeader title="My Cart" @back="$router.back()" />
+    <VSpinner v-if="!items" />
     <ul
-      v-if="items && items.length > 0"
+      v-else-if="items && items.length > 0"
       class="w-11/12 md:w-3/5 mx-auto space-y-10"
     >
       <li v-for="group in itemGroups.keys()" :key="group">
@@ -19,6 +20,7 @@
 <script>
 import VPageHeader from "../components/VPageHeader.vue";
 import CartList from "../components/Cart/CartList.vue";
+import VSpinner from "../components/VSpinner.vue";
 
 import api from "../api";
 import store from "../store";
@@ -48,6 +50,7 @@ export default {
   components: {
     VPageHeader,
     CartList,
+    VSpinner,
   },
 };
 </script>

@@ -19,10 +19,12 @@ namespace TheWardrobe.API.Repositories
   public interface IItemCatalogRepository
   {
     Item InsertItem(ItemRequestResponse model);
+    IEnumerable<Guid> GetAllItemIds(Guid userId);
     ItemListResponse GetItems(ItemQueryFilters filters);
     ItemRequestResponse GetItem(Guid itemId);
     void UpdateItem(ItemRequestResponse model);
     void DeleteItem(Guid itemId);
+    void MarkItemAsUnavailable(Guid itemId);
   }
 
   public class ItemCatalogRepository : IItemCatalogRepository
@@ -375,6 +377,26 @@ namespace TheWardrobe.API.Repositories
       using var connection = _dapperContext.GetConnection();
 
       connection.Delete<Item>(itemId);
+    }
+
+    public void MarkItemAsUnavailable(Guid itemId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      connection.Execute(@"
+      UPDATE item
+      SET is_available = FALSE
+      WHERE id = @itemId", new { itemId });
+    }
+
+    public IEnumerable<Guid> GetAllItemIds(Guid userId)
+    {
+      using var connection = _dapperContext.GetConnection();
+
+      return connection.Query<Guid>(@"
+      SELECT id
+      FROM item
+      WHERE seller_id = @userId", new { userId });
     }
   }
 }

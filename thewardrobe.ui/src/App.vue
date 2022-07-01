@@ -93,8 +93,7 @@ export default {
   }
 }
 
-.ant-radio-group-solid
-  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+.ant-radio-group-solid .ant-radio-button-wrapper-checked {
   @apply bg-green-400 border-green-400 text-gray-600 !important;
 
   &::before {
@@ -102,7 +101,7 @@ export default {
   }
 }
 
-.ant-radio-button-wrapper:hover:not(.ant-radio-button-wrapper-checked) {
+.ant-radio-button-wrapper:hover:not(.ant-radio-button-wrapper-checked):not(.ant-radio-button-wrapper-disabled) {
   @apply text-green-400 !important;
 }
 

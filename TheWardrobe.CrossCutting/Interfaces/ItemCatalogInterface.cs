@@ -20,6 +20,18 @@ namespace TheWardrobe.API.Interfaces
       _serviceUri = configuration.GetServiceUri(ServiceNames.ItemCatalogService);
     }
 
+    public async Task MarkItemAsUnavailable(Guid itemId)
+    {
+      var url = _serviceUri.AppendPathSegments(new string[] {
+                      "public",
+                      "api",
+                      "itemCatalog",
+                      itemId.ToString(),
+                      "unavailable"  });
+
+      await url.PatchAsync();
+    }
+
     public async Task<ItemRequestResponse> GetItem(Guid itemId)
     {
       var url = _serviceUri.AppendPathSegments(new string[] {

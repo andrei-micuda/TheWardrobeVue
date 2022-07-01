@@ -23,6 +23,8 @@ namespace TheWardrobe.API.Entities
     [Column("size_id")]
     public int SizeId { get; set; }
     [Column("when_added")]
-    public DateTime WhenAdded { get; internal set; }
+    public DateTime WhenAdded { get; set; }
+    // [Column("is_available")]
+    // public Boolean IsAvailable { get; set; }
   }
 }

@@ -16,6 +16,7 @@ namespace TheWardrobe.API.Models
     public string Category { get; set; }
     public string Size { get; set; }
     public bool IsFavorite { get; set; }
+    public bool IsAvailable { get; set; }
     public IEnumerable<string> Images { get; set; }
   }
 }

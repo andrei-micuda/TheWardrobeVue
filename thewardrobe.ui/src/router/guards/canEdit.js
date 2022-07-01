@@ -1,6 +1,7 @@
 import store from "../../store";
 
 function canEdit(itemId, next) {
+  console.log("In canEdit guard");
   var userItems = store.state.userItems;
   if (!userItems) {
     next("/sell");
@@ -10,6 +11,7 @@ function canEdit(itemId, next) {
   if (userItems.some((i) => i === itemId)) {
     next();
   } else {
+    console.log("Redirecting to /sell");
     next("/sell");
   }
 }

@@ -96,7 +96,6 @@ export default {
 
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          console.log("Authenticating...");
           this.isAuthenticating = true;
 
           api

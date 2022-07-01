@@ -17,10 +17,7 @@
         <a-button @click="handleClearFilters" class="border-0 text-gray-300"
           >Clear</a-button
         >
-        <a-button
-          @click="getFilteredData(1)"
-          id="ApplyFiltersBtn"
-          type="primary"
+        <a-button @click="handleApply" id="ApplyFiltersBtn" type="primary"
           >Apply</a-button
         >
       </div>
@@ -117,12 +114,13 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
 import { TreeSelect } from "ant-design-vue";
 import { Icon } from "@iconify/vue2";
 
 import constData from "../../const";
 import { haveCommonElements } from "../../helpers/arrayHelpers";
+
+import store from "../../store";
 
 const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 
@@ -199,11 +197,11 @@ export default {
     };
   },
   watch: {
-    initialMinPrice(newValue, oldValue) {
-      this.selectedMinPrice = newValue;
+    initialMinPrice(newValue) {
+      if (!this.selectedMinPrice) this.selectedMinPrice = newValue;
     },
-    initialMaxPrice(newValue, oldValue) {
-      this.selectedMaxPrice = newValue;
+    initialMaxPrice(newValue) {
+      if (!this.selectedMaxPrice) this.selectedMaxPrice = newValue;
     },
   },
   computed: {
@@ -256,7 +254,6 @@ export default {
         res = res.concat(sizes["footwear"]);
       }
 
-      // to remove possible "Other" duplicates
       return [...new Set(res.map((obj) => JSON.stringify(obj)))].map((str) =>
         JSON.parse(str)
       );
@@ -274,13 +271,26 @@ export default {
       }
     },
     onMaxPriceChange(e) {
-      console.log(e);
       const { value } = e.target;
       const reg = /^[0-9]*(\.[0-9]*)?$/;
       if ((!isNaN(value) && reg.test(value)) || value === "") {
-        console.log("Updating...");
         this.selectedPriceRange[1] = parseInt(value);
       }
+    },
+    handleApply() {
+      this.getFilteredData(1);
+
+      store.commit("setItemFilters", {
+        brands: this.selectedBrands,
+        categories: this.selectedCategories,
+        sizes: this.selectedSizes,
+        initialMinPrice: this.initialMinPrice,
+        initialMaxPrice: this.initialMaxPrice,
+        minPrice: this.selectedPriceRange[0],
+        maxPrice: this.selectedPriceRange[1],
+        onlyFavorites: this.onlyFavorites,
+        onlyAvailable: this.onlyAvailable,
+      });
     },
     getFilteredData(page = null) {
       const params = {
@@ -293,13 +303,16 @@ export default {
         onlyAvailable: this.onlyAvailable,
       };
 
-      if (page !== null) params.page = page;
+      if (page !== null) {
+        params.page = page;
+        this.$emit("setPaging", page);
+      }
 
       if (this.selectedGender !== "all") params.genders = this.selectedGender;
 
       this.$emit("filterData", params);
     },
-    handleClearFilters() {
+    resetFilters() {
       this.selectedBrands = [];
       this.selectedCategories = [];
       this.selectedGender = "all";
@@ -309,11 +322,37 @@ export default {
       this.onlyFavorites = false;
       this.onlyAvailable = true;
 
+      store.commit("setItemFilters", null);
+    },
+    handleClearFilters() {
+      this.resetFilters();
       this.$emit("filtersCleared");
     },
   },
   components: {
     Icon,
+  },
+  mounted() {
+    const itemFilters = store.state.itemFilters;
+    if (itemFilters !== null) {
+      const {
+        brands,
+        categories,
+        maxPrice,
+        minPrice,
+        onlyAvailable,
+        onlyFavorites,
+        sizes,
+      } = itemFilters;
+
+      this.selectedBrands = brands;
+      this.selectedCategories = categories;
+      this.selectedMaxPrice = maxPrice;
+      this.selectedMinPrice = minPrice;
+      this.onlyAvailable = onlyAvailable;
+      this.onlyFavorites = onlyFavorites;
+      this.selectedSizes = sizes;
+    }
   },
 };
 </script>

@@ -8,6 +8,11 @@
           :initialMaxPrice="maxPrice"
           @filterData="fetchFilteredItems"
           @filtersCleared="fetchItems"
+          @setPaging="
+            (page) => {
+              currentPage = page;
+            }
+          "
         />
       </a-col>
       <a-col :span="24" :xl="{ span: 18 }">
@@ -26,6 +31,7 @@
               :show-total="
                 (total, range) => `${range[0]}-${range[1]} of ${total} items`
               "
+              :current="currentPage"
               show-size-changer
               @change="handlePageChange"
               @showSizeChange="onShowSizeChange"
@@ -113,6 +119,9 @@ export default {
     };
   },
   methods: {
+    setCurrentPage(val) {
+      this.currentPage = val;
+    },
     setOrderParams(params) {
       if (this.order === "newest") {
         params.orderBy = "whenAdded";
@@ -183,7 +192,14 @@ export default {
     },
   },
   mounted() {
-    this.fetchItems();
+    const itemFilters = store.state.itemFilters;
+    if (itemFilters === null) {
+      this.fetchItems();
+    } else {
+      this.fetchFilteredItems(itemFilters);
+      this.minPrice = itemFilters.initialMinPrice;
+      this.maxPrice = itemFilters.initialMaxPrice;
+    }
   },
 };
 </script>

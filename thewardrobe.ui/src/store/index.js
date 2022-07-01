@@ -16,14 +16,9 @@ function setAccountDetails(state, accountId) {
 
 function setUserItems(state, accountId) {
   // retrieve user items from db
-  api
-    .get("/public/api/itemCatalog", {
-      params: { sellerIdInclude: accountId },
-    })
-    .then((res) => {
-      var itemIds = res.data.items.map((i) => i.id);
-      state.userItems = itemIds;
-    });
+  api.get(`/public/api/itemCatalog/${accountId}/ids`).then((res) => {
+    state.userItems = res.data;
+  });
 }
 
 const getDefaultState = () => {
@@ -37,6 +32,7 @@ const getDefaultState = () => {
     jwt: null,
     isDrawerVisible: false,
     warningMsg: null,
+    itemFilters: null,
   };
 };
 
@@ -103,6 +99,9 @@ const store = new Vuex.Store({
     },
     setWarningMsg(state, val) {
       state.warningMsg = val;
+    },
+    setItemFilters(state, obj) {
+      state.itemFilters = obj;
     },
   },
 });

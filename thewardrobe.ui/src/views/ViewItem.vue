@@ -2,7 +2,26 @@
   <div>
     <VPageHeader @back="$router.back()" title="View Item" />
     <a-row v-if="item" class="w-11/12 md:w-8/12 mx-auto py-2 md:px-10 md:py-8">
-      <a-col :span="24" :md="{ span: 12 }">
+      <a-col :span="24" :md="{ span: 12 }" class="relative">
+        <p
+          v-if="!item.isAvailable"
+          class="
+            absolute
+            flex
+            justify-center
+            items-center
+            px-2
+            py-1
+            rounded
+            top-5
+            left-5
+            bg-yellow-400
+            text-black
+            z-50
+          "
+        >
+          SOLD
+        </p>
         <a-carousel arrows class="bg-gray-800 mb-4 md:mb-0">
           <template #prevArrow>
             <div class="custom-slick-arrow" style="left: 10px; z-index: 10">
@@ -55,6 +74,8 @@
           @click="toggleCart"
           class="px-5 py-3 uppercase my-4 font-bold hover:text-gray-600"
           large
+          :disabled="!item.isAvailable"
+          :class="{ 'cursor-not-allowed': !item.isAvailable }"
         >
           {{ isInCart ? "Remove from cart" : "Add to cart" }}
           <i class="anticon"

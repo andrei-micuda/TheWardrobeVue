@@ -16,7 +16,6 @@ const refreshAccessToken = async () => {
       store.commit("refreshToken", jwt);
     })
     .catch(() => {
-      console.log("Cant get token");
       store.commit("resetStore");
     });
 
@@ -71,7 +70,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     console.log("Intercepting error");
-    console.error(error);
+    // console.error(error);
     // whatever you want to do with the error
     error.handleGlobally = errorComposer(error);
 

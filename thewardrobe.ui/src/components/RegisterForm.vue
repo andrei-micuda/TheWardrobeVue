@@ -143,8 +143,6 @@ export default {
 
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          console.log("Registering...");
-          console.log(values);
           this.isRegistering = true;
 
           api
