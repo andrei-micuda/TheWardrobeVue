@@ -103,8 +103,8 @@
         <div class="bg-gray-800 mt-6 2xl:mt-0 2xl:ml-10 p-4 rounded space-y-6">
           <div class="space-y-1">
             <p class="text-lg">Order {{ isBuyer ? "from" : "to" }}:</p>
-            <div class="flex items-center space-x-2">
-              <p class="font-bold">
+            <div class="flex items-center flex-wrap">
+              <p class="font-bold mr-2">
                 {{ isBuyer ? order.seller : order.buyer }}
               </p>
               <div
