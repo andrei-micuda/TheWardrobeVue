@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Transfer;
+using Microsoft.Extensions.Configuration;
 
 namespace TheWardrobe.API.Repositories
 {
@@ -19,9 +20,11 @@ namespace TheWardrobe.API.Repositories
     private readonly string BucketName = "the-wardrobe-media";
     private readonly AmazonS3Client _s3Client;
 
-    public ImageUploadRepository()
+    public ImageUploadRepository(IConfiguration config)
     {
-      _s3Client = new AmazonS3Client("AKIA3YIUBBFU3AGYTZXD", "VPpcyS4nxfxH/tajHDh5EplTGKvhghm4WvwBJxuH", RegionEndpoint.EUCentral1);
+      var accessKeyId = config.GetValue<string>("Aws:AccessKeyId");
+      var secretAccessKey = config.GetValue<string>("Aws:SecretAccessKey");
+      _s3Client = new AmazonS3Client(accessKeyId, secretAccessKey, RegionEndpoint.EUCentral1);
     }
     public string UploadImageToS3(Stream fileStream, string fileNameInS3)
     {
